@@ -1,0 +1,19 @@
+{
+  "es": [
+    "addPointDialog",
+    "characterCount",
+    "searchPoints",
+    "dtmTot"
+  ],
+
+  "zh": [
+    "area",
+    "dtmTot",
+    "tacheRaw",
+    "tacheReduced",
+    "importDtmTotHint",
+    "exportTacheRawHint",
+    "exportTacheReducedHint",
+    "exportRoadDesignHint"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "configurations": [
+    {
+      "name": "x64-Debug",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${workspaceRoot}\\build\\windows\\${name}",
+      "installRoot": "${workspaceRoot}\\build\\windows\\install\\${name}",
+      "variables": [
+        {
+          "name": "CMAKE_INSTALL_PREFIX",
+          "value": "${workspaceRoot}\\build\\windows\\install\\${name}"
+        }
+      ]
+    },
+    {
+      "name": "x64-Release",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "buildRoot": "${workspaceRoot}\\build\\windows\\${name}",
+      "installRoot": "${workspaceRoot}\\build\\windows\\install\\${name}",
+      "variables": [
+        {
+          "name": "CMAKE_INSTALL_PREFIX",
+          "value": "${workspaceRoot}\\build\\windows\\install\\${name}"
+        }
+      ]
+    }
+  ]
+} 

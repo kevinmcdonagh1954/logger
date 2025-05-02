@@ -1,0 +1,77 @@
+name: logger
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  get_it: ^7.6.7    # For service locator pattern
+  shared_preferences: ^2.2.2  # For persistent storage
+  http: ^1.2.0      # For network requests
+  logging: ^1.2.0   # For structured logging
+  sqflite: ^2.3.0   # For SQLite database
+  sqflite_common_ffi: ^2.3.2+1  # For desktop SQLite support
+  path_provider: ^2.1.2  # For accessing system directories
+  file_picker: ^9.2.0  # For selecting files
+  csv: ^5.1.1  # For CSV file parsing
+  path: ^1.8.3  # For path manipulation
+  intl: ^0.19.0
+  url_launcher: ^6.2.5
+  flutter_launcher_icons: ^0.14.3
+  permission_handler: ^11.3.0  # For handling runtime permissions
+  google_maps_flutter: ^2.5.3  # For Google Maps integration
+  geolocator: ^10.1.0  # For GPS location tracking
+  fl_chart: ^0.66.2  # For plotting charts
+  flutter_localizations:
+    sdk: flutter
+  provider: ^6.1.1
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  mockito: ^5.4.4   # For mocking in tests
+  build_runner: ^2.4.8  # For code generation
+  image: ^4.1.3
+
+flutter:
+  generate: true
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/images/kevin_on_land_cruiser_front_screen.jpg
+    - assets/images/logger_liberia_2010.jpg
+    - assets/images/www.jpg
+    - assets/images/jono.jpg
+    - assets/icons/
+  
+  fonts:
+    - family: Readex Pro
+      fonts:
+        - asset: assets/fonts/ReadexPro-Regular.ttf
+        - asset: assets/fonts/ReadexPro-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/ReadexPro-Bold.ttf
+          weight: 700
+
+# Configure the Flutter Launcher Icons
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/kevin_on_land_cruiser_front_screen.jpg"
+  adaptive_icon_background: "#FFFFFF" # white background
+  adaptive_icon_foreground: "assets/images/kevin_on_land_cruiser_front_screen.jpg"
+  # If needed, we can add more specific configurations here
+
+flutter_intl:
+  enabled: true
+  class_name: S
+  main_locale: en
+  arb_dir: lib/presentation_layer/l10n
+  output_dir: lib/presentation_layer/l10n/generated

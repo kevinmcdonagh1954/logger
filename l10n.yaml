@@ -1,0 +1,9 @@
+arb-dir: lib/presentation_layer/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+synthetic-package: false
+preferred-supported-locales: ["en", "es", "zh"]
+use-deferred-loading: false
+input-file-pattern: app_{locale}.arb
+untranslated-messages-file: untranslated_messages.txt 
