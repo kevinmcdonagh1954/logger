@@ -6,6 +6,10 @@ import '../../../domain_layer/coordinates/point.dart';
 import '../../core/dialogs/point_dialog.dart';
 import 'dart:math';
 import 'dart:async';
+import 'dart:ui' as ui;
+import 'dart:typed_data';
+import 'package:flutter/rendering.dart';
+import '../../core/plot_coordinate_utils.dart';
 
 class PlotCoordinatesView extends StatefulWidget {
   const PlotCoordinatesView({super.key});
@@ -44,6 +48,17 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   Timer? _panTimer;
   bool _isPanning = false;
 
+  // Add snapshot controller
+  final GlobalKey _plotKey = GlobalKey();
+  Uint8List? _snapshot;
+  Offset _panOffset = Offset.zero;
+
+  // Store the last valid RenderBox for use in pan end
+  RenderBox? _lastRenderBox;
+
+  // Store the pending pan end screen position for post-frame recentering
+  Offset? _pendingPanEndScreenPos;
+
   // Getters for view boundaries
 
   // Getters for view coordinates
@@ -63,6 +78,11 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       _maxY -
       (_maxY - _minY - (_maxY - _minY) / _currentScale) / 2 -
       (_currentOffset.dx + _tempOffset.dx);
+
+  Offset? _debugPanStart;
+  Offset? _debugPanEnd;
+  Offset? _debugPlotStart;
+  Offset? _debugPlotEnd;
 
   @override
   void initState() {
@@ -126,6 +146,8 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       _currentOffset = Offset.zero;
       _tempOffset = Offset.zero;
       _isPanning = false;
+      _snapshot = null;
+      _panOffset = Offset.zero;
     });
   }
 
@@ -388,58 +410,156 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     );
   }
 
-  void _handlePanStart(DragStartDetails details) {
-    _isPanning = true;
-    _panTimer?.cancel();
+  void _handlePanStart(DragStartDetails details) async {
+    print('PAN START');
+    final boundary =
+        _plotKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+    final RenderBox? renderBox =
+        _plotKey.currentContext?.findRenderObject() as RenderBox?;
+    if (boundary != null && renderBox != null) {
+      _lastRenderBox = renderBox; // Store for pan end
+      final image = await boundary.toImage();
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData != null && mounted) {
+        final plotYX = PlotCoordinateUtils.screenToPlotYX(
+          globalPosition: details.globalPosition,
+          renderBox: renderBox,
+          viewMinY: _viewMinY,
+          viewMaxY: _viewMaxY,
+          viewMinX: _viewMinX,
+          viewMaxX: _viewMaxX,
+        );
+        print('Snapshot taken, panOffset reset, _isPanning set to true');
+        setState(() {
+          _snapshot = byteData.buffer.asUint8List();
+          _panOffset = Offset.zero;
+          _isPanning = true;
+          _debugPanStart = details.globalPosition;
+          _debugPanEnd = null;
+          _debugPlotStart = plotYX;
+          _debugPlotEnd = null;
+        });
+      }
+    }
   }
 
   void _handlePanUpdate(DragUpdateDetails details) {
     if (!_isPanning) return;
-
-    // Convert the pan delta to coordinate space
-    final size =
-        min(context.size?.width ?? 0, context.size?.height ?? 0) - 32.0;
-    final scale = size / (_maxY - _minY);
-
-    // Update temporary offset during pan
-    _tempOffset += Offset(
-      details.delta.dx / scale / _currentScale,
-      details.delta.dy / scale / _currentScale,
-    );
-
-    // Cancel any pending timer and start a new one
-    _panTimer?.cancel();
-    _panTimer = Timer(const Duration(milliseconds: 100), () {
-      if (mounted) {
-        setState(() {
-          // Apply the temporary offset to the current offset
-          _currentOffset += _tempOffset;
-          _tempOffset = Offset.zero;
-          _constrainOffset();
-        });
-      }
+    setState(() {
+      _panOffset += details.delta;
+      _tempOffset = Offset(
+        _panOffset.dx / (_currentScale * 100),
+        _panOffset.dy / (_currentScale * 100),
+      );
     });
-
-    // Update the view without replotting
-    setState(() {});
+    print('PAN UPDATE: panOffset=$_panOffset, tempOffset=$_tempOffset');
   }
 
   void _handlePanEnd(DragEndDetails details) {
-    _isPanning = false;
-    _panTimer?.cancel();
-
-    if (mounted) {
-      setState(() {
-        // Apply the temporary offset to the current offset
-        _currentOffset += _tempOffset;
-        _tempOffset = Offset.zero;
-        _constrainOffset();
-      });
+    print('PAN END');
+    if (!_isPanning) {
+      print('Pan end called but _isPanning is false');
+      return;
     }
+    // The last finger position is the last screen position (start + pan offset)
+    final Offset endScreen =
+        _debugPanStart != null ? _debugPanStart! + _panOffset : Offset.zero;
+    // Store for post-frame callback
+    setState(() {
+      _pendingPanEndScreenPos = endScreen;
+      _isPanning = false;
+      _snapshot = null;
+      _panOffset = Offset.zero;
+      _lastRenderBox = null;
+    });
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    if (_isPanning) return;
+    final RenderBox? renderBox =
+        _plotKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return;
+    final plotYX = PlotCoordinateUtils.screenToPlotYX(
+      globalPosition: details.globalPosition,
+      renderBox: renderBox,
+      viewMinY: _viewMinY,
+      viewMaxY: _viewMaxY,
+      viewMinX: _viewMinX,
+      viewMaxX: _viewMaxX,
+    );
+    _handleTap(plotYX.dx, plotYX.dy);
   }
 
   @override
   Widget build(BuildContext context) {
+    // Post-frame callback for recentering after pan
+    if (_pendingPanEndScreenPos != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final RenderBox? renderBox =
+            _plotKey.currentContext?.findRenderObject() as RenderBox?;
+        if (renderBox != null) {
+          final Offset newCenterYX = PlotCoordinateUtils.screenToPlotYX(
+            globalPosition: _pendingPanEndScreenPos!,
+            renderBox: renderBox,
+            viewMinY: _viewMinY,
+            viewMaxY: _viewMaxY,
+            viewMinX: _viewMinX,
+            viewMaxX: _viewMaxX,
+          );
+          final double rangeY = _viewMaxY - _viewMinY;
+          final double rangeX = _viewMaxX - _viewMinX;
+          final double halfRangeY = rangeY / 2;
+          final double halfRangeX = rangeX / 2;
+          setState(() {
+            _minY = newCenterYX.dx - halfRangeY;
+            _maxY = newCenterYX.dx + halfRangeY;
+            _minX = newCenterYX.dy - halfRangeX;
+            _maxX = newCenterYX.dy + halfRangeX;
+            _currentOffset = Offset.zero;
+            _tempOffset = Offset.zero;
+            // For debug
+            _debugPanEnd = _pendingPanEndScreenPos;
+            _debugPlotEnd = newCenterYX;
+            _pendingPanEndScreenPos = null;
+          });
+          // Show debug dialog
+          if (context.mounted) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text('Pan Debug Info'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          'Start screen coords: \n  \\${_debugPanStart?.dx.toStringAsFixed(2)}, \\${_debugPanStart?.dy.toStringAsFixed(2)}'),
+                      Text(
+                          'End screen coords: \n  \\${_debugPanEnd?.dx.toStringAsFixed(2)}, \\${_debugPanEnd?.dy.toStringAsFixed(2)}'),
+                      const SizedBox(height: 8),
+                      Text(
+                          'Start plot Y/X: \n  Y: \\${_debugPlotStart?.dx.toStringAsFixed(3)}, X: \\${_debugPlotStart?.dy.toStringAsFixed(3)}'),
+                      Text(
+                          'End plot Y/X (new center): \n  Y: \\${_debugPlotEnd?.dx.toStringAsFixed(3)}, X: \\${_debugPlotEnd?.dy.toStringAsFixed(3)}'),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        } else {
+          // If still not available, try again next frame
+          setState(() {});
+        }
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D47A1),
@@ -455,21 +575,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           Container(
             color: Colors.black,
             child: GestureDetector(
-              onTapUp: (TapUpDetails details) {
-                final RenderBox renderBox =
-                    context.findRenderObject() as RenderBox;
-                final Offset localPosition =
-                    renderBox.globalToLocal(details.globalPosition);
-                final size =
-                    min(renderBox.size.width, renderBox.size.height) - 32.0;
-
-                final y = _viewMaxY -
-                    (localPosition.dx - 16.0) / size * (_viewMaxY - _viewMinY);
-                final x = _viewMinX +
-                    (localPosition.dy - 16.0) / size * (_viewMaxX - _viewMinX);
-
-                _handleTap(y, x);
-              },
+              onTapUp: _handleTapUp,
               onPanStart: _handlePanStart,
               onPanUpdate: _handlePanUpdate,
               onPanEnd: _handlePanEnd,
@@ -487,93 +593,16 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                           height: size + 32.0,
                           child: Stack(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: ScatterChart(
-                                  ScatterChartData(
-                                    scatterSpots: _visiblePoints
-                                        .map((point) => _buildSpot(point))
-                                        .toList(),
-                                    minX: -_viewMaxY,
-                                    maxX: -_viewMinY,
-                                    minY: -_viewMaxX,
-                                    maxY: -_viewMinX,
-                                    backgroundColor: Colors.black,
-                                    borderData: FlBorderData(show: false),
-                                    gridData: FlGridData(
-                                      show: _showGrid,
-                                      getDrawingHorizontalLine: (value) =>
-                                          FlLine(
-                                        color: Colors.white30,
-                                        strokeWidth: 0.5,
-                                      ),
-                                      getDrawingVerticalLine: (value) => FlLine(
-                                        color: Colors.white30,
-                                        strokeWidth: 0.5,
-                                      ),
-                                      checkToShowHorizontalLine: (value) =>
-                                          value % _gridSpacing == 0,
-                                      checkToShowVerticalLine: (value) =>
-                                          value % _gridSpacing == 0,
-                                    ),
-                                    titlesData: FlTitlesData(
-                                      show: _showGrid,
-                                      topTitles: AxisTitles(
-                                          sideTitles:
-                                              SideTitles(showTitles: false)),
-                                      rightTitles: AxisTitles(
-                                        sideTitles: SideTitles(
-                                          showTitles: true,
-                                          reservedSize: 50,
-                                          interval: _gridSpacing,
-                                          getTitlesWidget: (value, meta) {
-                                            if (value % _gridSpacing != 0)
-                                              return const Text('');
-                                            return Transform.rotate(
-                                              angle: 0,
-                                              child: Text(
-                                                (-value).toInt().toString(),
-                                                style: const TextStyle(
-                                                  color: Colors.white70,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      bottomTitles: AxisTitles(
-                                        sideTitles: SideTitles(
-                                          showTitles: true,
-                                          reservedSize: 30,
-                                          interval: _gridSpacing,
-                                          getTitlesWidget: (value, meta) {
-                                            if (value % _gridSpacing != 0)
-                                              return const Text('');
-                                            return Transform.rotate(
-                                              angle: -pi / 2,
-                                              child: Text(
-                                                (-value).toInt().toString(),
-                                                style: const TextStyle(
-                                                  color: Colors.white70,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      leftTitles: AxisTitles(
-                                          sideTitles:
-                                              SideTitles(showTitles: false)),
-                                    ),
-                                    scatterTouchData: ScatterTouchData(
-                                      enabled: true,
-                                      handleBuiltInTouches: true,
-                                    ),
-                                  ),
+                              if (_isPanning && _snapshot != null)
+                                Transform.translate(
+                                  offset: _panOffset,
+                                  child: Image.memory(_snapshot!),
+                                )
+                              else
+                                RepaintBoundary(
+                                  key: _plotKey,
+                                  child: _buildPlotWidget(),
                                 ),
-                              ),
                             ],
                           ),
                         ),
@@ -590,6 +619,86 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
             child: _buildControls(),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPlotWidget() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ScatterChart(
+        ScatterChartData(
+          scatterSpots:
+              _visiblePoints.map((point) => _buildSpot(point)).toList(),
+          minX: -_viewMaxY,
+          maxX: -_viewMinY,
+          minY: -_viewMaxX,
+          maxY: -_viewMinX,
+          backgroundColor: Colors.black,
+          borderData: FlBorderData(show: false),
+          gridData: FlGridData(
+            show: _showGrid,
+            getDrawingHorizontalLine: (value) => FlLine(
+              color: Colors.white30,
+              strokeWidth: 0.5,
+            ),
+            getDrawingVerticalLine: (value) => FlLine(
+              color: Colors.white30,
+              strokeWidth: 0.5,
+            ),
+            checkToShowHorizontalLine: (value) => value % _gridSpacing == 0,
+            checkToShowVerticalLine: (value) => value % _gridSpacing == 0,
+          ),
+          titlesData: FlTitlesData(
+            show: _showGrid,
+            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 50,
+                interval: _gridSpacing,
+                getTitlesWidget: (value, meta) {
+                  if (value % _gridSpacing != 0) return const Text('');
+                  return Transform.rotate(
+                    angle: 0,
+                    child: Text(
+                      (-value).toInt().toString(),
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 10,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 30,
+                interval: _gridSpacing,
+                getTitlesWidget: (value, meta) {
+                  if (value % _gridSpacing != 0) return const Text('');
+                  return Transform.rotate(
+                    angle: -pi / 2,
+                    child: Text(
+                      (-value).toInt().toString(),
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 10,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          ),
+          scatterTouchData: ScatterTouchData(
+            enabled: true,
+            handleBuiltInTouches: true,
+          ),
+        ),
       ),
     );
   }
