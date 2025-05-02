@@ -5,6 +5,7 @@ import '../../../application_layer/jobs/job_service.dart';
 import '../../../domain_layer/coordinates/point.dart';
 import '../../core/dialogs/point_dialog.dart';
 import 'dart:math';
+import 'dart:async';
 
 class PlotCoordinatesView extends StatefulWidget {
   const PlotCoordinatesView({super.key});
@@ -36,25 +37,32 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   // Border constant - 25% of the range
   static const double _borderPercentage = 0.25;
 
+  // Add temporary offset for smooth panning
+  Offset _tempOffset = Offset.zero;
+
+  // Add timer for debouncing
+  Timer? _panTimer;
+  bool _isPanning = false;
+
   // Getters for view boundaries
 
   // Getters for view coordinates
   double get _viewMinX =>
       _minX +
       (_maxX - _minX - (_maxX - _minX) / _currentScale) / 2 -
-      _currentOffset.dy;
+      (_currentOffset.dy + _tempOffset.dy);
   double get _viewMaxX =>
       _maxX -
       (_maxX - _minX - (_maxX - _minX) / _currentScale) / 2 -
-      _currentOffset.dy;
+      (_currentOffset.dy + _tempOffset.dy);
   double get _viewMinY =>
       _minY +
       (_maxY - _minY - (_maxY - _minY) / _currentScale) / 2 -
-      _currentOffset.dx;
+      (_currentOffset.dx + _tempOffset.dx);
   double get _viewMaxY =>
       _maxY -
       (_maxY - _minY - (_maxY - _minY) / _currentScale) / 2 -
-      _currentOffset.dx;
+      (_currentOffset.dx + _tempOffset.dx);
 
   @override
   void initState() {
@@ -65,6 +73,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
 
   @override
   void dispose() {
+    _panTimer?.cancel();
     _jobService.points.removeListener(_loadPoints);
     super.dispose();
   }
@@ -111,9 +120,12 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   }
 
   void _resetView() {
+    _panTimer?.cancel();
     setState(() {
       _currentScale = 1.0;
       _currentOffset = Offset.zero;
+      _tempOffset = Offset.zero;
+      _isPanning = false;
     });
   }
 
@@ -307,53 +319,60 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         borderRadius: BorderRadius.circular(8),
       ),
       padding: const EdgeInsets.all(8),
-      child: Column(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(Icons.grid_on,
-                    color: _showGrid ? Colors.white : Colors.grey),
-                onPressed: () {
-                  setState(() {
-                    _showGrid = !_showGrid;
-                  });
-                },
-                tooltip: 'Toggle Grid',
-              ),
-              const SizedBox(width: 8),
-              IconButton(
-                icon: const Icon(Icons.color_lens, color: Colors.white),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Select Point Color'),
-                      content: ColorPicker(
-                        pickerColor: _pointColor,
-                        onColorChanged: (color) {
-                          setState(() {
-                            _pointColor = color;
-                          });
-                        },
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Close'),
-                        ),
-                      ],
+          IconButton(
+            icon: Icon(Icons.grid_on,
+                color: _showGrid ? Colors.white : Colors.grey),
+            onPressed: () {
+              setState(() {
+                _showGrid = !_showGrid;
+              });
+            },
+            tooltip: 'Toggle Grid',
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.color_lens, color: Colors.white),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Select Point Color'),
+                  content: ColorPicker(
+                    pickerColor: _pointColor,
+                    onColorChanged: (color) {
+                      setState(() {
+                        _pointColor = color;
+                      });
+                    },
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Close'),
                     ),
-                  );
-                },
-                tooltip: 'Change Point Color',
-              ),
-            ],
+                  ],
+                ),
+              );
+            },
+            tooltip: 'Change Point Color',
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.zoom_out_map, color: Colors.white),
+            onPressed: _resetView,
+            tooltip: 'Reset View',
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.remove, color: Colors.white),
+            onPressed: _currentScale > _minScale ? _zoomOut : null,
+            tooltip: 'Zoom Out',
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
               '${(_currentScale * 100).toInt()}%',
               style: const TextStyle(color: Colors.white),
@@ -364,32 +383,72 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
             onPressed: _currentScale < _maxScale ? _zoomIn : null,
             tooltip: 'Zoom In',
           ),
-          IconButton(
-            icon: const Icon(Icons.remove, color: Colors.white),
-            onPressed: _currentScale > _minScale ? _zoomOut : null,
-            tooltip: 'Zoom Out',
-          ),
         ],
       ),
     );
+  }
+
+  void _handlePanStart(DragStartDetails details) {
+    _isPanning = true;
+    _panTimer?.cancel();
+  }
+
+  void _handlePanUpdate(DragUpdateDetails details) {
+    if (!_isPanning) return;
+
+    // Convert the pan delta to coordinate space
+    final size =
+        min(context.size?.width ?? 0, context.size?.height ?? 0) - 32.0;
+    final scale = size / (_maxY - _minY);
+
+    // Update temporary offset during pan
+    _tempOffset += Offset(
+      details.delta.dx / scale / _currentScale,
+      details.delta.dy / scale / _currentScale,
+    );
+
+    // Cancel any pending timer and start a new one
+    _panTimer?.cancel();
+    _panTimer = Timer(const Duration(milliseconds: 100), () {
+      if (mounted) {
+        setState(() {
+          // Apply the temporary offset to the current offset
+          _currentOffset += _tempOffset;
+          _tempOffset = Offset.zero;
+          _constrainOffset();
+        });
+      }
+    });
+
+    // Update the view without replotting
+    setState(() {});
+  }
+
+  void _handlePanEnd(DragEndDetails details) {
+    _isPanning = false;
+    _panTimer?.cancel();
+
+    if (mounted) {
+      setState(() {
+        // Apply the temporary offset to the current offset
+        _currentOffset += _tempOffset;
+        _tempOffset = Offset.zero;
+        _constrainOffset();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Plot Coordinates'),
+        backgroundColor: const Color(0xFF0D47A1),
+        foregroundColor: Colors.white,
+        title: Text('Plot Coordinates - ${_points.length}'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.zoom_out_map),
-            onPressed: _resetView,
-            tooltip: 'Reset View',
-          ),
-        ],
       ),
       body: Stack(
         children: [
@@ -411,6 +470,9 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
 
                 _handleTap(y, x);
               },
+              onPanStart: _handlePanStart,
+              onPanUpdate: _handlePanUpdate,
+              onPanEnd: _handlePanEnd,
               behavior: HitTestBehavior.opaque,
               child: Stack(
                 children: [
@@ -468,7 +530,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                                             if (value % _gridSpacing != 0)
                                               return const Text('');
                                             return Transform.rotate(
-                                              angle: -pi / 2,
+                                              angle: 0,
                                               child: Text(
                                                 (-value).toInt().toString(),
                                                 style: const TextStyle(
@@ -488,11 +550,14 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                                           getTitlesWidget: (value, meta) {
                                             if (value % _gridSpacing != 0)
                                               return const Text('');
-                                            return Text(
-                                              (-value).toInt().toString(),
-                                              style: const TextStyle(
-                                                color: Colors.white70,
-                                                fontSize: 10,
+                                            return Transform.rotate(
+                                              angle: -pi / 2,
+                                              child: Text(
+                                                (-value).toInt().toString(),
+                                                style: const TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 10,
+                                                ),
                                               ),
                                             );
                                           },

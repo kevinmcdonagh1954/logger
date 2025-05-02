@@ -1,0 +1,2 @@
+D:/Flutter Projects/Logger Recovery 2nd May 2025/logger/android/app/.cxx/Debug/2q2y4y2w/x86/CMakeFiles/edit_cache.dir
+D:/Flutter Projects/Logger Recovery 2nd May 2025/logger/android/app/.cxx/Debug/2q2y4y2w/x86/CMakeFiles/rebuild_cache.dir
