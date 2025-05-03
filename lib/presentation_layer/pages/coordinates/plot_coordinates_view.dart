@@ -10,12 +10,98 @@ import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'package:flutter/rendering.dart';
 import '../../core/plot_coordinate_utils.dart';
+import 'package:flutter/services.dart';
 
 class PlotCoordinatesView extends StatefulWidget {
   const PlotCoordinatesView({super.key});
 
   @override
   State<PlotCoordinatesView> createState() => _PlotCoordinatesViewState();
+}
+
+class PointWithLabelsPainter extends FlDotPainter {
+  final Color color;
+  final String? comment;
+  final String? elevation;
+  final bool showComment;
+  final bool showZ;
+
+  const PointWithLabelsPainter({
+    required this.color,
+    this.comment,
+    this.elevation,
+    this.showComment = false,
+    this.showZ = false,
+  });
+
+  @override
+  void draw(Canvas canvas, FlSpot spot, Offset offset) {
+    // Draw the point
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(offset, 2, paint);
+
+    // Draw labels if enabled
+    if (showComment && comment != null && comment!.isNotEmpty) {
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: comment,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      textPainter.paint(
+        canvas,
+        offset + Offset(-textPainter.width / 2, -12),
+      );
+    }
+
+    if (showZ && elevation != null) {
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: elevation,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      textPainter.paint(
+        canvas,
+        offset + Offset(-textPainter.width / 2, 8),
+      );
+    }
+  }
+
+  @override
+  Size getSize(FlSpot spot) {
+    return const Size(4, 4); // Point size
+  }
+
+  @override
+  FlDotPainter lerp(FlDotPainter a, FlDotPainter b, double t) {
+    if (a is PointWithLabelsPainter && b is PointWithLabelsPainter) {
+      return PointWithLabelsPainter(
+        color: Color.lerp(a.color, b.color, t) ?? a.color,
+        comment: t < 0.5 ? a.comment : b.comment,
+        elevation: t < 0.5 ? a.elevation : b.elevation,
+        showComment: t < 0.5 ? a.showComment : b.showComment,
+        showZ: t < 0.5 ? a.showZ : b.showZ,
+      );
+    }
+    return this;
+  }
+
+  @override
+  List<Object?> get props => [color, comment, elevation, showComment, showZ];
+
+  @override
+  Color get mainColor => color;
 }
 
 class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
@@ -28,6 +114,11 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   Color _pointColor = Colors.white;
   bool _showGrid = true;
   double _gridSpacing = 100.0; // Grid spacing in meters
+
+  // Display options
+  bool _showComment = false;
+  bool _showZ = false;
+  bool _showDescriptor = false;
 
   // View state
   double _currentScale = 1.0;
@@ -84,6 +175,20 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   Offset? _debugPlotStart;
   Offset? _debugPlotEnd;
 
+  // Add fields to store pan start info
+  Offset? _panStartScreen;
+  Offset? _panStartPlotYX;
+  double? _panStartViewMinY;
+  double? _panStartViewMaxY;
+  double? _panStartViewMinX;
+  double? _panStartViewMaxX;
+
+  // Add a timer for zoom debounce
+  Timer? _zoomDebounceTimer;
+
+  // Store original bounds for clamping pan
+  double? _origMinY, _origMaxY, _origMinX, _origMaxX;
+
   @override
   void initState() {
     super.initState();
@@ -132,6 +237,12 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         _minX -= borderSize;
         _maxX += borderSize;
       }
+
+      // Store original bounds for pan clamping
+      _origMinY = _minY;
+      _origMaxY = _maxY;
+      _origMinX = _minX;
+      _origMaxX = _maxX;
     }
     setState(() {
       _points = points;
@@ -152,25 +263,31 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   }
 
   void _zoomIn() {
-    setState(() {
-      final newScale =
-          (_currentScale * _zoomIncrement).clamp(_minScale, _maxScale);
-      if (newScale != _currentScale) {
-        _currentScale = newScale;
-        _constrainOffset();
-      }
-    });
+    _zoomDebounceTimer?.cancel();
+    final newScale =
+        (_currentScale * _zoomIncrement).clamp(_minScale, _maxScale);
+    if (newScale != _currentScale) {
+      _zoomDebounceTimer = Timer(const Duration(milliseconds: 200), () {
+        setState(() {
+          _currentScale = newScale;
+          _constrainOffset();
+        });
+      });
+    }
   }
 
   void _zoomOut() {
-    setState(() {
-      final newScale =
-          (_currentScale / _zoomIncrement).clamp(_minScale, _maxScale);
-      if (newScale != _currentScale) {
-        _currentScale = newScale;
-        _constrainOffset();
-      }
-    });
+    _zoomDebounceTimer?.cancel();
+    final newScale =
+        (_currentScale / _zoomIncrement).clamp(_minScale, _maxScale);
+    if (newScale != _currentScale) {
+      _zoomDebounceTimer = Timer(const Duration(milliseconds: 200), () {
+        setState(() {
+          _currentScale = newScale;
+          _constrainOffset();
+        });
+      });
+    }
   }
 
   void _constrainOffset() {
@@ -211,6 +328,22 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         );
       }
     }
+  }
+
+  Widget _buildPointDetails(Point point) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (_showComment && point.comment.isNotEmpty)
+          Text('Comment: ${point.comment}'),
+        Text('Y: ${point.y.toStringAsFixed(3)}'),
+        Text('X: ${point.x.toStringAsFixed(3)}'),
+        if (_showZ) Text('Z: ${point.z.toStringAsFixed(3)}'),
+        if (_showDescriptor && point.descriptor != null)
+          Text('Descriptor: ${point.descriptor}'),
+      ],
+    );
   }
 
   Future<void> _handleTap(double y, double x) async {
@@ -265,19 +398,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Found Point'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (closest!.comment.isNotEmpty)
-                  Text('Comment: ${closest.comment}'),
-                Text('Y: ${closest.y.toStringAsFixed(3)}'),
-                Text('X: ${closest.x.toStringAsFixed(3)}'),
-                Text('Z: ${closest.z.toStringAsFixed(3)}'),
-                if (closest.descriptor != null)
-                  Text('Descriptor: ${closest.descriptor}'),
-              ],
-            ),
+            content: _buildPointDetails(closest!),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -327,9 +448,12 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     return ScatterSpot(
       -point.y,
       -point.x,
-      dotPainter: FlDotCirclePainter(
-        radius: 2,
+      dotPainter: PointWithLabelsPainter(
         color: _pointColor,
+        comment: point.comment,
+        elevation: point.z.toStringAsFixed(3),
+        showComment: _showComment,
+        showZ: _showZ,
       ),
     );
   }
@@ -411,6 +535,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   }
 
   void _handlePanStart(DragStartDetails details) async {
+    if (_currentScale == 1.0) return;
     print('PAN START');
     final boundary =
         _plotKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
@@ -421,13 +546,18 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       final image = await boundary.toImage();
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       if (byteData != null && mounted) {
+        // Store the view bounds at pan start
+        _panStartViewMinY = _viewMinY;
+        _panStartViewMaxY = _viewMaxY;
+        _panStartViewMinX = _viewMinX;
+        _panStartViewMaxX = _viewMaxX;
         final plotYX = PlotCoordinateUtils.screenToPlotYX(
           globalPosition: details.globalPosition,
           renderBox: renderBox,
-          viewMinY: _viewMinY,
-          viewMaxY: _viewMaxY,
-          viewMinX: _viewMinX,
-          viewMaxX: _viewMaxX,
+          viewMinY: _panStartViewMinY!,
+          viewMaxY: _panStartViewMaxY!,
+          viewMinX: _panStartViewMinX!,
+          viewMaxX: _panStartViewMaxX!,
         );
         print('Snapshot taken, panOffset reset, _isPanning set to true');
         setState(() {
@@ -438,12 +568,15 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           _debugPanEnd = null;
           _debugPlotStart = plotYX;
           _debugPlotEnd = null;
+          _panStartScreen = details.globalPosition;
+          _panStartPlotYX = plotYX;
         });
       }
     }
   }
 
   void _handlePanUpdate(DragUpdateDetails details) {
+    if (_currentScale == 1.0) return;
     if (!_isPanning) return;
     setState(() {
       _panOffset += details.delta;
@@ -452,25 +585,149 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         _panOffset.dy / (_currentScale * 100),
       );
     });
-    print('PAN UPDATE: panOffset=$_panOffset, tempOffset=$_tempOffset');
+    print(
+        'PAN UPDATE: panOffset=[38;5;2m$_panOffset[0m, tempOffset=$_tempOffset');
   }
 
   void _handlePanEnd(DragEndDetails details) {
+    if (_currentScale == 1.0) return;
     print('PAN END');
     if (!_isPanning) {
       print('Pan end called but _isPanning is false');
       return;
     }
-    // The last finger position is the last screen position (start + pan offset)
-    final Offset endScreen =
+    // Calculate the screen delta
+    final Offset? screenStart = _panStartScreen;
+    final Offset? plotStart = _panStartPlotYX;
+    final Offset screenEnd =
         _debugPanStart != null ? _debugPanStart! + _panOffset : Offset.zero;
-    // Store for post-frame callback
+    if (screenStart != null &&
+        plotStart != null &&
+        _plotKey.currentContext != null &&
+        _panStartViewMinY != null &&
+        _panStartViewMaxY != null &&
+        _panStartViewMinX != null &&
+        _panStartViewMaxX != null) {
+      final RenderBox? renderBox =
+          _plotKey.currentContext!.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        // Find the plot coordinates under the finger at pan end
+        final plotEnd = PlotCoordinateUtils.screenToPlotYX(
+          globalPosition: screenEnd,
+          renderBox: renderBox,
+          viewMinY: _panStartViewMinY!,
+          viewMaxY: _panStartViewMaxY!,
+          viewMinX: _panStartViewMinX!,
+          viewMaxX: _panStartViewMaxX!,
+        );
+        // Compute the plot delta
+        final plotDelta = plotEnd - plotStart;
+        final pixelShift = screenEnd - screenStart;
+        // Clamp pan so new view does not exceed original bounds
+        double newMinY = _minY + plotDelta.dx;
+        double newMaxY = _maxY + plotDelta.dx;
+        double newMinX = _minX + plotDelta.dy;
+        double newMaxX = _maxX + plotDelta.dy;
+        if (_origMinY != null &&
+            _origMaxY != null &&
+            _origMinX != null &&
+            _origMaxX != null) {
+          final viewHeight = newMaxY - newMinY;
+          final viewWidth = newMaxX - newMinX;
+          // Clamp Y
+          if (newMinY < _origMinY!) {
+            newMinY = _origMinY!;
+            newMaxY = newMinY + viewHeight;
+          }
+          if (newMaxY > _origMaxY!) {
+            newMaxY = _origMaxY!;
+            newMinY = newMaxY - viewHeight;
+          }
+          // Clamp X
+          if (newMinX < _origMinX!) {
+            newMinX = _origMinX!;
+            newMaxX = newMinX + viewWidth;
+          }
+          if (newMaxX > _origMaxX!) {
+            newMaxX = _origMaxX!;
+            newMinX = newMaxX - viewWidth;
+          }
+        }
+        // Shift the plot boundaries by this delta
+        setState(() {
+          _minY = newMinY;
+          _maxY = newMaxY;
+          _minX = newMinX;
+          _maxX = newMaxX;
+          _currentOffset = Offset.zero;
+          _tempOffset = Offset.zero;
+          _isPanning = false;
+          _snapshot = null;
+          _panOffset = Offset.zero;
+          _lastRenderBox = null;
+          _panStartScreen = null;
+          _panStartPlotYX = null;
+          _panStartViewMinY = null;
+          _panStartViewMaxY = null;
+          _panStartViewMinX = null;
+          _panStartViewMaxX = null;
+          _debugPanEnd = screenEnd;
+          _debugPlotEnd = plotEnd;
+        });
+        // Always show debug dialog after pan end for troubleshooting
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Pan Debug Info'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        'Start screen coords:  ${screenStart.dx.toStringAsFixed(2)}, ${screenStart.dy.toStringAsFixed(2)}'),
+                    Text(
+                        'End screen coords:    ${screenEnd.dx.toStringAsFixed(2)}, ${screenEnd.dy.toStringAsFixed(2)}'),
+                    const SizedBox(height: 8),
+                    Text(
+                        'Start plot Y/X:  Y: ${plotStart.dx.toStringAsFixed(3)}, X: ${plotStart.dy.toStringAsFixed(3)}'),
+                    Text(
+                        'End plot Y/X:    Y: ${plotEnd.dx.toStringAsFixed(3)}, X: ${plotEnd.dy.toStringAsFixed(3)}'),
+                    const SizedBox(height: 8),
+                    Text('Pixel shift:'),
+                    Text(
+                        '  dx: ${pixelShift.dx.toStringAsFixed(2)}, dy: ${pixelShift.dy.toStringAsFixed(2)}'),
+                    Text('Coord shift:'),
+                    Text(
+                        '  dX: ${(plotDelta.dx).toStringAsFixed(4)}, dY: ${(plotDelta.dy).toStringAsFixed(4)}'),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        return;
+      }
+    }
+    // fallback: just reset pan state
     setState(() {
-      _pendingPanEndScreenPos = endScreen;
       _isPanning = false;
       _snapshot = null;
       _panOffset = Offset.zero;
       _lastRenderBox = null;
+      _panStartScreen = null;
+      _panStartPlotYX = null;
+      _panStartViewMinY = null;
+      _panStartViewMaxY = null;
+      _panStartViewMinX = null;
+      _panStartViewMaxX = null;
     });
   }
 
@@ -492,74 +749,6 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
 
   @override
   Widget build(BuildContext context) {
-    // Post-frame callback for recentering after pan
-    if (_pendingPanEndScreenPos != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final RenderBox? renderBox =
-            _plotKey.currentContext?.findRenderObject() as RenderBox?;
-        if (renderBox != null) {
-          final Offset newCenterYX = PlotCoordinateUtils.screenToPlotYX(
-            globalPosition: _pendingPanEndScreenPos!,
-            renderBox: renderBox,
-            viewMinY: _viewMinY,
-            viewMaxY: _viewMaxY,
-            viewMinX: _viewMinX,
-            viewMaxX: _viewMaxX,
-          );
-          final double rangeY = _viewMaxY - _viewMinY;
-          final double rangeX = _viewMaxX - _viewMinX;
-          final double halfRangeY = rangeY / 2;
-          final double halfRangeX = rangeX / 2;
-          setState(() {
-            _minY = newCenterYX.dx - halfRangeY;
-            _maxY = newCenterYX.dx + halfRangeY;
-            _minX = newCenterYX.dy - halfRangeX;
-            _maxX = newCenterYX.dy + halfRangeX;
-            _currentOffset = Offset.zero;
-            _tempOffset = Offset.zero;
-            // For debug
-            _debugPanEnd = _pendingPanEndScreenPos;
-            _debugPlotEnd = newCenterYX;
-            _pendingPanEndScreenPos = null;
-          });
-          // Show debug dialog
-          if (context.mounted) {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text('Pan Debug Info'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          'Start screen coords: \n  \\${_debugPanStart?.dx.toStringAsFixed(2)}, \\${_debugPanStart?.dy.toStringAsFixed(2)}'),
-                      Text(
-                          'End screen coords: \n  \\${_debugPanEnd?.dx.toStringAsFixed(2)}, \\${_debugPanEnd?.dy.toStringAsFixed(2)}'),
-                      const SizedBox(height: 8),
-                      Text(
-                          'Start plot Y/X: \n  Y: \\${_debugPlotStart?.dx.toStringAsFixed(3)}, X: \\${_debugPlotStart?.dy.toStringAsFixed(3)}'),
-                      Text(
-                          'End plot Y/X (new center): \n  Y: \\${_debugPlotEnd?.dx.toStringAsFixed(3)}, X: \\${_debugPlotEnd?.dy.toStringAsFixed(3)}'),
-                    ],
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('OK'),
-                    ),
-                  ],
-                );
-              },
-            );
-          }
-        } else {
-          // If still not available, try again next frame
-          setState(() {});
-        }
-      });
-    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D47A1),
@@ -569,6 +758,51 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (String value) {
+              setState(() {
+                switch (value) {
+                  case 'comment':
+                    _showComment = !_showComment;
+                    break;
+                  case 'z':
+                    _showZ = !_showZ;
+                    break;
+                  case 'descriptor':
+                    _showDescriptor = !_showDescriptor;
+                    break;
+                  case 'grid_interval':
+                    _showGridIntervalDialog();
+                    break;
+                }
+              });
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              CheckedPopupMenuItem<String>(
+                value: 'comment',
+                checked: _showComment,
+                child: const Text('Show Comments'),
+              ),
+              CheckedPopupMenuItem<String>(
+                value: 'z',
+                checked: _showZ,
+                child: const Text('Show Z Values'),
+              ),
+              CheckedPopupMenuItem<String>(
+                value: 'descriptor',
+                checked: _showDescriptor,
+                child: const Text('Show Descriptors'),
+              ),
+              const PopupMenuDivider(),
+              const PopupMenuItem<String>(
+                value: 'grid_interval',
+                child: Text('Set Grid Interval'),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -700,6 +934,46 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showGridIntervalDialog() {
+    final controller = TextEditingController(text: _gridSpacing.toString());
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Set Grid Interval'),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            autofocus: true,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+            decoration:
+                const InputDecoration(labelText: 'Grid Spacing (meters)'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                final value = int.tryParse(controller.text);
+                if (value != null && value > 0) {
+                  setState(() {
+                    _gridSpacing = value.toDouble();
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
