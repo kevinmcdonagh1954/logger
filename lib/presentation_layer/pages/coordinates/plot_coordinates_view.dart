@@ -189,6 +189,21 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   // Store original bounds for clamping pan
   double? _origMinY, _origMaxY, _origMinX, _origMaxX;
 
+  // Add zoom box state variables
+  bool _isZoomBoxMode = false;
+  Offset? _zoomBoxStart;
+  Offset? _zoomBoxEnd;
+
+  // Add minimum zoom box size (in pixels)
+  static const double _minZoomBoxSize = 20.0;
+
+  // Add zoom box validation state
+  bool _isZoomBoxValid = true;
+
+  // Add local positions for zoom box overlay
+  Offset? _zoomBoxStartLocal;
+  Offset? _zoomBoxEndLocal;
+
   @override
   void initState() {
     super.initState();
@@ -253,12 +268,26 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   void _resetView() {
     _panTimer?.cancel();
     setState(() {
+      // Reset to original bounds
+      if (_origMinY != null &&
+          _origMaxY != null &&
+          _origMinX != null &&
+          _origMaxX != null) {
+        _minY = _origMinY!;
+        _maxY = _origMaxY!;
+        _minX = _origMinX!;
+        _maxX = _origMaxX!;
+      }
       _currentScale = 1.0;
       _currentOffset = Offset.zero;
       _tempOffset = Offset.zero;
       _isPanning = false;
       _snapshot = null;
       _panOffset = Offset.zero;
+      _isZoomBoxMode = false;
+      _zoomBoxStart = null;
+      _zoomBoxEnd = null;
+      _isZoomBoxValid = true;
     });
   }
 
@@ -474,6 +503,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
             onPressed: () {
               setState(() {
                 _showGrid = !_showGrid;
+                if (_isZoomBoxMode) _isZoomBoxMode = false;
               });
             },
             tooltip: 'Toggle Grid',
@@ -482,6 +512,9 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           IconButton(
             icon: const Icon(Icons.color_lens, color: Colors.white),
             onPressed: () {
+              setState(() {
+                if (_isZoomBoxMode) _isZoomBoxMode = false;
+              });
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
@@ -507,27 +540,29 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           ),
           const SizedBox(width: 8),
           IconButton(
-            icon: const Icon(Icons.zoom_out_map, color: Colors.white),
-            onPressed: _resetView,
-            tooltip: 'Reset View',
+            icon: Icon(Icons.zoom_in,
+                color: _isZoomBoxMode ? Colors.blue : Colors.white),
+            onPressed: () {
+              setState(() {
+                _isZoomBoxMode = !_isZoomBoxMode;
+                _zoomBoxStart = null;
+                _zoomBoxEnd = null;
+                _isZoomBoxValid = true;
+              });
+            },
+            tooltip:
+                'Zoom Box Mode - Click and drag to select an area to zoom into',
           ),
           const SizedBox(width: 8),
           IconButton(
-            icon: const Icon(Icons.remove, color: Colors.white),
-            onPressed: _currentScale > _minScale ? _zoomOut : null,
-            tooltip: 'Zoom Out',
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              '${(_currentScale * 100).toInt()}%',
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: _currentScale < _maxScale ? _zoomIn : null,
-            tooltip: 'Zoom In',
+            icon: const Icon(Icons.zoom_out_map, color: Colors.white),
+            onPressed: () {
+              setState(() {
+                if (_isZoomBoxMode) _isZoomBoxMode = false;
+              });
+              _resetView();
+            },
+            tooltip: 'Reset View',
           ),
         ],
       ),
@@ -535,6 +570,27 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   }
 
   void _handlePanStart(DragStartDetails details) async {
+    if (_isZoomBoxMode) {
+      final RenderBox? renderBox =
+          _plotKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        final localPosition = renderBox.globalToLocal(details.globalPosition);
+        // Check if the start position is within the plot area
+        if (localPosition.dx >= 16 &&
+            localPosition.dx <= renderBox.size.width - 16 &&
+            localPosition.dy >= 16 &&
+            localPosition.dy <= renderBox.size.height - 16) {
+          setState(() {
+            _zoomBoxStart = details.globalPosition;
+            _zoomBoxEnd = null;
+            _zoomBoxStartLocal = localPosition;
+            _zoomBoxEndLocal = null;
+            _isZoomBoxValid = true;
+          });
+        }
+      }
+      return;
+    }
     if (_currentScale == 1.0) return;
     print('PAN START');
     final boundary =
@@ -576,6 +632,33 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   }
 
   void _handlePanUpdate(DragUpdateDetails details) {
+    if (_isZoomBoxMode) {
+      final RenderBox? renderBox =
+          _plotKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        final localPosition = renderBox.globalToLocal(details.globalPosition);
+        // Constrain the end position to the plot area
+        final constrainedX =
+            localPosition.dx.clamp(16.0, renderBox.size.width - 16.0);
+        final constrainedY =
+            localPosition.dy.clamp(16.0, renderBox.size.height - 16.0);
+        final constrainedGlobal =
+            renderBox.localToGlobal(Offset(constrainedX, constrainedY));
+        setState(() {
+          _zoomBoxEnd = constrainedGlobal;
+          _zoomBoxEndLocal = Offset(constrainedX, constrainedY);
+          // Check if the zoom box is large enough
+          if (_zoomBoxStartLocal != null) {
+            final width = (_zoomBoxEndLocal!.dx - _zoomBoxStartLocal!.dx).abs();
+            final height =
+                (_zoomBoxEndLocal!.dy - _zoomBoxStartLocal!.dy).abs();
+            _isZoomBoxValid =
+                width >= _minZoomBoxSize && height >= _minZoomBoxSize;
+          }
+        });
+      }
+      return;
+    }
     if (_currentScale == 1.0) return;
     if (!_isPanning) return;
     setState(() {
@@ -590,6 +673,62 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   }
 
   void _handlePanEnd(DragEndDetails details) {
+    if (_isZoomBoxMode &&
+        _zoomBoxStart != null &&
+        _zoomBoxEnd != null &&
+        _isZoomBoxValid) {
+      final RenderBox? renderBox =
+          _plotKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        final startPlot = PlotCoordinateUtils.screenToPlotYX(
+          globalPosition: _zoomBoxStart!,
+          renderBox: renderBox,
+          viewMinY: _viewMinY,
+          viewMaxY: _viewMaxY,
+          viewMinX: _viewMinX,
+          viewMaxX: _viewMaxX,
+        );
+        final endPlot = PlotCoordinateUtils.screenToPlotYX(
+          globalPosition: _zoomBoxEnd!,
+          renderBox: renderBox,
+          viewMinY: _viewMinY,
+          viewMaxY: _viewMaxY,
+          viewMinX: _viewMinX,
+          viewMaxX: _viewMaxX,
+        );
+        // Calculate the plot boundaries based on the zoom box
+        final minY = min(startPlot.dx, endPlot.dx);
+        final maxY = max(startPlot.dx, endPlot.dx);
+        final minX = min(startPlot.dy, endPlot.dy);
+        final maxX = max(startPlot.dy, endPlot.dy);
+        // Calculate the center of the zoom box
+        final centerY = (minY + maxY) / 2;
+        final centerX = (minX + maxX) / 2;
+        // Calculate the range of the zoom box
+        final rangeY = maxY - minY;
+        final rangeX = maxX - minX;
+        // Use the larger range for both axes to maintain square proportions
+        final maxRange = max(rangeY, rangeX);
+        // Calculate new boundaries centered on the zoom box
+        final newMinY = centerY - maxRange / 2;
+        final newMaxY = centerY + maxRange / 2;
+        final newMinX = centerX - maxRange / 2;
+        final newMaxX = centerX + maxRange / 2;
+        setState(() {
+          _minY = newMinY;
+          _maxY = newMaxY;
+          _minX = newMinX;
+          _maxX = newMaxX;
+          // Don't reset zoom box mode, just clear the current box
+          _zoomBoxStart = null;
+          _zoomBoxEnd = null;
+          _zoomBoxStartLocal = null;
+          _zoomBoxEndLocal = null;
+          _isZoomBoxValid = true;
+        });
+      }
+      return;
+    }
     if (_currentScale == 1.0) return;
     print('PAN END');
     if (!_isPanning) {
@@ -837,6 +976,42 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                                   key: _plotKey,
                                   child: _buildPlotWidget(),
                                 ),
+                              if (_isZoomBoxMode &&
+                                  _zoomBoxStartLocal != null &&
+                                  _zoomBoxEndLocal != null)
+                                Positioned(
+                                  left: min(_zoomBoxStartLocal!.dx,
+                                      _zoomBoxEndLocal!.dx),
+                                  top: min(_zoomBoxStartLocal!.dy,
+                                      _zoomBoxEndLocal!.dy),
+                                  child: Container(
+                                    width: (_zoomBoxEndLocal!.dx -
+                                            _zoomBoxStartLocal!.dx)
+                                        .abs(),
+                                    height: (_zoomBoxEndLocal!.dy -
+                                            _zoomBoxStartLocal!.dy)
+                                        .abs(),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                      color: Colors.grey.withOpacity(0.3),
+                                    ),
+                                    child: !_isZoomBoxValid
+                                        ? Center(
+                                            child: Text(
+                                              'Too small',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          )
+                                        : null,
+                                  ),
+                                ),
                             ],
                           ),
                         ),
@@ -1037,6 +1212,7 @@ class _ColorPickerState extends State<ColorPicker> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: colors.map((color) {
+        final bool isSelected = _currentColor == color;
         return GestureDetector(
           onTap: () {
             setState(() {
@@ -1045,14 +1221,15 @@ class _ColorPickerState extends State<ColorPicker> {
             widget.onColorChanged(color);
           },
           child: Container(
-            width: 40,
-            height: 40,
+            width: 32,
+            height: 32,
+            margin: const EdgeInsets.symmetric(horizontal: 2),
             decoration: BoxDecoration(
               color: color,
-              shape: BoxShape.circle,
+              shape: BoxShape.rectangle,
               border: Border.all(
-                color: _currentColor == color ? Colors.white : Colors.black,
-                width: 2,
+                color: isSelected ? Colors.orange : Colors.black,
+                width: isSelected ? 3 : 1,
               ),
             ),
           ),
