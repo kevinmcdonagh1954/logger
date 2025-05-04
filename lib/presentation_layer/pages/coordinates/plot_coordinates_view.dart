@@ -125,12 +125,12 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   Offset _currentOffset = Offset.zero;
 
   // Zoom constants
-  static const double _minScale = 1.0;
+  static const double _minScale = 0.1;
   static const double _maxScale = 10000.0;
   static const double _zoomIncrement = 1.2;
 
-  // Border constant - 25% of the range
-  static const double _borderPercentage = 0.25;
+  // Border constant - 50% of the range for more padding
+  static const double _borderPercentage = 0.5;
 
   // Add temporary offset for smooth panning
   Offset _tempOffset = Offset.zero;
@@ -296,7 +296,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     final newScale =
         (_currentScale * _zoomIncrement).clamp(_minScale, _maxScale);
     if (newScale != _currentScale) {
-      _zoomDebounceTimer = Timer(const Duration(milliseconds: 200), () {
+      _zoomDebounceTimer = Timer(const Duration(milliseconds: 250), () {
         setState(() {
           _currentScale = newScale;
           _constrainOffset();
@@ -310,7 +310,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     final newScale =
         (_currentScale / _zoomIncrement).clamp(_minScale, _maxScale);
     if (newScale != _currentScale) {
-      _zoomDebounceTimer = Timer(const Duration(milliseconds: 200), () {
+      _zoomDebounceTimer = Timer(const Duration(milliseconds: 250), () {
         setState(() {
           _currentScale = newScale;
           _constrainOffset();
@@ -324,11 +324,17 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     final visibleRangeX = (_maxX - _minX) / _currentScale;
     final visibleRange = max(visibleRangeY, visibleRangeX);
 
-    final maxOffsetY = (_maxY - _minY - visibleRange) / 2;
-    final maxOffsetX = (_maxX - _minX - visibleRange) / 2;
+    double maxOffsetY = (_maxY - _minY - visibleRange) / 2;
+    double maxOffsetX = (_maxX - _minX - visibleRange) / 2;
 
-    _currentOffset = Offset(_currentOffset.dx.clamp(-maxOffsetY, maxOffsetY),
-        _currentOffset.dy.clamp(-maxOffsetX, maxOffsetX));
+    // Ensure offsets are not negative or NaN
+    if (maxOffsetY.isNaN || maxOffsetY < 0) maxOffsetY = 0;
+    if (maxOffsetX.isNaN || maxOffsetX < 0) maxOffsetX = 0;
+
+    _currentOffset = Offset(
+      _currentOffset.dx.clamp(-maxOffsetY, maxOffsetY),
+      _currentOffset.dy.clamp(-maxOffsetX, maxOffsetX),
+    );
   }
 
   Future<void> _editPoint(Point point) async {
@@ -540,6 +546,17 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           ),
           const SizedBox(width: 8),
           IconButton(
+            icon: const Icon(Icons.remove, color: Colors.white),
+            onPressed: _zoomOut,
+            tooltip: 'Zoom Out',
+          ),
+          IconButton(
+            icon: const Icon(Icons.add, color: Colors.white),
+            onPressed: _zoomIn,
+            tooltip: 'Zoom In',
+          ),
+          const SizedBox(width: 8),
+          IconButton(
             icon: Icon(Icons.zoom_in,
                 color: _isZoomBoxMode ? Colors.blue : Colors.white),
             onPressed: () {
@@ -547,6 +564,8 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                 _isZoomBoxMode = !_isZoomBoxMode;
                 _zoomBoxStart = null;
                 _zoomBoxEnd = null;
+                _zoomBoxStartLocal = null;
+                _zoomBoxEndLocal = null;
                 _isZoomBoxValid = true;
               });
             },
@@ -591,44 +610,9 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       }
       return;
     }
-    if (_currentScale == 1.0) return;
-    print('PAN START');
-    final boundary =
-        _plotKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-    final RenderBox? renderBox =
-        _plotKey.currentContext?.findRenderObject() as RenderBox?;
-    if (boundary != null && renderBox != null) {
-      _lastRenderBox = renderBox; // Store for pan end
-      final image = await boundary.toImage();
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (byteData != null && mounted) {
-        // Store the view bounds at pan start
-        _panStartViewMinY = _viewMinY;
-        _panStartViewMaxY = _viewMaxY;
-        _panStartViewMinX = _viewMinX;
-        _panStartViewMaxX = _viewMaxX;
-        final plotYX = PlotCoordinateUtils.screenToPlotYX(
-          globalPosition: details.globalPosition,
-          renderBox: renderBox,
-          viewMinY: _panStartViewMinY!,
-          viewMaxY: _panStartViewMaxY!,
-          viewMinX: _panStartViewMinX!,
-          viewMaxX: _panStartViewMaxX!,
-        );
-        print('Snapshot taken, panOffset reset, _isPanning set to true');
-        setState(() {
-          _snapshot = byteData.buffer.asUint8List();
-          _panOffset = Offset.zero;
-          _isPanning = true;
-          _debugPanStart = details.globalPosition;
-          _debugPanEnd = null;
-          _debugPlotStart = plotYX;
-          _debugPlotEnd = null;
-          _panStartScreen = details.globalPosition;
-          _panStartPlotYX = plotYX;
-        });
-      }
-    }
+    // Do not allow panning
+    // if (_currentScale == 1.0) return;
+    // ... rest of pan code is now disabled ...
   }
 
   void _handlePanUpdate(DragUpdateDetails details) {
@@ -659,17 +643,10 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       }
       return;
     }
-    if (_currentScale == 1.0) return;
-    if (!_isPanning) return;
-    setState(() {
-      _panOffset += details.delta;
-      _tempOffset = Offset(
-        _panOffset.dx / (_currentScale * 100),
-        _panOffset.dy / (_currentScale * 100),
-      );
-    });
-    print(
-        'PAN UPDATE: panOffset=[38;5;2m$_panOffset[0m, tempOffset=$_tempOffset');
+    // Do not allow panning
+    // if (_currentScale == 1.0) return;
+    // if (!_isPanning) return;
+    // ... rest of pan code is now disabled ...
   }
 
   void _handlePanEnd(DragEndDetails details) {
@@ -719,7 +696,6 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           _maxY = newMaxY;
           _minX = newMinX;
           _maxX = newMaxX;
-          // Don't reset zoom box mode, just clear the current box
           _zoomBoxStart = null;
           _zoomBoxEnd = null;
           _zoomBoxStartLocal = null;
@@ -729,145 +705,8 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       }
       return;
     }
-    if (_currentScale == 1.0) return;
-    print('PAN END');
-    if (!_isPanning) {
-      print('Pan end called but _isPanning is false');
-      return;
-    }
-    // Calculate the screen delta
-    final Offset? screenStart = _panStartScreen;
-    final Offset? plotStart = _panStartPlotYX;
-    final Offset screenEnd =
-        _debugPanStart != null ? _debugPanStart! + _panOffset : Offset.zero;
-    if (screenStart != null &&
-        plotStart != null &&
-        _plotKey.currentContext != null &&
-        _panStartViewMinY != null &&
-        _panStartViewMaxY != null &&
-        _panStartViewMinX != null &&
-        _panStartViewMaxX != null) {
-      final RenderBox? renderBox =
-          _plotKey.currentContext!.findRenderObject() as RenderBox?;
-      if (renderBox != null) {
-        // Find the plot coordinates under the finger at pan end
-        final plotEnd = PlotCoordinateUtils.screenToPlotYX(
-          globalPosition: screenEnd,
-          renderBox: renderBox,
-          viewMinY: _panStartViewMinY!,
-          viewMaxY: _panStartViewMaxY!,
-          viewMinX: _panStartViewMinX!,
-          viewMaxX: _panStartViewMaxX!,
-        );
-        // Compute the plot delta
-        final plotDelta = plotEnd - plotStart;
-        final pixelShift = screenEnd - screenStart;
-        // Clamp pan so new view does not exceed original bounds
-        double newMinY = _minY + plotDelta.dx;
-        double newMaxY = _maxY + plotDelta.dx;
-        double newMinX = _minX + plotDelta.dy;
-        double newMaxX = _maxX + plotDelta.dy;
-        if (_origMinY != null &&
-            _origMaxY != null &&
-            _origMinX != null &&
-            _origMaxX != null) {
-          final viewHeight = newMaxY - newMinY;
-          final viewWidth = newMaxX - newMinX;
-          // Clamp Y
-          if (newMinY < _origMinY!) {
-            newMinY = _origMinY!;
-            newMaxY = newMinY + viewHeight;
-          }
-          if (newMaxY > _origMaxY!) {
-            newMaxY = _origMaxY!;
-            newMinY = newMaxY - viewHeight;
-          }
-          // Clamp X
-          if (newMinX < _origMinX!) {
-            newMinX = _origMinX!;
-            newMaxX = newMinX + viewWidth;
-          }
-          if (newMaxX > _origMaxX!) {
-            newMaxX = _origMaxX!;
-            newMinX = newMaxX - viewWidth;
-          }
-        }
-        // Shift the plot boundaries by this delta
-        setState(() {
-          _minY = newMinY;
-          _maxY = newMaxY;
-          _minX = newMinX;
-          _maxX = newMaxX;
-          _currentOffset = Offset.zero;
-          _tempOffset = Offset.zero;
-          _isPanning = false;
-          _snapshot = null;
-          _panOffset = Offset.zero;
-          _lastRenderBox = null;
-          _panStartScreen = null;
-          _panStartPlotYX = null;
-          _panStartViewMinY = null;
-          _panStartViewMaxY = null;
-          _panStartViewMinX = null;
-          _panStartViewMaxX = null;
-          _debugPanEnd = screenEnd;
-          _debugPlotEnd = plotEnd;
-        });
-        // Always show debug dialog after pan end for troubleshooting
-        if (context.mounted) {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Pan Debug Info'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        'Start screen coords:  ${screenStart.dx.toStringAsFixed(2)}, ${screenStart.dy.toStringAsFixed(2)}'),
-                    Text(
-                        'End screen coords:    ${screenEnd.dx.toStringAsFixed(2)}, ${screenEnd.dy.toStringAsFixed(2)}'),
-                    const SizedBox(height: 8),
-                    Text(
-                        'Start plot Y/X:  Y: ${plotStart.dx.toStringAsFixed(3)}, X: ${plotStart.dy.toStringAsFixed(3)}'),
-                    Text(
-                        'End plot Y/X:    Y: ${plotEnd.dx.toStringAsFixed(3)}, X: ${plotEnd.dy.toStringAsFixed(3)}'),
-                    const SizedBox(height: 8),
-                    Text('Pixel shift:'),
-                    Text(
-                        '  dx: ${pixelShift.dx.toStringAsFixed(2)}, dy: ${pixelShift.dy.toStringAsFixed(2)}'),
-                    Text('Coord shift:'),
-                    Text(
-                        '  dX: ${(plotDelta.dx).toStringAsFixed(4)}, dY: ${(plotDelta.dy).toStringAsFixed(4)}'),
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-        return;
-      }
-    }
-    // fallback: just reset pan state
-    setState(() {
-      _isPanning = false;
-      _snapshot = null;
-      _panOffset = Offset.zero;
-      _lastRenderBox = null;
-      _panStartScreen = null;
-      _panStartPlotYX = null;
-      _panStartViewMinY = null;
-      _panStartViewMaxY = null;
-      _panStartViewMinX = null;
-      _panStartViewMaxX = null;
-    });
+    // Do not allow panning
+    // ... rest of pan end code is now disabled ...
   }
 
   void _handleTapUp(TapUpDetails details) {
