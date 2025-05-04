@@ -130,7 +130,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   static const double _zoomIncrement = 1.2;
 
   // Border constant - 50% of the range for more padding
-  static const double _borderPercentage = 0.5;
+  static const double _borderPercentage = 0.1;
 
   // Add temporary offset for smooth panning
   Offset _tempOffset = Offset.zero;
@@ -207,14 +207,12 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   @override
   void initState() {
     super.initState();
-    _jobService.points.addListener(_loadPoints);
     _loadPoints();
   }
 
   @override
   void dispose() {
     _panTimer?.cancel();
-    _jobService.points.removeListener(_loadPoints);
     super.dispose();
   }
 
@@ -344,17 +342,52 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         jobService: _jobService,
         coordinateFormat: 'YXZ',
         existingPoint: point,
-        onSuccess: () {
+        onDelete: () async {
+          // Remove the point and replot in place
+          await _jobService.deletePoint(point.id!);
           if (mounted) {
-            _loadPoints();
+            setState(() {
+              _points.removeWhere((p) => p.id == point.id);
+            });
           }
         },
       );
 
       if (updatedPoint != null && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Point updated successfully')),
-        );
+        // If only name or Z changed, just replot in place
+        if (updatedPoint.y == point.y && updatedPoint.x == point.x) {
+          setState(() {
+            final idx = _points.indexWhere((p) => p.id == updatedPoint.id);
+            if (idx != -1) {
+              _points[idx] = updatedPoint;
+            }
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Point updated successfully')),
+          );
+          return;
+        }
+        // If Y or X changed, check if new point is within current bounds
+        final inBounds = updatedPoint.y >= _viewMinY &&
+            updatedPoint.y <= _viewMaxY &&
+            updatedPoint.x >= _viewMinX &&
+            updatedPoint.x <= _viewMaxX;
+        setState(() {
+          final idx = _points.indexWhere((p) => p.id == updatedPoint.id);
+          if (idx != -1) {
+            _points[idx] = updatedPoint;
+          }
+        });
+        if (!inBounds) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Point moved out of view')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Point updated successfully')),
+          );
+        }
+        return;
       }
     } catch (e) {
       if (mounted) {
@@ -788,6 +821,34 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
             color: Colors.black,
             child: GestureDetector(
               onTapUp: _handleTapUp,
+              onDoubleTapDown: (details) {
+                final RenderBox? renderBox =
+                    _plotKey.currentContext?.findRenderObject() as RenderBox?;
+                if (renderBox == null) return;
+                final plotYX = PlotCoordinateUtils.screenToPlotYX(
+                  globalPosition: details.globalPosition,
+                  renderBox: renderBox,
+                  viewMinY: _viewMinY,
+                  viewMaxY: _viewMaxY,
+                  viewMinX: _viewMinX,
+                  viewMaxX: _viewMaxX,
+                );
+                // Find closest point and open edit dialog
+                Point? closest;
+                double minDistance = double.infinity;
+                for (var point in _points) {
+                  final dy = point.y - plotYX.dx;
+                  final dx = point.x - plotYX.dy;
+                  final distance = dx * dx + dy * dy;
+                  if (distance < minDistance) {
+                    minDistance = distance;
+                    closest = point;
+                  }
+                }
+                if (closest != null) {
+                  _editPoint(closest);
+                }
+              },
               onPanStart: _handlePanStart,
               onPanUpdate: _handlePanUpdate,
               onPanEnd: _handlePanEnd,

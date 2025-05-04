@@ -329,16 +329,24 @@ class _CoordinatesViewState extends State<CoordinatesView> {
                         jobService: locator<JobService>(),
                         coordinateFormat: _viewModel.coordinateFormat.value,
                         existingPoint: point,
-                        onSuccess: () {
+                        onDelete: () async {
+                          await _viewModel.deletePoint(point.id!);
                           if (!context.mounted) return;
                           setState(() {
                             _updateFilteredPoints();
                           });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Point deleted successfully')),
+                          );
                         },
                       );
 
                       if (updatedPoint != null) {
                         if (!context.mounted) return;
+                        setState(() {
+                          _updateFilteredPoints();
+                        });
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(l10n.success)),
                         );

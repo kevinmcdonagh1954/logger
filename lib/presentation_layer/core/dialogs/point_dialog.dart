@@ -10,6 +10,7 @@ class PointDialog extends StatefulWidget {
   final String coordinateFormat;
   final Point? existingPoint;
   final VoidCallback? onSuccess;
+  final VoidCallback? onDelete;
   final bool allowUseWithoutSaving;
   final String? initialComment;
 
@@ -19,6 +20,7 @@ class PointDialog extends StatefulWidget {
     required this.coordinateFormat,
     this.existingPoint,
     this.onSuccess,
+    this.onDelete,
     this.allowUseWithoutSaving = false,
     this.initialComment,
   });
@@ -29,6 +31,7 @@ class PointDialog extends StatefulWidget {
     required String coordinateFormat,
     Point? existingPoint,
     VoidCallback? onSuccess,
+    VoidCallback? onDelete,
     bool allowUseWithoutSaving = false,
     String? initialComment,
   }) {
@@ -39,6 +42,7 @@ class PointDialog extends StatefulWidget {
         coordinateFormat: coordinateFormat,
         existingPoint: existingPoint,
         onSuccess: onSuccess,
+        onDelete: onDelete,
         allowUseWithoutSaving: allowUseWithoutSaving,
         initialComment: initialComment,
       ),
@@ -308,6 +312,19 @@ class _PointDialogState extends State<PointDialog> {
         ),
       ),
       actions: [
+        if (widget.existingPoint != null && widget.onDelete != null)
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              await Future.delayed(const Duration(milliseconds: 100));
+              widget.onDelete!();
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.red[50],
+              foregroundColor: Colors.red,
+            ),
+            child: Text(l10n.delete),
+          ),
         TextButton(
           onPressed: () => Navigator.pop(context),
           style: TextButton.styleFrom(
