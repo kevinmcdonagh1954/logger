@@ -6,9 +6,6 @@ import '../../../domain_layer/coordinates/point.dart';
 import '../../core/dialogs/point_dialog.dart';
 import 'dart:math';
 import 'dart:async';
-import 'dart:ui' as ui;
-import 'dart:typed_data';
-import 'package:flutter/rendering.dart';
 import '../../core/plot_coordinate_utils.dart';
 import 'package:flutter/services.dart';
 
@@ -36,6 +33,13 @@ class PointWithLabelsPainter extends FlDotPainter {
 
   @override
   void draw(Canvas canvas, FlSpot spot, Offset offset) {
+    // Save the canvas state
+    canvas.save();
+    // Clip to the chart area (assuming 0,0 is top-left and chart is square with padding 16)
+    const chartRect =
+        Rect.fromLTWH(0, 0, 360, 360); // You may want to pass actual size
+    canvas.clipRect(chartRect);
+
     // Draw the point
     final paint = Paint()
       ..color = color
@@ -76,6 +80,8 @@ class PointWithLabelsPainter extends FlDotPainter {
         offset + Offset(-textPainter.width / 2, 8),
       );
     }
+    // Restore the canvas state
+    canvas.restore();
   }
 
   @override
@@ -119,6 +125,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   bool _showComment = false;
   bool _showZ = false;
   bool _showDescriptor = false;
+  int _zDecimals = 2; // Z decimal places, default 3
 
   // View state
   double _currentScale = 1.0;
@@ -145,10 +152,8 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   Offset _panOffset = Offset.zero;
 
   // Store the last valid RenderBox for use in pan end
-  RenderBox? _lastRenderBox;
 
   // Store the pending pan end screen position for post-frame recentering
-  Offset? _pendingPanEndScreenPos;
 
   // Getters for view boundaries
 
@@ -170,18 +175,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       (_maxY - _minY - (_maxY - _minY) / _currentScale) / 2 -
       (_currentOffset.dx + _tempOffset.dx);
 
-  Offset? _debugPanStart;
-  Offset? _debugPanEnd;
-  Offset? _debugPlotStart;
-  Offset? _debugPlotEnd;
-
   // Add fields to store pan start info
-  Offset? _panStartScreen;
-  Offset? _panStartPlotYX;
-  double? _panStartViewMinY;
-  double? _panStartViewMaxY;
-  double? _panStartViewMinX;
-  double? _panStartViewMaxX;
 
   // Add a timer for zoom debounce
   Timer? _zoomDebounceTimer;
@@ -286,6 +280,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       _zoomBoxStart = null;
       _zoomBoxEnd = null;
       _isZoomBoxValid = true;
+      _clampViewToBounds();
     });
   }
 
@@ -298,6 +293,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         setState(() {
           _currentScale = newScale;
           _constrainOffset();
+          _clampViewToBounds();
         });
       });
     }
@@ -312,6 +308,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         setState(() {
           _currentScale = newScale;
           _constrainOffset();
+          _clampViewToBounds();
         });
       });
     }
@@ -333,6 +330,19 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       _currentOffset.dx.clamp(-maxOffsetY, maxOffsetY),
       _currentOffset.dy.clamp(-maxOffsetX, maxOffsetX),
     );
+  }
+
+  void _clampViewToBounds() {
+    // Clamp the view extents to the original bounds
+    if (_origMinX != null &&
+        _origMaxX != null &&
+        _origMinY != null &&
+        _origMaxY != null) {
+      _minX = _minX.clamp(_origMinX!, _origMaxX!);
+      _maxX = _maxX.clamp(_origMinX!, _origMaxX!);
+      _minY = _minY.clamp(_origMinY!, _origMaxY!);
+      _maxY = _maxY.clamp(_origMinY!, _origMaxY!);
+    }
   }
 
   Future<void> _editPoint(Point point) async {
@@ -398,94 +408,6 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     }
   }
 
-  Widget _buildPointDetails(Point point) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (_showComment && point.comment.isNotEmpty)
-          Text('Comment: ${point.comment}'),
-        Text('Y: ${point.y.toStringAsFixed(3)}'),
-        Text('X: ${point.x.toStringAsFixed(3)}'),
-        if (_showZ) Text('Z: ${point.z.toStringAsFixed(3)}'),
-        if (_showDescriptor && point.descriptor != null)
-          Text('Descriptor: ${point.descriptor}'),
-      ],
-    );
-  }
-
-  Future<void> _handleTap(double y, double x) async {
-    final bool? proceed = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Tapped Location'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Y: ${y.toStringAsFixed(3)}'),
-              Text('X: ${x.toStringAsFixed(3)}'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Find Closest Point'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (proceed != true || !mounted) return;
-
-    Point? closest;
-    double minDistance = double.infinity;
-
-    for (var point in _points) {
-      final dy = point.y - y;
-      final dx = point.x - x;
-      final distance = dx * dx + dy * dy;
-
-      if (distance < minDistance) {
-        minDistance = distance;
-        closest = point;
-      }
-    }
-
-    if (!mounted) return;
-
-    if (closest != null) {
-      await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Found Point'),
-            content: _buildPointDetails(closest!),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Close'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _editPoint(closest!);
-                },
-                child: const Text('Edit'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
-
   List<Point> get _visiblePoints {
     if (_currentScale == 1.0 && _currentOffset == Offset.zero) {
       return _points;
@@ -513,14 +435,32 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   }
 
   ScatterSpot _buildSpot(Point point) {
+    // Format label as {comment/descriptor} if both are shown
+    String? label;
+    if (_showComment &&
+        _showDescriptor &&
+        point.descriptor != null &&
+        point.descriptor!.isNotEmpty) {
+      if (point.comment.isNotEmpty) {
+        label = '${point.comment}/${point.descriptor}';
+      } else {
+        label = '{${point.descriptor}}';
+      }
+    } else if (_showComment && point.comment.isNotEmpty) {
+      label = point.comment;
+    } else if (_showDescriptor &&
+        point.descriptor != null &&
+        point.descriptor!.isNotEmpty) {
+      label = point.descriptor;
+    }
     return ScatterSpot(
       -point.y,
       -point.x,
       dotPainter: PointWithLabelsPainter(
         color: _pointColor,
-        comment: point.comment,
-        elevation: point.z.toStringAsFixed(3),
-        showComment: _showComment,
+        comment: label,
+        elevation: point.z.toStringAsFixed(_zDecimals),
+        showComment: _showComment || _showDescriptor,
         showZ: _showZ,
       ),
     );
@@ -743,19 +683,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   }
 
   void _handleTapUp(TapUpDetails details) {
-    if (_isPanning) return;
-    final RenderBox? renderBox =
-        _plotKey.currentContext?.findRenderObject() as RenderBox?;
-    if (renderBox == null) return;
-    final plotYX = PlotCoordinateUtils.screenToPlotYX(
-      globalPosition: details.globalPosition,
-      renderBox: renderBox,
-      viewMinY: _viewMinY,
-      viewMaxY: _viewMaxY,
-      viewMinX: _viewMinX,
-      viewMaxX: _viewMaxX,
-    );
-    _handleTap(plotYX.dx, plotYX.dy);
+    // No-op (remove test dialog)
   }
 
   @override
@@ -778,14 +706,26 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                   case 'comment':
                     _showComment = !_showComment;
                     break;
-                  case 'z':
-                    _showZ = !_showZ;
-                    break;
                   case 'descriptor':
                     _showDescriptor = !_showDescriptor;
                     break;
+                  case 'z':
+                    _showZ = !_showZ;
+                    break;
                   case 'grid_interval':
                     _showGridIntervalDialog();
+                    break;
+                  case 'z_decimals_0':
+                    _zDecimals = 0;
+                    break;
+                  case 'z_decimals_1':
+                    _zDecimals = 1;
+                    break;
+                  case 'z_decimals_2':
+                    _zDecimals = 2;
+                    break;
+                  case 'z_decimals_3':
+                    _zDecimals = 3;
                     break;
                 }
               });
@@ -797,15 +737,57 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                 child: const Text('Show Comments'),
               ),
               CheckedPopupMenuItem<String>(
-                value: 'z',
-                checked: _showZ,
-                child: const Text('Show Z Values'),
-              ),
-              CheckedPopupMenuItem<String>(
                 value: 'descriptor',
                 checked: _showDescriptor,
                 child: const Text('Show Descriptors'),
               ),
+              CheckedPopupMenuItem<String>(
+                value: 'z',
+                checked: _showZ,
+                child: const Text('Show Z Values'),
+              ),
+              if (_showZ) ...[
+                PopupMenuItem<String>(
+                  value: 'z_decimals_0',
+                  child: Row(
+                    children: [
+                      Icon(_zDecimals == 0 ? Icons.check : null),
+                      const SizedBox(width: 8),
+                      const Text('Z Decimals: 0'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: 'z_decimals_1',
+                  child: Row(
+                    children: [
+                      Icon(_zDecimals == 1 ? Icons.check : null),
+                      const SizedBox(width: 8),
+                      const Text('Z Decimals: 1'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: 'z_decimals_2',
+                  child: Row(
+                    children: [
+                      Icon(_zDecimals == 2 ? Icons.check : null),
+                      const SizedBox(width: 8),
+                      const Text('Z Decimals: 2'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: 'z_decimals_3',
+                  child: Row(
+                    children: [
+                      Icon(_zDecimals == 3 ? Icons.check : null),
+                      const SizedBox(width: 8),
+                      const Text('Z Decimals: 3'),
+                    ],
+                  ),
+                ),
+              ],
               const PopupMenuDivider(),
               const PopupMenuItem<String>(
                 value: 'grid_interval',
@@ -899,7 +881,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                                       color: Colors.grey.withOpacity(0.3),
                                     ),
                                     child: !_isZoomBoxValid
-                                        ? Center(
+                                        ? const Center(
                                             child: Text(
                                               'Too small',
                                               style: TextStyle(
@@ -935,88 +917,136 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   Widget _buildPlotWidget() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: ScatterChart(
-        ScatterChartData(
-          scatterSpots:
-              _visiblePoints.map((point) => _buildSpot(point)).toList(),
-          minX: -_viewMaxY,
-          maxX: -_viewMinY,
-          minY: -_viewMaxX,
-          maxY: -_viewMinX,
-          backgroundColor: Colors.black,
-          borderData: FlBorderData(show: false),
-          gridData: FlGridData(
-            show: _showGrid,
-            getDrawingHorizontalLine: (value) => FlLine(
-              color: Colors.white30,
-              strokeWidth: 0.5,
-            ),
-            getDrawingVerticalLine: (value) => FlLine(
-              color: Colors.white30,
-              strokeWidth: 0.5,
-            ),
-            checkToShowHorizontalLine: (value) => value % _gridSpacing == 0,
-            checkToShowVerticalLine: (value) => value % _gridSpacing == 0,
-          ),
-          titlesData: FlTitlesData(
-            show: _showGrid,
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 50,
-                interval: _gridSpacing,
-                getTitlesWidget: (value, meta) {
-                  if (value % _gridSpacing != 0) return const Text('');
-                  return Transform.rotate(
-                    angle: 0,
-                    child: Text(
-                      (-value).toInt().toString(),
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 10,
-                      ),
-                    ),
-                  );
-                },
+      child: Stack(
+        children: [
+          ScatterChart(
+            ScatterChartData(
+              scatterSpots:
+                  _visiblePoints.map((point) => _buildSpot(point)).toList(),
+              minX: -_viewMaxY,
+              maxX: -_viewMinY,
+              minY: -_viewMaxX,
+              maxY: -_viewMinX,
+              backgroundColor: Colors.black,
+              borderData: FlBorderData(
+                show: true,
+                border: Border.all(
+                  color: Colors.white,
+                  width: 1.0,
+                ),
+              ),
+              gridData: FlGridData(
+                show: _showGrid,
+                getDrawingHorizontalLine: (value) => const FlLine(
+                  color: Colors.white30,
+                  strokeWidth: 0.5,
+                ),
+                getDrawingVerticalLine: (value) => const FlLine(
+                  color: Colors.white30,
+                  strokeWidth: 0.5,
+                ),
+                checkToShowHorizontalLine: (value) => value % _gridSpacing == 0,
+                checkToShowVerticalLine: (value) => value % _gridSpacing == 0,
+              ),
+              titlesData: FlTitlesData(
+                show: _showGrid,
+                topTitles:
+                    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                rightTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 50,
+                    interval: _gridSpacing,
+                    getTitlesWidget: (value, meta) {
+                      if (value % _gridSpacing != 0) return const Text('');
+                      return Transform.translate(
+                        offset: const Offset(
+                            4, 0), // Move right labels left further
+                        child: Transform.rotate(
+                          angle: 0,
+                          child: Text(
+                            (-value).toInt().toString(),
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 30,
+                    interval: _gridSpacing,
+                    getTitlesWidget: (value, meta) {
+                      if (value % _gridSpacing != 0) return const Text('');
+                      return Transform.translate(
+                        offset: const Offset(
+                            0, 16), // Move bottom labels down further
+                        child: Transform.rotate(
+                          angle: -pi / 2,
+                          child: Text(
+                            (-value).toInt().toString(),
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                leftTitles:
+                    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              ),
+              scatterTouchData: ScatterTouchData(
+                enabled: true,
+                handleBuiltInTouches: true,
               ),
             ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 30,
-                interval: _gridSpacing,
-                getTitlesWidget: (value, meta) {
-                  if (value % _gridSpacing != 0) return const Text('');
-                  return Transform.rotate(
-                    angle: -pi / 2,
-                    child: Text(
-                      (-value).toInt().toString(),
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 10,
-                      ),
-                    ),
-                  );
-                },
+          ),
+          // Add scale indicator at bottom left
+          Positioned(
+            left: 20,
+            bottom: 20,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                'Scale: ${(_viewMaxY - _viewMinY).toInt()}m',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
               ),
             ),
-            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           ),
-          scatterTouchData: ScatterTouchData(
-            enabled: true,
-            handleBuiltInTouches: true,
-          ),
-        ),
+        ],
       ),
     );
   }
 
   void _showGridIntervalDialog() {
-    final controller = TextEditingController(text: _gridSpacing.toString());
+    final controller =
+        TextEditingController(text: _gridSpacing.toInt().toString());
     showDialog(
       context: context,
       builder: (context) {
+        // Add a post-frame callback to select all text
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          controller.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: controller.text.length,
+          );
+        });
+
         return AlertDialog(
           title: const Text('Set Grid Interval'),
           content: TextField(

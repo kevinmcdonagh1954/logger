@@ -261,7 +261,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'Developing 2nd May 2025',
+                  'Developing 5th May 2025',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.black,
@@ -805,7 +805,6 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     final lon = _usageViewModel.currentPosition!.longitude;
                     final url =
                         'https://www.google.com/maps/search/?api=1&query=$lat,$lon';
-                    print('Google Maps URL: $url');
                     if (await canLaunchUrl(Uri.parse(url))) {
                       await launchUrl(Uri.parse(url));
                     }
@@ -860,7 +859,6 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     final lon = _usageViewModel.currentPosition!.longitude;
                     final url =
                         'https://www.google.com/maps/search/?api=1&query=$lat,$lon';
-                    print('Google Maps URL: $url');
                     if (await canLaunchUrl(Uri.parse(url))) {
                       await launchUrl(Uri.parse(url));
                     }
