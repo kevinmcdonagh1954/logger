@@ -1,5 +1,3 @@
-library jobs_viewmodel;
-
 import 'package:flutter/foundation.dart';
 import '../../../application_layer/jobs/job_service.dart';
 import '../../core/base_viewmodel.dart';

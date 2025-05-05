@@ -1,4 +1,3 @@
-/// Import math for pi constant
 import 'dart:math' show pi;
 
 /// Utility class for angle conversions
