@@ -3,6 +3,8 @@ import '../../../application_layer/jobs/job_service.dart';
 import '../../../application_layer/core/service_locator.dart';
 import '../jobs/jobs_view.dart';
 import '../../l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
 
 class ImportExportView extends StatelessWidget {
   final String jobName;
@@ -53,7 +55,78 @@ class ImportExportView extends StatelessWidget {
                   tooltip: l10n.importCoordinatesHint,
                   onPressed: () async {
                     final jobService = locator<JobService>();
-                    await jobService.importPointsFromCSV();
+
+                    // Show loading dialog
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) => const AlertDialog(
+                        title: Text('Importing Points'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 16),
+                            Text('Please wait...'),
+                          ],
+                        ),
+                      ),
+                    );
+
+                    // Perform import
+                    final result = await jobService.importPointsFromCSV();
+
+                    // Close loading dialog
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
+
+                    // Show completion dialog
+                    if (context.mounted) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(result['success']
+                              ? 'Import Complete'
+                              : 'Import Error'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(result['message']),
+                              if (result['errorCount'] > 0) ...[
+                                const SizedBox(height: 8),
+                                Text(
+                                    'Rejected coordinates: ${result['errorCount']}'),
+                              ],
+                              if (result['errorLogPath'] != null) ...[
+                                const SizedBox(height: 8),
+                                Text(
+                                    'Error log saved to: ${result['errorLogPath']}'),
+                              ],
+                            ],
+                          ),
+                          actions: [
+                            if (result['errorLogPath'] != null)
+                              TextButton.icon(
+                                onPressed: () async {
+                                  final file = File(result['errorLogPath']);
+                                  if (await file.exists()) {
+                                    await launchUrl(
+                                        Uri.file(result['errorLogPath']));
+                                  }
+                                },
+                                icon: const Icon(Icons.open_in_new),
+                                label: const Text('Open Error Log'),
+                              ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   },
                 ),
                 _buildButton(

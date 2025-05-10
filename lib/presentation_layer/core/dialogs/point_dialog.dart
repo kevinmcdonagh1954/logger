@@ -314,14 +314,17 @@ class _PointDialogState extends State<PointDialog> {
       actions: [
         if (widget.existingPoint != null && widget.onDelete != null)
           TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await Future.delayed(const Duration(milliseconds: 100));
-              widget.onDelete!();
-            },
+            onPressed: isDataValid()
+                ? () async {
+                    Navigator.of(context).pop();
+                    await Future.delayed(const Duration(milliseconds: 100));
+                    widget.onDelete!();
+                  }
+                : null,
             style: TextButton.styleFrom(
-              backgroundColor: Colors.red[50],
-              foregroundColor: Colors.red,
+              backgroundColor:
+                  isDataValid() ? Colors.red[50] : Colors.grey[200],
+              foregroundColor: isDataValid() ? Colors.red : Colors.grey,
             ),
             child: Text(l10n.delete),
           ),

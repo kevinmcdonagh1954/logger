@@ -82,7 +82,7 @@ class CSVService {
           if (fields.length < 4) {
             const errorMsg = 'Insufficient columns';
             _logger?.error(_logName, 'Error parsing row $i: $errorMsg');
-            errorLines.add('Row $i: $errorMsg');
+            errorLines.add('Row $i: $errorMsg - Line: "$line"');
             errorCount++;
             continue;
           }
@@ -97,7 +97,7 @@ class CSVService {
             final errorMsg =
                 'Invalid coordinates (Y=${fields[1]}, X=${fields[2]}, Z=${fields[3]})';
             _logger?.error(_logName, 'Error parsing row $i: $errorMsg');
-            errorLines.add('Row $i: $errorMsg');
+            errorLines.add('Row $i: $errorMsg - Line: "$line"');
             errorCount++;
             continue;
           }
@@ -113,7 +113,7 @@ class CSVService {
           points.add(point);
         } catch (e) {
           _logger?.error(_logName, 'Error parsing row $i: $e');
-          errorLines.add('Row $i: $e');
+          errorLines.add('Row $i: $e - Line: "$line"');
           errorCount++;
         }
       }
