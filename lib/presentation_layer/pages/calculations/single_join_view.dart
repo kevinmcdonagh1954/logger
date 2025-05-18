@@ -406,58 +406,66 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return GestureDetector(
-      onTap: _hideSearchResults,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            ),
-          ),
-          title: Text(l10n.joins),
-          backgroundColor: const Color(0xFF0D47A1),
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // First Point Input Row
-              _buildPointInputRow(true),
-              const SizedBox(height: 16),
-              // Coordinates display for first point
-              _buildCoordinatesRow(true),
-              const SizedBox(height: 24),
-
-              // Second Point Input Row
-              _buildPointInputRow(false),
-              const SizedBox(height: 16),
-              // Coordinates display for second point
-              _buildCoordinatesRow(false),
-              const SizedBox(height: 24),
-
-              // Results Section
-              _buildResultRow(l10n.distance, distance),
-              _buildDirectionRow(),
-              _buildResultRow(l10n.heightDiff, heightDiff),
-              _buildResultRow(l10n.slopeDistanceLabel, slopeDistance),
-              _buildResultRow(l10n.gradeSlope, gradeI),
-              _buildResultRow(l10n.gradeSlopePercent, gradePercent),
-              _buildSlopeAngleRow(),
-
-              const SizedBox(height: 24),
-              // Bottom Navigation Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildNavButton(l10n.quit),
-                ],
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+        return false;
+      },
+      child: GestureDetector(
+        onTap: _hideSearchResults,
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const HomePage()),
               ),
-            ],
+            ),
+            title: Text(l10n.joins),
+            backgroundColor: const Color(0xFF0D47A1),
+            foregroundColor: Colors.white,
+            centerTitle: true,
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // First Point Input Row
+                _buildPointInputRow(true),
+                const SizedBox(height: 16),
+                // Coordinates display for first point
+                _buildCoordinatesRow(true),
+                const SizedBox(height: 24),
+
+                // Second Point Input Row
+                _buildPointInputRow(false),
+                const SizedBox(height: 16),
+                // Coordinates display for second point
+                _buildCoordinatesRow(false),
+                const SizedBox(height: 24),
+
+                // Results Section
+                _buildResultRow(l10n.distance, distance),
+                _buildDirectionRow(),
+                _buildResultRow(l10n.heightDiff, heightDiff),
+                _buildResultRow(l10n.slopeDistanceLabel, slopeDistance),
+                _buildResultRow(l10n.gradeSlope, gradeI),
+                _buildResultRow(l10n.gradeSlopePercent, gradePercent),
+                _buildSlopeAngleRow(),
+
+                const SizedBox(height: 24),
+                // Bottom Navigation Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildNavButton(l10n.quit),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

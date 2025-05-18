@@ -556,95 +556,103 @@ class _PolarViewState extends State<PolarView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return GestureDetector(
-      onTap: _hideSearchResults,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const HomePage()),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+        return false;
+      },
+      child: GestureDetector(
+        onTap: _hideSearchResults,
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              ),
             ),
+            title: Text(l10n.polar),
+            backgroundColor: const Color(0xFF0D47A1),
+            foregroundColor: Colors.white,
+            centerTitle: true,
           ),
-          title: Text(l10n.polar),
-          backgroundColor: const Color(0xFF0D47A1),
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-        body: Container(
-          color: Colors.grey[50],
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildPointInputRow(true),
-                  const SizedBox(height: 10),
-                  _buildCoordinatesRow(true),
-                  const SizedBox(height: 10),
-                  _buildPointInputRow(false),
-                  const SizedBox(height: 10),
-                  _buildCoordinatesRow(false),
-                  const SizedBox(height: 10),
-                  _buildInputRow(
-                    l10n.slopeDistanceWithUnit,
-                    _slopeDistanceController,
-                    false,
-                    allowNegative: false,
-                  ),
-                  const SizedBox(height: 8),
-                  _buildInputRow(
-                    l10n.verticalAngle,
-                    _verticalAngleController,
-                    true,
-                    allowNegative: false,
-                  ),
-                  const SizedBox(height: 8),
-                  _buildInputRow(
-                    l10n.targetHeightWithUnit,
-                    _targetHeightController,
-                    false,
-                    allowNegative: true,
-                  ),
-                  const SizedBox(height: 8),
-                  _buildInputRow(
-                    l10n.horizontalAngle,
-                    _horizontalAngleController,
-                    true,
-                    allowNegative: false,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _useCurvatureAndRefraction,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _useCurvatureAndRefraction = value ?? false;
-                            _calculateSecondPoint();
-                          });
-                        },
-                      ),
-                      Text(l10n.useCurvatureAndRefraction,
-                          style: const TextStyle(fontSize: 14)),
-                    ],
-                  ),
-                  const Divider(),
-                  _buildResultRow(l10n.gradeSlope, gradeI.toStringAsFixed(3)),
-                  const SizedBox(height: 8),
-                  _buildResultRow(
-                      l10n.gradeSlopePercent, gradePercent.toStringAsFixed(3)),
-                  const SizedBox(height: 8),
-                  _buildSlopeAngleRow(),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildNavButton(l10n.quit),
-                    ],
-                  ),
-                ],
+          body: Container(
+            color: Colors.grey[50],
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildPointInputRow(true),
+                    const SizedBox(height: 10),
+                    _buildCoordinatesRow(true),
+                    const SizedBox(height: 10),
+                    _buildPointInputRow(false),
+                    const SizedBox(height: 10),
+                    _buildCoordinatesRow(false),
+                    const SizedBox(height: 10),
+                    _buildInputRow(
+                      l10n.slopeDistanceWithUnit,
+                      _slopeDistanceController,
+                      false,
+                      allowNegative: false,
+                    ),
+                    const SizedBox(height: 8),
+                    _buildInputRow(
+                      l10n.verticalAngle,
+                      _verticalAngleController,
+                      true,
+                      allowNegative: false,
+                    ),
+                    const SizedBox(height: 8),
+                    _buildInputRow(
+                      l10n.targetHeightWithUnit,
+                      _targetHeightController,
+                      false,
+                      allowNegative: true,
+                    ),
+                    const SizedBox(height: 8),
+                    _buildInputRow(
+                      l10n.horizontalAngle,
+                      _horizontalAngleController,
+                      true,
+                      allowNegative: false,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _useCurvatureAndRefraction,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _useCurvatureAndRefraction = value ?? false;
+                              _calculateSecondPoint();
+                            });
+                          },
+                        ),
+                        Text(l10n.useCurvatureAndRefraction,
+                            style: const TextStyle(fontSize: 14)),
+                      ],
+                    ),
+                    const Divider(),
+                    _buildResultRow(l10n.gradeSlope, gradeI.toStringAsFixed(3)),
+                    const SizedBox(height: 8),
+                    _buildResultRow(l10n.gradeSlopePercent,
+                        gradePercent.toStringAsFixed(3)),
+                    const SizedBox(height: 8),
+                    _buildSlopeAngleRow(),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildNavButton(l10n.quit),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

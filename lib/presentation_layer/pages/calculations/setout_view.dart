@@ -925,101 +925,107 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return GestureDetector(
-      onTap: _hideSearchResults,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const HomePage()),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+        return false;
+      },
+      child: GestureDetector(
+        onTap: _hideSearchResults,
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              ),
             ),
+            title: Text(AppLocalizations.of(context)!.setout),
+            backgroundColor: const Color(0xFF0D47A1),
+            foregroundColor: Colors.white,
+            centerTitle: true,
           ),
-          title: Text(l10n!.setout),
-          backgroundColor: const Color(0xFF0D47A1),
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Setup Point Input Row
-              _buildSetupPointInputRow(),
-              const SizedBox(height: 24),
-              const Divider(),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Setup Point Input Row
+                _buildSetupPointInputRow(),
+                const SizedBox(height: 24),
+                const Divider(),
 
-              // Point Input Row
-              _buildPointInputRow(),
-              const SizedBox(height: 16),
-              // Coordinates display
-              _buildCoordinatesRow(),
-              const SizedBox(height: 24),
-              const Divider(),
+                // Point Input Row
+                _buildPointInputRow(),
+                const SizedBox(height: 16),
+                // Coordinates display
+                _buildCoordinatesRow(),
+                const SizedBox(height: 24),
+                const Divider(),
 
-              // Input Fields Section
-              _buildInputRow(
-                'Slope Distance (m)',
-                _slopeDistanceController,
-                false,
-                allowNegative: false,
-              ),
-              const SizedBox(height: 8),
-              _buildInputRow(
-                'Vertical Angle',
-                _verticalAngleController,
-                true,
-                allowNegative: false,
-              ),
-              const SizedBox(height: 8),
-              _buildInputRow(
-                'Target Height (m)',
-                _targetHeightController,
-                false,
-                allowNegative: true,
-              ),
-              const SizedBox(height: 8),
-              _buildInputRow(
-                'Horizontal Angle',
-                _horizontalAngleController,
-                true,
-                allowNegative: false,
-              ),
-              const SizedBox(height: 10),
-              const Divider(),
+                // Input Fields Section
+                _buildInputRow(
+                  'Slope Distance (m)',
+                  _slopeDistanceController,
+                  false,
+                  allowNegative: false,
+                ),
+                const SizedBox(height: 8),
+                _buildInputRow(
+                  'Vertical Angle',
+                  _verticalAngleController,
+                  true,
+                  allowNegative: false,
+                ),
+                const SizedBox(height: 8),
+                _buildInputRow(
+                  'Target Height (m)',
+                  _targetHeightController,
+                  false,
+                  allowNegative: true,
+                ),
+                const SizedBox(height: 8),
+                _buildInputRow(
+                  'Horizontal Angle',
+                  _horizontalAngleController,
+                  true,
+                  allowNegative: false,
+                ),
+                const SizedBox(height: 10),
+                const Divider(),
 
-              // Calculated Results Section
-              _buildCalculatedResults(),
-              const SizedBox(height: 16),
-              const Divider(),
+                // Calculated Results Section
+                _buildCalculatedResults(),
+                const SizedBox(height: 16),
+                const Divider(),
 
-              // Results Section with compact layout
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                // Results Section with compact layout
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildResultRow('Move Back ', moveBack),
+                      const SizedBox(height: 8),
+                      _buildResultRow('Move Right ', moveRight),
+                      const SizedBox(height: 8),
+                      _buildResultRow('Move Up ', moveUp),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+                // Bottom Navigation Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildResultRow('Move Back ', moveBack),
-                    const SizedBox(height: 8),
-                    _buildResultRow('Move Right ', moveRight),
-                    const SizedBox(height: 8),
-                    _buildResultRow('Move Up ', moveUp),
+                    _buildNavButton('Quit'),
                   ],
                 ),
-              ),
-
-              const SizedBox(height: 24),
-              // Bottom Navigation Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildNavButton('Quit'),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

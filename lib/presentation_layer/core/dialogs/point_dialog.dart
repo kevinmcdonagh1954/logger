@@ -316,7 +316,9 @@ class _PointDialogState extends State<PointDialog> {
           TextButton(
             onPressed: isDataValid()
                 ? () async {
-                    Navigator.of(context).pop();
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
                     await Future.delayed(const Duration(milliseconds: 100));
                     widget.onDelete!();
                   }
@@ -352,7 +354,9 @@ class _PointDialogState extends State<PointDialog> {
                       ? descriptorController.text
                       : null,
                 );
-                Navigator.pop(context, point);
+                if (context.mounted) {
+                  Navigator.pop(context, point);
+                }
               } catch (e) {
                 debugPrint('Error: ${e.toString()}');
               }
@@ -381,13 +385,13 @@ class _PointDialogState extends State<PointDialog> {
                     if (widget.existingPoint == null) {
                       await widget.jobService.addPoint(point);
                       if (widget.onSuccess != null) widget.onSuccess!();
-                      if (mounted) {
+                      if (context.mounted) {
                         Navigator.pop(context, point);
                       }
                     } else {
                       await widget.jobService.updatePoint(point);
                       if (widget.onSuccess != null) widget.onSuccess!();
-                      if (mounted) {
+                      if (context.mounted) {
                         Navigator.pop(context, point);
                       }
                     }

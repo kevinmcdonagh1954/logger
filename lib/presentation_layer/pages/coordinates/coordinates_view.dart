@@ -165,205 +165,210 @@ class _CoordinatesViewState extends State<CoordinatesView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const HomePage()),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            ),
           ),
-        ),
-        title: ValueListenableBuilder<String?>(
-          valueListenable: _viewModel.currentJobName,
-          builder: (context, jobName, _) {
-            return Text(_getAdaptiveTitle(jobName ?? ''));
-          },
-        ),
-        backgroundColor: const Color(0xFF0D47A1),
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.sort),
-            color: Colors.white,
-            onPressed: _showSortMenu,
-          ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                value: 'view_on_maps',
-                child: Row(
-                  children: [
-                    Icon(Icons.map),
-                    SizedBox(width: 8),
-                    Text('View on Google Maps'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem<String>(
-                value: 'plot_coordinates',
-                child: Row(
-                  children: [
-                    Icon(Icons.scatter_plot),
-                    SizedBox(width: 8),
-                    Text('Plot Coordinates'),
-                  ],
-                ),
-              ),
-            ],
-            onSelected: (String value) async {
-              if (value == 'view_on_maps') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CoordinatesMapView(
-                      points: _viewModel.points.value,
-                      coordinateFormat: _viewModel.coordinateFormat.value,
-                    ),
-                  ),
-                );
-              } else if (value == 'plot_coordinates') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PlotCoordinatesView(),
-                  ),
-                );
-              }
+          title: ValueListenableBuilder<String?>(
+            valueListenable: _viewModel.currentJobName,
+            builder: (context, jobName, _) {
+              return Text(_getAdaptiveTitle(jobName ?? ''));
             },
           ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: RichText(
-                text: TextSpan(
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
-                  children: [
-                    TextSpan(text: '${_filteredPoints.length}/'),
-                    TextSpan(
-                      text: '$_deletedPointsCount',
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
+          backgroundColor: const Color(0xFF0D47A1),
+          foregroundColor: Colors.white,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.sort),
+              color: Colors.white,
+              onPressed: _showSortMenu,
+            ),
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'view_on_maps',
+                  child: Row(
+                    children: [
+                      Icon(Icons.map),
+                      SizedBox(width: 8),
+                      Text('View on Google Maps'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'plot_coordinates',
+                  child: Row(
+                    children: [
+                      Icon(Icons.scatter_plot),
+                      SizedBox(width: 8),
+                      Text('Plot Coordinates'),
+                    ],
+                  ),
+                ),
+              ],
+              onSelected: (String value) async {
+                if (value == 'view_on_maps') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CoordinatesMapView(
+                        points: _viewModel.points.value,
+                        coordinateFormat: _viewModel.coordinateFormat.value,
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          try {
-            await PointDialog.showAddEditPointDialog(
-              context: context,
-              jobService: locator<JobService>(),
-              coordinateFormat: _viewModel.coordinateFormat.value,
-              onSuccess: () {
-                if (!context.mounted) return;
-                setState(() {
-                  _updateFilteredPoints();
-                });
+                  );
+                } else if (value == 'plot_coordinates') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PlotCoordinatesView(),
+                    ),
+                  );
+                }
               },
-            );
-          } catch (e) {
-            debugPrint('Error: ${e.toString()}');
-          }
-        },
-        mini: true,
-        backgroundColor: const Color(0xFF0D47A1),
-        child: const Icon(Icons.add, size: 20, color: Colors.white),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                labelText: 'Search Points',
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    _searchController.clear();
-                    _updateFilteredPoints();
-                  },
-                ),
-                border: const OutlineInputBorder(),
-              ),
-              onChanged: (value) => _updateFilteredPoints(),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _filteredPoints.length,
-              itemBuilder: (context, index) {
-                final point = _filteredPoints[index];
-                if (point.id == null) return const SizedBox.shrink();
-                return ListTile(
-                  leading: CircleAvatar(
-                    child: Text(point.id.toString()),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: RichText(
+                  text: TextSpan(
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    children: [
+                      TextSpan(text: '${_filteredPoints.length}/'),
+                      TextSpan(
+                        text: '$_deletedPointsCount',
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
                   ),
-                  title: Text(point.comment),
-                  subtitle: ValueListenableBuilder<String>(
-                    valueListenable: _viewModel.coordinateFormat,
-                    builder: (context, format, _) {
-                      return Text(
-                        '${CoordinateFormatter.formatCoordinates(point, format)}${point.descriptor != null ? '\nDescriptor: ${point.descriptor}' : ''}',
-                      );
+                ),
+              ),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            try {
+              await PointDialog.showAddEditPointDialog(
+                context: context,
+                jobService: locator<JobService>(),
+                coordinateFormat: _viewModel.coordinateFormat.value,
+                onSuccess: () {
+                  if (!context.mounted) return;
+                  setState(() {
+                    _updateFilteredPoints();
+                  });
+                },
+              );
+            } catch (e) {
+              debugPrint('Error: ${e.toString()}');
+            }
+          },
+          mini: true,
+          backgroundColor: const Color(0xFF0D47A1),
+          child: const Icon(Icons.add, size: 20, color: Colors.white),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  labelText: 'Search Points',
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _searchController.clear();
+                      _updateFilteredPoints();
                     },
                   ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _showDeleteConfirmation(context, point),
-                  ),
-                  onTap: () async {
-                    try {
-                      final updatedPoint =
-                          await PointDialog.showAddEditPointDialog(
-                        context: context,
-                        jobService: locator<JobService>(),
-                        coordinateFormat: _viewModel.coordinateFormat.value,
-                        existingPoint: point,
-                        onDelete: () async {
-                          await _viewModel.deletePoint(point.id!);
+                  border: const OutlineInputBorder(),
+                ),
+                onChanged: (value) => _updateFilteredPoints(),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _filteredPoints.length,
+                itemBuilder: (context, index) {
+                  final point = _filteredPoints[index];
+                  if (point.id == null) return const SizedBox.shrink();
+                  return ListTile(
+                    title: Text(point.comment),
+                    subtitle: ValueListenableBuilder<String>(
+                      valueListenable: _viewModel.coordinateFormat,
+                      builder: (context, format, _) {
+                        return Text(
+                          '${CoordinateFormatter.formatCoordinates(point, format)}${point.descriptor != null ? '\nDescriptor: ${point.descriptor}' : ''}',
+                        );
+                      },
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _showDeleteConfirmation(context, point),
+                    ),
+                    onTap: () async {
+                      try {
+                        final updatedPoint =
+                            await PointDialog.showAddEditPointDialog(
+                          context: context,
+                          jobService: locator<JobService>(),
+                          coordinateFormat: _viewModel.coordinateFormat.value,
+                          existingPoint: point,
+                          onDelete: () async {
+                            await _viewModel.deletePoint(point.id!);
+                            if (!context.mounted) return;
+                            setState(() {
+                              _updateFilteredPoints();
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Point deleted successfully')),
+                            );
+                          },
+                        );
+
+                        if (updatedPoint != null) {
                           if (!context.mounted) return;
                           setState(() {
                             _updateFilteredPoints();
                           });
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Point deleted successfully')),
+                            SnackBar(content: Text(l10n.success)),
                           );
-                        },
-                      );
-
-                      if (updatedPoint != null) {
+                        }
+                      } catch (e) {
                         if (!context.mounted) return;
-                        setState(() {
-                          _updateFilteredPoints();
-                        });
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(l10n.success)),
+                          SnackBar(
+                              content: Text('${l10n.error}: ${e.toString()}')),
                         );
                       }
-                    } catch (e) {
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('${l10n.error}: ${e.toString()}')),
-                      );
-                    }
-                  },
-                );
-              },
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

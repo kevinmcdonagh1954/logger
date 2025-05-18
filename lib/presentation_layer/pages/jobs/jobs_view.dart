@@ -103,8 +103,13 @@ class _JobsViewState extends State<JobsView> with DebugInfoMixin, RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: true,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+        return false;
+      },
       child: Scaffold(
         appBar: LoggerAppBar(
           title: 'JOBS',
