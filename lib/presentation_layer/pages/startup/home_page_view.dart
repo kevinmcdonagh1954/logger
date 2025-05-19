@@ -221,19 +221,24 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 // Display current job name or "No Current Job" above the image
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    currentJobName != null && currentJobName!.isNotEmpty
-                        ? "Current Job: ${currentJobName!}"
-                        : "No Current Job",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color:
-                          currentJobName != null && currentJobName!.isNotEmpty
+                  child: ValueListenableBuilder<String?>(
+                    valueListenable: _jobsViewModel.currentJobName,
+                    builder: (context, currentJobName, child) {
+                      return Text(
+                        currentJobName != null && currentJobName.isNotEmpty
+                            ? "Current Job: $currentJobName"
+                            : "No Current Job",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: currentJobName != null &&
+                                  currentJobName.isNotEmpty
                               ? Colors.black
                               : Colors.red,
-                      fontFamily: 'Readex Pro',
-                    ),
+                          fontFamily: 'Readex Pro',
+                        ),
+                      );
+                    },
                   ),
                 ),
                 SizedBox(
@@ -597,6 +602,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     item.label,
                     subtitle: item.subtitle,
                     onTap: () {
+                      if (!mounted) return;
                       setState(() {
                         _isCalculationsExpanded = !_isCalculationsExpanded;
                       });
@@ -616,6 +622,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     _buildDrawerItem(
                       l10n.singleJoin,
                       onTap: () {
+                        if (!mounted) return;
                         Navigator.pop(context); // Close the drawer
                         Navigator.pushReplacement(
                           context,
@@ -630,6 +637,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     _buildDrawerItem(
                       l10n.polar,
                       onTap: () {
+                        if (!mounted) return;
                         Navigator.pop(context); // Close the drawer
                         Navigator.pushReplacement(
                           context,
@@ -660,6 +668,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 // If it's not the home page, navigate to the view
                 if (index > 0) {
                   final Widget view = item.viewBuilder(item.placeholderLabel);
+                  if (!mounted) return;
                   Navigator.pop(context); // Close the drawer
 
                   // Navigate to the selected view using pushReplacement
@@ -670,6 +679,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     ),
                   );
                 } else {
+                  if (!mounted) return;
                   Navigator.pop(context); // Just close the drawer for home
                 }
               },

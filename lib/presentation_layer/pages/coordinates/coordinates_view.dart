@@ -36,6 +36,13 @@ class _CoordinatesViewState extends State<CoordinatesView> {
     _viewModel.init();
     _jobsViewModel.init();
     _viewModel.points.addListener(_updateFilteredPoints);
+    _jobsViewModel.currentJobName.addListener(_onJobChanged);
+    _updateFilteredPoints();
+  }
+
+  void _onJobChanged() {
+    // Reload points for the new job
+    _viewModel.init();
     _updateFilteredPoints();
   }
 
@@ -43,6 +50,7 @@ class _CoordinatesViewState extends State<CoordinatesView> {
   void dispose() {
     _searchController.dispose();
     _viewModel.points.removeListener(_updateFilteredPoints);
+    _jobsViewModel.currentJobName.removeListener(_onJobChanged);
     _jobsViewModel.dispose();
     _commentFocusNode.dispose();
     super.dispose();

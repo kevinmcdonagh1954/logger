@@ -14,6 +14,7 @@ import '../../core/bearing_format.dart';
 import '../../core/angle_converter.dart';
 import '../../../domain_layer/calculations/slope_calculator.dart';
 import '../../l10n/app_localizations.dart';
+import '../jobs/jobs_viewmodel.dart';
 
 /// Class to handle vertical angle calculations with index correction
 class VerticalAngle {
@@ -118,7 +119,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
   void initState() {
     super.initState();
     _jobService = locator<JobService>();
-    _loadJobDefaults();
+    _loadJobDefaultsFor(widget.jobName);
 
     // Initialize second point coordinates as empty
     _secondPointYController.text = "";
@@ -128,9 +129,19 @@ class _PolarViewState extends State<PolarView> with RouteAware {
     // Initialize dropdown managers
     _firstPointDropdown = CommentDropdown(layerLink: _firstPointLayerLink);
     _nextPointDropdown = CommentDropdown(layerLink: _nextPointLayerLink);
+
+    // Listen for job changes
+    locator<JobsViewModel>().currentJobName.addListener(_onJobChanged);
   }
 
-  Future<void> _loadJobDefaults() async {
+  void _onJobChanged() {
+    final newJobName = locator<JobsViewModel>().currentJobName.value;
+    if (newJobName != null && newJobName != widget.jobName) {
+      _loadJobDefaultsFor(newJobName);
+    }
+  }
+
+  Future<void> _loadJobDefaultsFor(String jobName) async {
     try {
       final defaults = await _jobService.getJobDefaults();
       if (!context.mounted) return;
@@ -149,6 +160,9 @@ class _PolarViewState extends State<PolarView> with RouteAware {
     // Dispose of dropdowns
     _firstPointDropdown.dispose();
     _nextPointDropdown.dispose();
+
+    // Remove job change listener
+    locator<JobsViewModel>().currentJobName.removeListener(_onJobChanged);
 
     // Dispose of controllers
     _firstPointController.dispose();
@@ -177,6 +191,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
   }
 
   void _updatePointCoordinates(Point point, bool isFirstPoint) {
+    if (!mounted) return;
     setState(() {
       if (isFirstPoint) {
         _firstPointCoords = {
@@ -448,6 +463,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
 
   // Add method to calculate second point coordinates
   Future<void> _calculateSecondPoint() async {
+    if (!mounted) return;
     if (!_isInputValid()) return;
 
     try {
@@ -488,7 +504,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
       final y2 = _firstPointCoords['Y']! + sin(horizontalRad) * planDistance;
       final x2 = _firstPointCoords['X']! + cos(horizontalRad) * planDistance;
 
-      if (!context.mounted) return;
+      if (!mounted) return;
       setState(() {
         _secondPointCoords = {
           'Y': y2,
@@ -526,7 +542,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
       });
     } catch (e) {
       debugPrint('Error calculating second point: $e');
-      if (!context.mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error in calculations'),
@@ -539,6 +555,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
 
   // Add method to swap points
   void _swapPoints() {
+    if (!mounted) return;
     setState(() {
       // Swap coordinates
       _firstPointCoords = _secondPointCoords;
@@ -627,6 +644,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                         Checkbox(
                           value: _useCurvatureAndRefraction,
                           onChanged: (bool? value) {
+                            if (!mounted) return;
                             setState(() {
                               _useCurvatureAndRefraction = value ?? false;
                               _calculateSecondPoint();
@@ -724,6 +742,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
               _calculateSecondPoint();
             },
             onChanged: (value) {
+              if (!mounted) return;
               setState(() {}); // Trigger rebuild to update colors
               if (label == 'Slope Distance (m)' && value.isNotEmpty) {
                 final distance = double.tryParse(value);
@@ -851,6 +870,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                       elevation: 1,
                       onChanged: (BearingFormat? newFormat) {
                         if (newFormat != null) {
+                          if (!mounted) return;
                           setState(() {
                             _selectedAngleFormat = newFormat;
                             _updateAngleFormat();
@@ -918,6 +938,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
   }
 
   void _updateAngleFormat() {
+    if (!mounted) return;
     setState(() {
       String sign = slopeAngle < 0 ? '-' : '';
       angle = sign +
@@ -1006,11 +1027,13 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                   _updatePointCoordinates(point, true);
                 } else {
                   // Update up arrow visibility when second point name changes
+                  if (!mounted) return;
                   setState(() {
                     _showUpArrow =
                         _hasValidCoordinates() && _hasValidPointName();
                   });
                 }
+                if (!mounted) return;
                 setState(() {}); // Trigger rebuild to update colors
                 _showSearchResults(value, isFirstPoint, context);
               },
@@ -1033,6 +1056,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
           constraints: const BoxConstraints(),
           onPressed: () {
             controller.clear();
+            if (!mounted) return;
             setState(() {
               if (isFirstPoint) {
                 _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
@@ -1135,6 +1159,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
 
   // Add save point method
   Future<void> _savePoint() async {
+    if (!mounted) return;
     try {
       final newPoint = Point(
         id: 0,
@@ -1146,7 +1171,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
 
       await _jobService.addPoint(newPoint);
 
-      if (!context.mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Point saved successfully'),
@@ -1155,7 +1180,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
         ),
       );
     } catch (e) {
-      if (!context.mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error saving point: ${e.toString()}'),

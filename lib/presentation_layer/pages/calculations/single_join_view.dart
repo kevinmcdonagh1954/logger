@@ -82,53 +82,32 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
     super.initState();
     _jobsViewModel = locator<JobsViewModel>();
     _jobService = locator<JobService>();
-    _loadJobDefaults();
+    _loadJobDefaultsFor(widget.jobName);
     _loadAngularMeasurement();
 
     // Initialize dropdown managers
     _firstPointDropdown = CommentDropdown(layerLink: _firstPointLayerLink);
     _nextPointDropdown = CommentDropdown(layerLink: _nextPointLayerLink);
+
+    // Listen for job changes
+    _jobsViewModel.currentJobName.addListener(_onJobChanged);
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  void _onJobChanged() {
+    final newJobName = _jobsViewModel.currentJobName.value;
+    if (newJobName != null && newJobName != widget.jobName) {
+      _loadJobDefaultsFor(newJobName);
+    }
   }
 
-  @override
-  void dispose() {
-    // Hide dropdowns and clean up
-    _firstPointDropdown.dispose();
-    _nextPointDropdown.dispose();
-
-    routeObserver.unsubscribe(this);
-    _firstPointController.dispose();
-    _nextPointController.dispose();
-    _firstPointFocus.dispose();
-    _nextPointFocus.dispose();
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didPush() {
-    _loadJobDefaults();
-  }
-
-  @override
-  void didPopNext() {
-    _loadJobDefaults();
-  }
-
-  Future<void> _loadJobDefaults() async {
+  Future<void> _loadJobDefaultsFor(String jobName) async {
     try {
-      _logger.info(_logName, 'Loading job defaults for job: ${widget.jobName}');
+      _logger.info(_logName, 'Loading job defaults for job: $jobName');
 
-      final bool jobOpened = await _jobsViewModel.openJob(widget.jobName);
+      final bool jobOpened = await _jobsViewModel.openJob(jobName);
 
       if (!jobOpened) {
-        _logger.error(_logName, 'Failed to open job: ${widget.jobName}');
+        _logger.error(_logName, 'Failed to open job: $jobName');
         if (!context.mounted) return;
         setState(() {
           _coordinateFormat = 'YXZ';
@@ -137,7 +116,7 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
         return;
       }
 
-      final jobDefaults = await _jobsViewModel.getJobDefaults(widget.jobName);
+      final jobDefaults = await _jobsViewModel.getJobDefaults(jobName);
       _logger.debug(
           _logName, 'Job defaults loaded: ${jobDefaults?.coordinateFormat}');
 
@@ -167,6 +146,40 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
     }
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    // Hide dropdowns and clean up
+    _firstPointDropdown.dispose();
+    _nextPointDropdown.dispose();
+
+    // Remove job change listener
+    _jobsViewModel.currentJobName.removeListener(_onJobChanged);
+
+    routeObserver.unsubscribe(this);
+    _firstPointController.dispose();
+    _nextPointController.dispose();
+    _firstPointFocus.dispose();
+    _nextPointFocus.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didPush() {
+    _loadJobDefaultsFor(widget.jobName);
+  }
+
+  @override
+  void didPopNext() {
+    _loadJobDefaultsFor(widget.jobName);
+  }
+
   Future<void> _loadAngularMeasurement() async {
     try {
       if (!context.mounted) return;
@@ -182,6 +195,7 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
   // Add method to load points
 
   void _updatePointCoordinates(Point point, bool isFirstPoint) {
+    if (!mounted) return;
     setState(() {
       if (isFirstPoint) {
         _firstPointCoords = {
@@ -631,6 +645,7 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
         z1: _firstPointCoords['Z']!,
         z2: _nextPointCoords['Z']!,
       );
+      if (!mounted) return;
       setState(() {
         double angleValue = double.tryParse(slopeResults['angle']!) ?? 0.0;
         String sign =
@@ -979,6 +994,7 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
         _nextPointCoords['Y']!,
         _nextPointCoords['X']!,
       );
+      if (!mounted) return;
       setState(() {
         direction = BearingFormatter.format(
           bearing,
@@ -986,6 +1002,7 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
         );
       });
     } else {
+      if (!mounted) return;
       setState(() {
         // Format zero according to the selected format
         direction = BearingFormatter.format(0.0, _selectedBearingFormat);
@@ -1050,6 +1067,7 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
   }
 
   void _resetResults() {
+    if (!mounted) return;
     setState(() {
       distance = 0.0;
       direction = "0° 00' 00\"";

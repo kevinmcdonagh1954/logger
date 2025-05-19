@@ -240,6 +240,7 @@ class _PointsPlotPainter extends CustomPainter {
 class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   final JobService _jobService = locator<JobService>();
   List<Point> _points = [];
+  List<Point> _visiblePointsCache = [];
   double _minY = 0;
   double _maxY = 0;
   double _minX = 0;
@@ -381,7 +382,28 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     setState(() {
       _points = points;
       _resetView();
+      _updateVisiblePoints();
     });
+  }
+
+  void _updateVisiblePoints() {
+    if (_origMinX != null &&
+        _origMaxX != null &&
+        _origMinY != null &&
+        _origMaxY != null &&
+        _minX == _origMinX &&
+        _maxX == _origMaxX &&
+        _minY == _origMinY &&
+        _maxY == _origMaxY) {
+      _visiblePointsCache = _points;
+    } else {
+      _visiblePointsCache = _points.where((point) {
+        return point.y >= _minY &&
+            point.y <= _maxY &&
+            point.x >= _minX &&
+            point.x <= _maxX;
+      }).toList();
+    }
   }
 
   void _resetView() {
@@ -408,6 +430,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       _zoomBoxEnd = null;
       _isZoomBoxValid = true;
       _clampViewToBounds();
+      _updateVisiblePoints();
     });
   }
 
@@ -415,13 +438,17 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     _zoomDebounceTimer?.cancel();
     final newScale =
         (_currentScale * _zoomIncrement).clamp(_minScale, _maxScale);
+    debugPrint('Zooming in - Old scale: $_currentScale, New scale: $newScale');
     if (newScale != _currentScale) {
       _zoomDebounceTimer = Timer(const Duration(milliseconds: 250), () {
-        setState(() {
-          _currentScale = newScale;
-          _constrainOffset();
-          _clampViewToBounds();
-        });
+        if (mounted) {
+          setState(() {
+            _currentScale = newScale;
+            _constrainOffset();
+            _clampViewToBounds();
+            _updateVisiblePoints();
+          });
+        }
       });
     }
   }
@@ -430,13 +457,17 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     _zoomDebounceTimer?.cancel();
     final newScale =
         (_currentScale / _zoomIncrement).clamp(_minScale, _maxScale);
+    debugPrint('Zooming out - Old scale: $_currentScale, New scale: $newScale');
     if (newScale != _currentScale) {
       _zoomDebounceTimer = Timer(const Duration(milliseconds: 250), () {
-        setState(() {
-          _currentScale = newScale;
-          _constrainOffset();
-          _clampViewToBounds();
-        });
+        if (mounted) {
+          setState(() {
+            _currentScale = newScale;
+            _constrainOffset();
+            _clampViewToBounds();
+            _updateVisiblePoints();
+          });
+        }
       });
     }
   }
@@ -457,6 +488,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       _currentOffset.dx.clamp(-maxOffsetY, maxOffsetY),
       _currentOffset.dy.clamp(-maxOffsetX, maxOffsetX),
     );
+    debugPrint('Constrained offset: $_currentOffset');
   }
 
   void _clampViewToBounds() {
@@ -533,309 +565,6 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         );
       }
     }
-  }
-
-  List<Point> get _visiblePoints {
-    if (_currentScale == 1.0 && _currentOffset == Offset.zero) {
-      return _points;
-    }
-
-    final visibleRangeY = (_viewMaxY - _viewMinY);
-    final visibleRangeX = (_viewMaxX - _viewMinX);
-    final visibleRange = max(visibleRangeY, visibleRangeX);
-
-    final centerY = (_viewMaxY + _viewMinY) / 2;
-    final centerX = (_viewMaxX + _viewMinX) / 2;
-
-    final halfRange = visibleRange / 2;
-    final visibleMinY = centerY - halfRange;
-    final visibleMaxY = centerY + halfRange;
-    final visibleMinX = centerX - halfRange;
-    final visibleMaxX = centerX + halfRange;
-
-    return _points.where((point) {
-      return point.y >= visibleMinY &&
-          point.y <= visibleMaxY &&
-          point.x >= visibleMinX &&
-          point.x <= visibleMaxX;
-    }).toList();
-  }
-
-  Widget _buildControls() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      padding: const EdgeInsets.all(8),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(Icons.grid_on,
-                color: _showGrid ? Colors.white : Colors.grey),
-            onPressed: () {
-              setState(() {
-                _showGrid = !_showGrid;
-                if (_isZoomBoxMode) _isZoomBoxMode = false;
-              });
-            },
-            tooltip: 'Toggle Grid',
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            icon: const Icon(Icons.color_lens, color: Colors.white),
-            onPressed: () {
-              setState(() {
-                if (_isZoomBoxMode) _isZoomBoxMode = false;
-              });
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Select Point Color'),
-                  content: ColorPicker(
-                    pickerColor: _pointColor,
-                    onColorChanged: (color) {
-                      setState(() {
-                        _pointColor = color;
-                      });
-                    },
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Close'),
-                    ),
-                  ],
-                ),
-              );
-            },
-            tooltip: 'Change Point Color',
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            icon: const Icon(Icons.remove, color: Colors.white),
-            onPressed: _zoomOut,
-            tooltip: 'Zoom Out',
-          ),
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: _zoomIn,
-            tooltip: 'Zoom In',
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            icon: Icon(Icons.zoom_in,
-                color: _isZoomBoxMode ? Colors.blue : Colors.white),
-            onPressed: () {
-              setState(() {
-                _isZoomBoxMode = !_isZoomBoxMode;
-                _zoomBoxStart = null;
-                _zoomBoxEnd = null;
-                _zoomBoxStartLocal = null;
-                _zoomBoxEndLocal = null;
-                _isZoomBoxValid = true;
-              });
-            },
-            tooltip:
-                'Zoom Box Mode - Click and drag to select an area to zoom into',
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            icon: const Icon(Icons.zoom_out_map, color: Colors.white),
-            onPressed: () {
-              setState(() {
-                if (_isZoomBoxMode) _isZoomBoxMode = false;
-              });
-              _resetView();
-            },
-            tooltip: 'Reset View',
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _handlePanStart(DragStartDetails details) async {
-    if (_isZoomBoxMode) {
-      final RenderBox? renderBox =
-          _plotKey.currentContext?.findRenderObject() as RenderBox?;
-      if (renderBox != null) {
-        final localPosition = renderBox.globalToLocal(details.globalPosition);
-        // Check if the start position is within the plot area
-        if (localPosition.dx >= 16 &&
-            localPosition.dx <= renderBox.size.width - 16 &&
-            localPosition.dy >= 16 &&
-            localPosition.dy <= renderBox.size.height - 16) {
-          setState(() {
-            _zoomBoxStart = details.globalPosition;
-            _zoomBoxEnd = null;
-            _zoomBoxStartLocal = localPosition;
-            _zoomBoxEndLocal = null;
-            _isZoomBoxValid = true;
-          });
-        }
-      }
-      return;
-    }
-    // Do not allow panning
-    // if (_currentScale == 1.0) return;
-    // ... rest of pan code is now disabled ...
-  }
-
-  void _handlePanUpdate(DragUpdateDetails details) {
-    if (_isZoomBoxMode) {
-      final RenderBox? renderBox =
-          _plotKey.currentContext?.findRenderObject() as RenderBox?;
-      if (renderBox != null) {
-        final localPosition = renderBox.globalToLocal(details.globalPosition);
-        // Constrain the end position to the plot area
-        final constrainedX =
-            localPosition.dx.clamp(16.0, renderBox.size.width - 16.0);
-        final constrainedY =
-            localPosition.dy.clamp(16.0, renderBox.size.height - 16.0);
-        final constrainedGlobal =
-            renderBox.localToGlobal(Offset(constrainedX, constrainedY));
-        setState(() {
-          _zoomBoxEnd = constrainedGlobal;
-          _zoomBoxEndLocal = Offset(constrainedX, constrainedY);
-          // Check if the zoom box is large enough
-          if (_zoomBoxStartLocal != null) {
-            final width = (_zoomBoxEndLocal!.dx - _zoomBoxStartLocal!.dx).abs();
-            final height =
-                (_zoomBoxEndLocal!.dy - _zoomBoxStartLocal!.dy).abs();
-            _isZoomBoxValid =
-                width >= _minZoomBoxSize && height >= _minZoomBoxSize;
-          }
-        });
-      }
-      return;
-    }
-    // Do not allow panning
-    // if (_currentScale == 1.0) return;
-    // if (!_isPanning) return;
-    // ... rest of pan code is now disabled ...
-  }
-
-  void _handlePanEnd(DragEndDetails details) {
-    if (_isZoomBoxMode &&
-        _zoomBoxStart != null &&
-        _zoomBoxEnd != null &&
-        _isZoomBoxValid) {
-      final RenderBox? renderBox =
-          _plotKey.currentContext?.findRenderObject() as RenderBox?;
-      if (renderBox != null) {
-        final startPlot = PlotCoordinateUtils.screenToPlotYX(
-          globalPosition: _zoomBoxStart!,
-          renderBox: renderBox,
-          viewMinY: _viewMinY,
-          viewMaxY: _viewMaxY,
-          viewMinX: _viewMinX,
-          viewMaxX: _viewMaxX,
-        );
-        final endPlot = PlotCoordinateUtils.screenToPlotYX(
-          globalPosition: _zoomBoxEnd!,
-          renderBox: renderBox,
-          viewMinY: _viewMinY,
-          viewMaxY: _viewMaxY,
-          viewMinX: _viewMinX,
-          viewMaxX: _viewMaxX,
-        );
-        // Calculate the plot boundaries based on the zoom box
-        final minY = min(startPlot.dx, endPlot.dx);
-        final maxY = max(startPlot.dx, endPlot.dx);
-        final minX = min(startPlot.dy, endPlot.dy);
-        final maxX = max(startPlot.dy, endPlot.dy);
-        // Calculate the center of the zoom box
-        final centerY = (minY + maxY) / 2;
-        final centerX = (minX + maxX) / 2;
-        // Calculate the range of the zoom box
-        final rangeY = maxY - minY;
-        final rangeX = maxX - minX;
-        // Use the larger range for both axes to maintain square proportions
-        final maxRange = max(rangeY, rangeX);
-        // Calculate new boundaries centered on the zoom box
-        final newMinY = centerY - maxRange / 2;
-        final newMaxY = centerY + maxRange / 2;
-        final newMinX = centerX - maxRange / 2;
-        final newMaxX = centerX + maxRange / 2;
-
-        setState(() {
-          _minY = newMinY;
-          _maxY = newMaxY;
-          _minX = newMinX;
-          _maxX = newMaxX;
-          _zoomBoxStart = null;
-          _zoomBoxEnd = null;
-          _zoomBoxStartLocal = null;
-          _zoomBoxEndLocal = null;
-          _isZoomBoxValid = true;
-        });
-        Future.delayed(Duration.zero, () {
-          _showZoomDebugDialog(
-            context: context,
-            pickedTopLeftYX: Offset(minY, minX),
-            pickedBottomRightYX: Offset(maxY, maxX),
-            pickedTopLeftPx: _zoomBoxStartLocal ?? Offset.zero,
-            pickedBottomRightPx: _zoomBoxEndLocal ?? Offset.zero,
-            newTopLeftYX: Offset(newMinY, newMinX),
-            newBottomRightYX: Offset(newMaxY, newMaxX),
-          );
-        });
-      }
-      return;
-    }
-    // Do not allow panning
-    // ... rest of pan end code is now disabled ...
-  }
-
-  void _showZoomDebugDialog({
-    required BuildContext context,
-    required Offset pickedTopLeftYX,
-    required Offset pickedBottomRightYX,
-    required Offset pickedTopLeftPx,
-    required Offset pickedBottomRightPx,
-    required Offset newTopLeftYX,
-    required Offset newBottomRightYX,
-  }) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Zoom Box Debug Info'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Picked (User) Zoom Box:'),
-              Text(
-                  'Top Left YX: (${pickedTopLeftYX.dx.toStringAsFixed(3)}, ${pickedTopLeftYX.dy.toStringAsFixed(3)})'),
-              Text(
-                  'Bottom Right YX: (${pickedBottomRightYX.dx.toStringAsFixed(3)}, ${pickedBottomRightYX.dy.toStringAsFixed(3)})'),
-              Text(
-                  'Top Left Px: (${pickedTopLeftPx.dx.toStringAsFixed(1)}, ${pickedTopLeftPx.dy.toStringAsFixed(1)})'),
-              Text(
-                  'Bottom Right Px: (${pickedBottomRightPx.dx.toStringAsFixed(1)}, ${pickedBottomRightPx.dy.toStringAsFixed(1)})'),
-              const SizedBox(height: 16),
-              const Text('New (Calculated) Zoom Box:'),
-              Text(
-                  'Top Left YX: (${newTopLeftYX.dx.toStringAsFixed(3)}, ${newTopLeftYX.dy.toStringAsFixed(3)})'),
-              Text(
-                  'Bottom Right YX: (${newBottomRightYX.dx.toStringAsFixed(3)}, ${newBottomRightYX.dy.toStringAsFixed(3)})'),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _handleTapUp(TapUpDetails details) {
-    // No-op (remove test dialog)
   }
 
   @override
@@ -1066,6 +795,222 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     );
   }
 
+  Widget _buildControls() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black.withAlpha(179),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(Icons.grid_on,
+                color: _showGrid ? Colors.white : Colors.grey),
+            onPressed: () {
+              setState(() {
+                _showGrid = !_showGrid;
+                if (_isZoomBoxMode) _isZoomBoxMode = false;
+              });
+            },
+            tooltip: 'Toggle Grid',
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.color_lens, color: Colors.white),
+            onPressed: () {
+              setState(() {
+                if (_isZoomBoxMode) _isZoomBoxMode = false;
+              });
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Select Point Color'),
+                  content: ColorPicker(
+                    pickerColor: _pointColor,
+                    onColorChanged: (color) {
+                      setState(() {
+                        _pointColor = color;
+                      });
+                    },
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Close'),
+                    ),
+                  ],
+                ),
+              );
+            },
+            tooltip: 'Change Point Color',
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.remove, color: Colors.white),
+            onPressed: _zoomOut,
+            tooltip: 'Zoom Out',
+          ),
+          IconButton(
+            icon: const Icon(Icons.add, color: Colors.white),
+            onPressed: _zoomIn,
+            tooltip: 'Zoom In',
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: Icon(Icons.zoom_in,
+                color: _isZoomBoxMode ? Colors.blue : Colors.white),
+            onPressed: () {
+              setState(() {
+                _isZoomBoxMode = !_isZoomBoxMode;
+                _zoomBoxStart = null;
+                _zoomBoxEnd = null;
+                _zoomBoxStartLocal = null;
+                _zoomBoxEndLocal = null;
+                _isZoomBoxValid = true;
+              });
+            },
+            tooltip:
+                'Zoom Box Mode - Click and drag to select an area to zoom into',
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.zoom_out_map, color: Colors.white),
+            onPressed: () {
+              setState(() {
+                if (_isZoomBoxMode) _isZoomBoxMode = false;
+              });
+              _resetView();
+            },
+            tooltip: 'Reset View',
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handlePanStart(DragStartDetails details) async {
+    if (_isZoomBoxMode) {
+      final RenderBox? renderBox =
+          _plotKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        final localPosition = renderBox.globalToLocal(details.globalPosition);
+        // Check if the start position is within the plot area
+        if (localPosition.dx >= 16 &&
+            localPosition.dx <= renderBox.size.width - 16 &&
+            localPosition.dy >= 16 &&
+            localPosition.dy <= renderBox.size.height - 16) {
+          setState(() {
+            _zoomBoxStart = details.globalPosition;
+            _zoomBoxEnd = null;
+            _zoomBoxStartLocal = localPosition;
+            _zoomBoxEndLocal = null;
+            _isZoomBoxValid = true;
+          });
+        }
+      }
+      return;
+    }
+    // Do not allow panning
+    // if (_currentScale == 1.0) return;
+    // ... rest of pan code is now disabled ...
+  }
+
+  void _handlePanUpdate(DragUpdateDetails details) {
+    if (_isZoomBoxMode) {
+      final RenderBox? renderBox =
+          _plotKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        final localPosition = renderBox.globalToLocal(details.globalPosition);
+        // Constrain the end position to the plot area
+        final constrainedX =
+            localPosition.dx.clamp(16.0, renderBox.size.width - 16.0);
+        final constrainedY =
+            localPosition.dy.clamp(16.0, renderBox.size.height - 16.0);
+        final constrainedGlobal =
+            renderBox.localToGlobal(Offset(constrainedX, constrainedY));
+        setState(() {
+          _zoomBoxEnd = constrainedGlobal;
+          _zoomBoxEndLocal = Offset(constrainedX, constrainedY);
+          // Check if the zoom box is large enough
+          if (_zoomBoxStartLocal != null) {
+            final width = (_zoomBoxEndLocal!.dx - _zoomBoxStartLocal!.dx).abs();
+            final height =
+                (_zoomBoxEndLocal!.dy - _zoomBoxStartLocal!.dy).abs();
+            _isZoomBoxValid =
+                width >= _minZoomBoxSize && height >= _minZoomBoxSize;
+          }
+        });
+      }
+      return;
+    }
+    // Do not allow panning
+    // if (_currentScale == 1.0) return;
+    // if (!_isPanning) return;
+    // ... rest of pan code is now disabled ...
+  }
+
+  void _handlePanEnd(DragEndDetails details) {
+    if (_isZoomBoxMode &&
+        _zoomBoxStart != null &&
+        _zoomBoxEnd != null &&
+        _isZoomBoxValid) {
+      final RenderBox? renderBox =
+          _plotKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        final startPlot = PlotCoordinateUtils.screenToPlotYX(
+          globalPosition: _zoomBoxStart!,
+          renderBox: renderBox,
+          viewMinY: _viewMinY,
+          viewMaxY: _viewMaxY,
+          viewMinX: _viewMinX,
+          viewMaxX: _viewMaxX,
+        );
+        final endPlot = PlotCoordinateUtils.screenToPlotYX(
+          globalPosition: _zoomBoxEnd!,
+          renderBox: renderBox,
+          viewMinY: _viewMinY,
+          viewMaxY: _viewMaxY,
+          viewMinX: _viewMinX,
+          viewMaxX: _viewMaxX,
+        );
+        // Calculate the plot boundaries based on the zoom box
+        final minY = min(startPlot.dx, endPlot.dx);
+        final maxY = max(startPlot.dx, endPlot.dx);
+        final minX = min(startPlot.dy, endPlot.dy);
+        final maxX = max(startPlot.dy, endPlot.dy);
+        // Calculate the side length for a square zoom box
+        final side = min(maxY - minY, maxX - minX);
+        // Always use the picked top-left as anchor
+        final newMinY = minY;
+        final newMinX = minX;
+        final newMaxY = minY + side;
+        final newMaxX = minX + side;
+
+        setState(() {
+          _minY = newMinY;
+          _maxY = newMaxY;
+          _minX = newMinX;
+          _maxX = newMaxX;
+          _zoomBoxStart = null;
+          _zoomBoxEnd = null;
+          _zoomBoxStartLocal = null;
+          _zoomBoxEndLocal = null;
+          _isZoomBoxValid = true;
+          _updateVisiblePoints();
+        });
+      }
+      return;
+    }
+    // Do not allow panning
+    // ... rest of pan end code is now disabled ...
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    // No-op (remove test dialog)
+  }
+
   Widget _buildPlotWidget() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -1074,7 +1019,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           CustomPaint(
             size: Size.infinite,
             painter: _PointsPlotPainter(
-              points: _visiblePoints,
+              points: _visiblePointsCache,
               pointColor: _pointColor,
               showGrid: _showGrid,
               gridSpacing: _gridSpacing,

@@ -12,6 +12,7 @@ import 'dart:math';
 import 'polar_view.dart';
 import '../../core/angle_converter.dart';
 import '../../l10n/app_localizations.dart';
+import '../jobs/jobs_viewmodel.dart';
 
 class SetoutView extends StatefulWidget {
   final String jobName;
@@ -80,14 +81,24 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
   void initState() {
     super.initState();
     _jobService = locator<JobService>();
-    _loadJobDefaults();
+    _loadJobDefaultsFor(widget.jobName);
 
     // Initialize dropdown managers
     _setupPointDropdown = CommentDropdown(layerLink: _setupPointLayerLink);
     _pointDropdown = CommentDropdown(layerLink: _pointLayerLink);
+
+    // Listen for job changes
+    locator<JobsViewModel>().currentJobName.addListener(_onJobChanged);
   }
 
-  Future<void> _loadJobDefaults() async {
+  void _onJobChanged() {
+    final newJobName = locator<JobsViewModel>().currentJobName.value;
+    if (newJobName != null && newJobName != widget.jobName) {
+      _loadJobDefaultsFor(newJobName);
+    }
+  }
+
+  Future<void> _loadJobDefaultsFor(String jobName) async {
     try {
       final defaults = await _jobService.getJobDefaults();
       if (!context.mounted) return;
@@ -123,6 +134,9 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
     // Dispose of dropdowns
     _setupPointDropdown.dispose();
     _pointDropdown.dispose();
+
+    // Remove job change listener
+    locator<JobsViewModel>().currentJobName.removeListener(_onJobChanged);
 
     super.dispose();
   }

@@ -13,11 +13,15 @@ class UsageViewModel extends ChangeNotifier {
   UsageSession? _currentSession;
   Position? _currentPosition;
 
+  bool _isDisposed = false;
+  bool get isDisposed => _isDisposed;
+
   Duration get currentDuration => _currentDuration;
   bool get isTracking => _timer != null;
   Position? get currentPosition => _currentPosition;
 
   Future<void> _getCurrentLocation() async {
+    if (_isDisposed) return;
     try {
       bool serviceEnabled;
       LocationPermission permission;
@@ -40,23 +44,25 @@ class UsageViewModel extends ChangeNotifier {
       }
 
       _currentPosition = await Geolocator.getCurrentPosition();
-      notifyListeners();
+      if (!_isDisposed) notifyListeners();
     } catch (e) {
       debugPrint('Error getting location: $e');
     }
   }
 
   void startTracking(String? jobName) async {
-    if (_timer != null) return;
+    if (_timer != null || _isDisposed) return;
 
     await _getCurrentLocation();
+    if (_isDisposed) return;
     _sessionStartTime = DateTime.now();
     _currentJobName = jobName;
     _currentDuration = Duration.zero;
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_isDisposed) return;
       _currentDuration = DateTime.now().difference(_sessionStartTime!);
-      notifyListeners();
+      if (!_isDisposed) notifyListeners();
     });
 
     _currentSession = UsageSession(
@@ -68,6 +74,7 @@ class UsageViewModel extends ChangeNotifier {
     );
 
     _usageService.insertSession(_currentSession!).then((id) {
+      if (_isDisposed) return;
       _currentSession = UsageSession(
         id: id,
         startTime: _sessionStartTime!,
@@ -98,24 +105,28 @@ class UsageViewModel extends ChangeNotifier {
       );
 
       await _usageService.updateSession(updatedSession);
+      if (_isDisposed) return;
       _currentSession = null;
       _sessionStartTime = null;
       _currentDuration = Duration.zero;
       _currentPosition = null;
     }
 
-    notifyListeners();
+    if (!_isDisposed) notifyListeners();
   }
 
   Future<List<UsageSession>> getAllSessions() async {
+    if (_isDisposed) return [];
     return await _usageService.getAllSessions();
   }
 
   Future<List<UsageSession>> getSessionsByJob(String jobName) async {
+    if (_isDisposed) return [];
     return await _usageService.getSessionsByJob(jobName);
   }
 
   Future<Duration> getTotalDurationByJob(String jobName) async {
+    if (_isDisposed) return Duration.zero;
     return await _usageService.getTotalDurationByJob(jobName);
   }
 
@@ -129,7 +140,15 @@ class UsageViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _isDisposed = true;
     _timer?.cancel();
     super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_isDisposed) {
+      super.notifyListeners();
+    }
   }
 }
