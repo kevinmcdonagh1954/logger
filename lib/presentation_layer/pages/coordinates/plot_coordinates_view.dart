@@ -110,6 +110,133 @@ class PointWithLabelsPainter extends FlDotPainter {
   Color get mainColor => color;
 }
 
+class _PointsPlotPainter extends CustomPainter {
+  final List<Point> points;
+  final Color pointColor;
+  final bool showGrid;
+  final double gridSpacing;
+  final double minX, maxX, minY, maxY;
+  final bool showComment, showDescriptor, showZ;
+  final int zDecimals;
+
+  _PointsPlotPainter({
+    required this.points,
+    required this.pointColor,
+    required this.showGrid,
+    required this.gridSpacing,
+    required this.minX,
+    required this.maxX,
+    required this.minY,
+    required this.maxY,
+    required this.showComment,
+    required this.showDescriptor,
+    required this.showZ,
+    required this.zDecimals,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = pointColor
+      ..style = PaintingStyle.fill;
+
+    // Draw grid
+    if (showGrid) {
+      final gridPaint = Paint()
+        ..color = Colors.white30
+        ..strokeWidth = 0.5;
+      // Vertical grid lines
+      for (double x = (minX / gridSpacing).ceil() * gridSpacing;
+          x <= maxX;
+          x += gridSpacing) {
+        final dx = _mapX(x, size.width);
+        canvas.drawLine(Offset(dx, 0), Offset(dx, size.height), gridPaint);
+      }
+      // Horizontal grid lines
+      for (double y = (minY / gridSpacing).ceil() * gridSpacing;
+          y <= maxY;
+          y += gridSpacing) {
+        final dy = _mapY(y, size.height);
+        canvas.drawLine(Offset(0, dy), Offset(size.width, dy), gridPaint);
+      }
+    }
+
+    // Draw border
+    final borderPaint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), borderPaint);
+
+    // Draw points
+    for (final point in points) {
+      final dx = _mapX(point.x, size.width);
+      final dy = _mapY(point.y, size.height);
+      canvas.drawCircle(Offset(dx, dy), 2, paint);
+
+      // Draw labels if enabled
+      if ((showComment || showDescriptor) &&
+          (point.comment.isNotEmpty ||
+              (showDescriptor &&
+                  point.descriptor != null &&
+                  point.descriptor!.isNotEmpty))) {
+        String label = '';
+        if (showComment && point.comment.isNotEmpty) label += point.comment;
+        if (showDescriptor &&
+            point.descriptor != null &&
+            point.descriptor!.isNotEmpty) {
+          if (label.isNotEmpty) label += '/';
+          label += point.descriptor!;
+        }
+        final textPainter = TextPainter(
+          text: TextSpan(
+            text: label,
+            style: const TextStyle(color: Colors.white, fontSize: 10),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        textPainter.paint(canvas, Offset(dx - textPainter.width / 2, dy - 12));
+      }
+      if (showZ) {
+        final textPainter = TextPainter(
+          text: TextSpan(
+            text: point.z.toStringAsFixed(zDecimals),
+            style: const TextStyle(color: Colors.white, fontSize: 10),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        textPainter.paint(canvas, Offset(dx - textPainter.width / 2, dy + 8));
+      }
+    }
+  }
+
+  // Map data X to canvas X
+  double _mapX(double x, double width) {
+    return ((x - minX) / (maxX - minX)) * width;
+  }
+
+  // Map data Y to canvas Y (invert Y axis for typical plot orientation)
+  double _mapY(double y, double height) {
+    return height - ((y - minY) / (maxY - minY)) * height;
+  }
+
+  @override
+  bool shouldRepaint(covariant _PointsPlotPainter oldDelegate) {
+    return points != oldDelegate.points ||
+        pointColor != oldDelegate.pointColor ||
+        showGrid != oldDelegate.showGrid ||
+        gridSpacing != oldDelegate.gridSpacing ||
+        minX != oldDelegate.minX ||
+        maxX != oldDelegate.maxX ||
+        minY != oldDelegate.minY ||
+        maxY != oldDelegate.maxY ||
+        showComment != oldDelegate.showComment ||
+        showDescriptor != oldDelegate.showDescriptor ||
+        showZ != oldDelegate.showZ ||
+        zDecimals != oldDelegate.zDecimals;
+  }
+}
+
 class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   final JobService _jobService = locator<JobService>();
   List<Point> _points = [];
@@ -434,38 +561,6 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     }).toList();
   }
 
-  ScatterSpot _buildSpot(Point point) {
-    // Format label as {comment/descriptor} if both are shown
-    String? label;
-    if (_showComment &&
-        _showDescriptor &&
-        point.descriptor != null &&
-        point.descriptor!.isNotEmpty) {
-      if (point.comment.isNotEmpty) {
-        label = '${point.comment}/${point.descriptor}';
-      } else {
-        label = '{${point.descriptor}}';
-      }
-    } else if (_showComment && point.comment.isNotEmpty) {
-      label = point.comment;
-    } else if (_showDescriptor &&
-        point.descriptor != null &&
-        point.descriptor!.isNotEmpty) {
-      label = point.descriptor;
-    }
-    return ScatterSpot(
-      -point.y,
-      -point.x,
-      dotPainter: PointWithLabelsPainter(
-        color: _pointColor,
-        comment: label,
-        elevation: point.z.toStringAsFixed(_zDecimals),
-        showComment: _showComment || _showDescriptor,
-        showZ: _showZ,
-      ),
-    );
-  }
-
   Widget _buildControls() {
     return Container(
       decoration: BoxDecoration(
@@ -664,6 +759,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         final newMaxY = centerY + maxRange / 2;
         final newMinX = centerX - maxRange / 2;
         final newMaxX = centerX + maxRange / 2;
+
         setState(() {
           _minY = newMinY;
           _maxY = newMaxY;
@@ -675,11 +771,67 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           _zoomBoxEndLocal = null;
           _isZoomBoxValid = true;
         });
+        Future.delayed(Duration.zero, () {
+          _showZoomDebugDialog(
+            context: context,
+            pickedTopLeftYX: Offset(minY, minX),
+            pickedBottomRightYX: Offset(maxY, maxX),
+            pickedTopLeftPx: _zoomBoxStartLocal ?? Offset.zero,
+            pickedBottomRightPx: _zoomBoxEndLocal ?? Offset.zero,
+            newTopLeftYX: Offset(newMinY, newMinX),
+            newBottomRightYX: Offset(newMaxY, newMaxX),
+          );
+        });
       }
       return;
     }
     // Do not allow panning
     // ... rest of pan end code is now disabled ...
+  }
+
+  void _showZoomDebugDialog({
+    required BuildContext context,
+    required Offset pickedTopLeftYX,
+    required Offset pickedBottomRightYX,
+    required Offset pickedTopLeftPx,
+    required Offset pickedBottomRightPx,
+    required Offset newTopLeftYX,
+    required Offset newBottomRightYX,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Zoom Box Debug Info'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Picked (User) Zoom Box:'),
+              Text(
+                  'Top Left YX: (${pickedTopLeftYX.dx.toStringAsFixed(3)}, ${pickedTopLeftYX.dy.toStringAsFixed(3)})'),
+              Text(
+                  'Bottom Right YX: (${pickedBottomRightYX.dx.toStringAsFixed(3)}, ${pickedBottomRightYX.dy.toStringAsFixed(3)})'),
+              Text(
+                  'Top Left Px: (${pickedTopLeftPx.dx.toStringAsFixed(1)}, ${pickedTopLeftPx.dy.toStringAsFixed(1)})'),
+              Text(
+                  'Bottom Right Px: (${pickedBottomRightPx.dx.toStringAsFixed(1)}, ${pickedBottomRightPx.dy.toStringAsFixed(1)})'),
+              const SizedBox(height: 16),
+              const Text('New (Calculated) Zoom Box:'),
+              Text(
+                  'Top Left YX: (${newTopLeftYX.dx.toStringAsFixed(3)}, ${newTopLeftYX.dy.toStringAsFixed(3)})'),
+              Text(
+                  'Bottom Right YX: (${newBottomRightYX.dx.toStringAsFixed(3)}, ${newBottomRightYX.dy.toStringAsFixed(3)})'),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _handleTapUp(TapUpDetails details) {
@@ -919,94 +1071,21 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       padding: const EdgeInsets.all(16.0),
       child: Stack(
         children: [
-          ScatterChart(
-            ScatterChartData(
-              scatterSpots:
-                  _visiblePoints.map((point) => _buildSpot(point)).toList(),
-              minX: -_viewMaxY,
-              maxX: -_viewMinY,
-              minY: -_viewMaxX,
-              maxY: -_viewMinX,
-              backgroundColor: Colors.black,
-              borderData: FlBorderData(
-                show: true,
-                border: Border.all(
-                  color: Colors.white,
-                  width: 1.0,
-                ),
-              ),
-              gridData: FlGridData(
-                show: _showGrid,
-                getDrawingHorizontalLine: (value) => const FlLine(
-                  color: Colors.white30,
-                  strokeWidth: 0.5,
-                ),
-                getDrawingVerticalLine: (value) => const FlLine(
-                  color: Colors.white30,
-                  strokeWidth: 0.5,
-                ),
-                checkToShowHorizontalLine: (value) => value % _gridSpacing == 0,
-                checkToShowVerticalLine: (value) => value % _gridSpacing == 0,
-              ),
-              titlesData: FlTitlesData(
-                show: _showGrid,
-                topTitles:
-                    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 50,
-                    interval: _gridSpacing,
-                    getTitlesWidget: (value, meta) {
-                      if (value % _gridSpacing != 0) return const Text('');
-                      return Transform.translate(
-                        offset: const Offset(
-                            4, 0), // Move right labels left further
-                        child: Transform.rotate(
-                          angle: 0,
-                          child: Text(
-                            (-value).toInt().toString(),
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 30,
-                    interval: _gridSpacing,
-                    getTitlesWidget: (value, meta) {
-                      if (value % _gridSpacing != 0) return const Text('');
-                      return Transform.translate(
-                        offset: const Offset(
-                            0, 16), // Move bottom labels down further
-                        child: Transform.rotate(
-                          angle: -pi / 2,
-                          child: Text(
-                            (-value).toInt().toString(),
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                leftTitles:
-                    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              ),
-              scatterTouchData: ScatterTouchData(
-                enabled: true,
-                handleBuiltInTouches: true,
-              ),
+          CustomPaint(
+            size: Size.infinite,
+            painter: _PointsPlotPainter(
+              points: _visiblePoints,
+              pointColor: _pointColor,
+              showGrid: _showGrid,
+              gridSpacing: _gridSpacing,
+              minX: _viewMinX,
+              maxX: _viewMaxX,
+              minY: _viewMinY,
+              maxY: _viewMaxY,
+              showComment: _showComment,
+              showDescriptor: _showDescriptor,
+              showZ: _showZ,
+              zDecimals: _zDecimals,
             ),
           ),
           // Add scale indicator at bottom left
@@ -1149,6 +1228,8 @@ class _ColorPickerState extends State<ColorPicker> {
               _currentColor = color;
             });
             widget.onColorChanged(color);
+            Navigator.of(context)
+                .pop(); // Close the dialog when a color is picked
           },
           child: Container(
             width: 32,
