@@ -9,7 +9,7 @@ import '../../core/coordinate_formatter.dart';
 import '../../core/dialogs/point_dialog.dart';
 import 'coordinates_map_view.dart';
 import 'plot_coordinates_view.dart';
-import '../../l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 
 class CoordinatesView extends StatefulWidget {
   const CoordinatesView({super.key});

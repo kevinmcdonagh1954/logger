@@ -11,7 +11,7 @@ import '../../core/angle_validator.dart';
 import 'dart:math';
 import 'polar_view.dart';
 import '../../core/angle_converter.dart';
-import '../../l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 import '../jobs/jobs_viewmodel.dart';
 
 class SetoutView extends StatefulWidget {

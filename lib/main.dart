@@ -7,7 +7,7 @@ import 'application_layer/jobs/job_service.dart';
 import 'application_layer/core/database_service.dart';
 import 'application_layer/core/logging_service.dart';
 import 'application_layer/core/localization_provider.dart';
-import 'presentation_layer/l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   try {

@@ -619,5 +619,59 @@
         "example": "18.4241"
       }
     }
+  },
+  "plotCoordinatesTitle": "Plot Coordinates - {count}",
+  "@plotCoordinatesTitle": {
+    "description": "Title for plot coordinates view with point count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "10"
+      }
+    }
+  },
+  "showComments": "Show Comments",
+  "@showComments": {
+    "description": "Option to toggle visibility of comments in plot coordinates"
+  },
+  "showDescriptors": "Show Descriptors",
+  "@showDescriptors": {
+    "description": "Option to toggle visibility of descriptors in plot coordinates"
+  },
+  "showZValues": "Show Z Values",
+  "@showZValues": {
+    "description": "Option to toggle visibility of Z values in plot coordinates"
+  },
+  "zDecimals": "Z Decimals: {count}",
+  "@zDecimals": {
+    "description": "Label for Z decimal places setting",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "setGridInterval": "Set Grid Interval",
+  "@setGridInterval": {
+    "description": "Label for setting grid interval option"
+  },
+  "pointUpdatedSuccess": "Point updated successfully",
+  "@pointUpdatedSuccess": {
+    "description": "Success message when point is updated"
+  },
+  "pointMovedOutOfView": "Point moved out of view",
+  "@pointMovedOutOfView": {
+    "description": "Message when point is moved outside visible area"
+  },
+  "error": "Error: {message}",
+  "@error": {
+    "description": "Error message with details",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Failed to update point"
+      }
+    }
   }
 } 

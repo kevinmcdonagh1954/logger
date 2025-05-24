@@ -182,7 +182,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get update => 'Update';
 
   @override
-  String get error => 'Error';
+  String error(String message) {
+    return 'Error: $message';
+  }
 
   @override
   String get success => 'Success';
@@ -500,4 +502,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String longitude(String longitude) {
     return 'Longitude: $longitude';
   }
+
+  @override
+  String plotCoordinatesTitle(int count) {
+    return 'Plot Coordinates - $count';
+  }
+
+  @override
+  String get showComments => 'Show Comments';
+
+  @override
+  String get showDescriptors => 'Show Descriptors';
+
+  @override
+  String get showZValues => 'Show Z Values';
+
+  @override
+  String zDecimals(int count) {
+    return 'Z Decimals: $count';
+  }
+
+  @override
+  String get setGridInterval => 'Set Grid Interval';
+
+  @override
+  String get pointUpdatedSuccess => 'Point updated successfully';
+
+  @override
+  String get pointMovedOutOfView => 'Point moved out of view';
 }

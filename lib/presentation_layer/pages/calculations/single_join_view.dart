@@ -14,7 +14,7 @@ import '../../core/bearing_formatter.dart';
 import '../../core/coordinate_formatter.dart';
 import '../../core/dialogs/point_dialog.dart';
 import '../../core/dropdowns/comment_dropdown.dart';
-import '../../l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 import '../jobs/jobs_viewmodel.dart';
 import '../startup/home_page_view.dart';
 

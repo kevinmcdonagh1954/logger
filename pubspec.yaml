@@ -60,6 +60,12 @@ flutter:
         - asset: assets/fonts/ReadexPro-Bold.ttf
           weight: 700
 
+# Localization configuration
+localizations:
+  arb-dir: lib/l10n
+  template-arb-file: app_en.arb
+  output-localization-file: app_localizations.dart
+
 # Configure the Flutter Launcher Icons
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -67,11 +73,3 @@ flutter_launcher_icons:
   image_path: "assets/images/kevin_on_land_cruiser_front_screen.jpg"
   adaptive_icon_background: "#FFFFFF" # white background
   adaptive_icon_foreground: "assets/images/kevin_on_land_cruiser_front_screen.jpg"
-  # If needed, we can add more specific configurations here
-
-flutter_intl:
-  enabled: true
-  class_name: S
-  main_locale: en
-  arb_dir: lib/presentation_layer/l10n
-  output_dir: lib/presentation_layer/l10n/generated

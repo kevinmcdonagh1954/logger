@@ -8,6 +8,7 @@ import 'dart:math';
 import 'dart:async';
 import '../../core/plot_coordinate_utils.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PlotCoordinatesView extends StatefulWidget {
   const PlotCoordinatesView({super.key});
@@ -532,7 +533,9 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
             }
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Point updated successfully')),
+            SnackBar(
+                content:
+                    Text(AppLocalizations.of(context)!.pointUpdatedSuccess)),
           );
           return;
         }
@@ -549,11 +552,15 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         });
         if (!inBounds) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Point moved out of view')),
+            SnackBar(
+                content:
+                    Text(AppLocalizations.of(context)!.pointMovedOutOfView)),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Point updated successfully')),
+            SnackBar(
+                content:
+                    Text(AppLocalizations.of(context)!.pointUpdatedSuccess)),
           );
         }
         return;
@@ -561,7 +568,8 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)!.error(e.toString()))),
         );
       }
     }
@@ -569,11 +577,12 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D47A1),
         foregroundColor: Colors.white,
-        title: Text('Plot Coordinates - ${_points.length}'),
+        title: Text(l10n.plotCoordinatesTitle(_points.length)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
@@ -615,17 +624,17 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
               CheckedPopupMenuItem<String>(
                 value: 'comment',
                 checked: _showComment,
-                child: const Text('Show Comments'),
+                child: Text(l10n.showComments),
               ),
               CheckedPopupMenuItem<String>(
                 value: 'descriptor',
                 checked: _showDescriptor,
-                child: const Text('Show Descriptors'),
+                child: Text(l10n.showDescriptors),
               ),
               CheckedPopupMenuItem<String>(
                 value: 'z',
                 checked: _showZ,
-                child: const Text('Show Z Values'),
+                child: Text(l10n.showZValues),
               ),
               if (_showZ) ...[
                 PopupMenuItem<String>(
@@ -634,7 +643,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                     children: [
                       Icon(_zDecimals == 0 ? Icons.check : null),
                       const SizedBox(width: 8),
-                      const Text('Z Decimals: 0'),
+                      Text(l10n.zDecimals(0)),
                     ],
                   ),
                 ),
@@ -644,7 +653,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                     children: [
                       Icon(_zDecimals == 1 ? Icons.check : null),
                       const SizedBox(width: 8),
-                      const Text('Z Decimals: 1'),
+                      Text(l10n.zDecimals(1)),
                     ],
                   ),
                 ),
@@ -654,7 +663,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                     children: [
                       Icon(_zDecimals == 2 ? Icons.check : null),
                       const SizedBox(width: 8),
-                      const Text('Z Decimals: 2'),
+                      Text(l10n.zDecimals(2)),
                     ],
                   ),
                 ),
@@ -664,15 +673,15 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                     children: [
                       Icon(_zDecimals == 3 ? Icons.check : null),
                       const SizedBox(width: 8),
-                      const Text('Z Decimals: 3'),
+                      Text(l10n.zDecimals(3)),
                     ],
                   ),
                 ),
               ],
               const PopupMenuDivider(),
-              const PopupMenuItem<String>(
+              PopupMenuItem<String>(
                 value: 'grid_interval',
-                child: Text('Set Grid Interval'),
+                child: Text(l10n.setGridInterval),
               ),
             ],
           ),

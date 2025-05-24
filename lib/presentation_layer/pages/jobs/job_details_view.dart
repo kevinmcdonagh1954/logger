@@ -4,7 +4,7 @@ import '../../../domain_layer/jobs/job_defaults.dart';
 import '../../../application_layer/core/service_locator.dart';
 import 'job_details_viewmodel.dart';
 import '../import_export/import_points_view.dart';
-import '../../l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// View for displaying job details
 class JobDetailsView extends StatefulWidget {

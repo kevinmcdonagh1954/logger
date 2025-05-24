@@ -439,11 +439,11 @@ abstract class AppLocalizations {
   /// **'Update'**
   String get update;
 
-  /// Label for error message
+  /// Error message with details
   ///
   /// In en, this message translates to:
-  /// **'Error'**
-  String get error;
+  /// **'Error: {message}'**
+  String error(String message);
 
   /// Label for success message
   ///
@@ -1050,6 +1050,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Longitude: {longitude}'**
   String longitude(String longitude);
+
+  /// Title for plot coordinates view with point count
+  ///
+  /// In en, this message translates to:
+  /// **'Plot Coordinates - {count}'**
+  String plotCoordinatesTitle(int count);
+
+  /// Option to toggle visibility of comments in plot coordinates
+  ///
+  /// In en, this message translates to:
+  /// **'Show Comments'**
+  String get showComments;
+
+  /// Option to toggle visibility of descriptors in plot coordinates
+  ///
+  /// In en, this message translates to:
+  /// **'Show Descriptors'**
+  String get showDescriptors;
+
+  /// Option to toggle visibility of Z values in plot coordinates
+  ///
+  /// In en, this message translates to:
+  /// **'Show Z Values'**
+  String get showZValues;
+
+  /// Label for Z decimal places setting
+  ///
+  /// In en, this message translates to:
+  /// **'Z Decimals: {count}'**
+  String zDecimals(int count);
+
+  /// Label for setting grid interval option
+  ///
+  /// In en, this message translates to:
+  /// **'Set Grid Interval'**
+  String get setGridInterval;
+
+  /// Success message when point is updated
+  ///
+  /// In en, this message translates to:
+  /// **'Point updated successfully'**
+  String get pointUpdatedSuccess;
+
+  /// Message when point is moved outside visible area
+  ///
+  /// In en, this message translates to:
+  /// **'Point moved out of view'**
+  String get pointMovedOutOfView;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -1061,7 +1109,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'es', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1073,7 +1121,6 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en': return AppLocalizationsEn();
-    case 'es': return AppLocalizationsEs();
     case 'zh': return AppLocalizationsZh();
   }
 

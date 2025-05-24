@@ -9,7 +9,7 @@ import '../../../application_layer/core/service_locator.dart';
 import '../coordinates/coordinates_view.dart';
 import '../../core/logger_app_bar.dart';
 import '../settings/settings_view.dart';
-import '../../l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import '../../viewmodels/usage_viewmodel.dart';
 // import 'coordinate_manager.dart';

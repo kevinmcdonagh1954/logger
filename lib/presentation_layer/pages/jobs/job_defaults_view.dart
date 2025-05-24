@@ -6,7 +6,7 @@ import 'jobs_viewmodel.dart';
 import '../../../application_layer/jobs/job_service.dart';
 import '../../../application_layer/core/logging_service.dart';
 import 'package:get_it/get_it.dart';
-import '../../l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// View for editing job defaults
 class JobDefaultsView extends StatefulWidget {

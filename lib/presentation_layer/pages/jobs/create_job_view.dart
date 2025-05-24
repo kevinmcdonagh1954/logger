@@ -7,7 +7,7 @@ import '../../../application_layer/jobs/job_service.dart';
 import '../../../application_layer/core/logging_service.dart';
 import 'jobs_view.dart';
 import 'package:get_it/get_it.dart';
-import '../../l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// View for creating new jobs
 class CreateJobView extends StatefulWidget {

@@ -1,11 +1,4 @@
 {
-  "es": [
-    "addPointDialog",
-    "characterCount",
-    "searchPoints",
-    "dtmTot"
-  ],
-
   "zh": [
     "area",
     "dtmTot",
@@ -14,6 +7,14 @@
     "importDtmTotHint",
     "exportTacheRawHint",
     "exportTacheReducedHint",
-    "exportRoadDesignHint"
+    "exportRoadDesignHint",
+    "plotCoordinatesTitle",
+    "showComments",
+    "showDescriptors",
+    "showZValues",
+    "zDecimals",
+    "setGridInterval",
+    "pointUpdatedSuccess",
+    "pointMovedOutOfView"
   ]
 }
