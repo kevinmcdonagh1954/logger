@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../application_layer/core/logging_service.dart';
 import '../../../application_layer/core/service_locator.dart';
@@ -14,7 +15,6 @@ import '../../core/bearing_formatter.dart';
 import '../../core/coordinate_formatter.dart';
 import '../../core/dialogs/point_dialog.dart';
 import '../../core/dropdowns/comment_dropdown.dart';
-import '../../../l10n/app_localizations.dart';
 import '../jobs/jobs_viewmodel.dart';
 import '../startup/home_page_view.dart';
 

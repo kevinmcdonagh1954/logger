@@ -7,7 +7,7 @@ import 'job_list_item.dart';
 import '../../../application_layer/jobs/job_actions_service.dart';
 import 'dart:async';
 import '../startup/home_page_view.dart'; // Import for routeObserver
-import '../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// View for displaying and managing jobs
 class JobsView extends StatefulWidget {

@@ -12,10 +12,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appTitle => 'Logger';
 
   @override
-  String get softwareName => 'Software Logger';
+  String get softwareName => 'Logger Software';
 
   @override
-  String get developmentDate => 'Fecha de Desarrollo';
+  String get developmentDate => 'Fecha de desarrollo';
 
   @override
   String get version => 'Versión';
@@ -30,19 +30,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get whatsapp => 'WhatsApp';
 
   @override
-  String get email => 'Correo';
+  String get email => 'Correo electrónico';
 
   @override
   String get location => 'Ubicación';
 
   @override
-  String get slopeDistance => 'Distancia Inclinada';
+  String get slopeDistance => 'Distancia de pendiente';
 
   @override
-  String get verticalAngle => 'Ángulo Vertical';
+  String get verticalAngle => 'Ángulo vertical';
 
   @override
-  String get invalidSlopeDistance => 'Distancia inclinada inválida';
+  String get invalidSlopeDistance => 'Distancia de pendiente inválida';
 
   @override
   String get invalidVerticalAngle => 'Ángulo vertical inválido';
@@ -51,49 +51,49 @@ class AppLocalizationsEs extends AppLocalizations {
   String get calculationError => 'Error en el cálculo';
 
   @override
-  String get swapPoints => 'Intercambiar Puntos';
+  String get swapPoints => 'Intercambiar puntos';
 
   @override
-  String get settings => 'Configuración';
+  String get settings => 'Configuraciones';
 
   @override
   String get setout => 'Replanteo';
 
   @override
-  String get moveForward => 'Avanzar';
+  String get moveForward => 'Mover hacia adelante';
 
   @override
-  String get moveBack => 'Retroceder';
+  String get moveBack => 'Mover hacia atrás';
 
   @override
-  String get moveLeft => 'Mover a la Izquierda';
+  String get moveLeft => 'Mover a la izquierda';
 
   @override
-  String get moveRight => 'Mover a la Derecha';
+  String get moveRight => 'Mover a la derecha';
 
   @override
-  String get moveUp => 'Mover Arriba';
+  String get moveUp => 'Mover hacia arriba';
 
   @override
-  String get moveDown => 'Bajar';
+  String get moveDown => 'Mover hacia abajo';
 
   @override
-  String get onLine => 'En Línea';
+  String get onLine => 'En línea';
 
   @override
   String get language => 'Idioma';
 
   @override
-  String get selectLanguage => 'Seleccionar Idioma';
+  String get selectLanguage => 'Seleccionar idioma';
 
   @override
-  String get homePage => 'Página Principal';
+  String get homePage => 'Página principal';
 
   @override
   String get jobs => 'Trabajos';
 
   @override
-  String get jobsHint => 'Seleccionar, Crear o Gestionar';
+  String get jobsHint => 'Seleccionar, Crear o Administrar';
 
   @override
   String get coordinates => 'Coordenadas';
@@ -117,21 +117,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get quit => 'Salir';
 
   @override
-  String get noCurrentJob => 'Sin Trabajo Actual';
+  String get noCurrentJob => 'Sin trabajo actual';
 
   @override
   String currentJob(String jobName) {
-    return 'Trabajo Actual: $jobName';
+    return 'Trabajo actual: $jobName';
   }
 
   @override
   String get comingSoon => 'Próximamente';
 
   @override
-  String get importPoints => 'Importar Puntos';
+  String get importPoints => 'Importar puntos';
 
   @override
-  String get exportPoints => 'Exportar Puntos';
+  String get exportPoints => 'Exportar puntos';
 
   @override
   String get readyToImport => 'Listo para importar';
@@ -140,13 +140,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get importStatus => 'Estado de importación:';
 
   @override
-  String get slopeDistanceWithUnit => 'Distancia de Pendiente (m)';
+  String get slopeDistanceWithUnit => 'Distancia de pendiente (m)';
 
   @override
-  String get targetHeight => 'Altura del objetivo (m)';
+  String get targetHeight => 'Altura objetivo (m)';
 
   @override
-  String get horizontalAngle => 'Ángulo Horizontal';
+  String get horizontalAngle => 'Ángulo horizontal';
 
   @override
   String get setupAt => 'Configurar en';
@@ -164,7 +164,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get calculatedPosition => 'Posición calculada';
 
   @override
-  String get distance => 'Distancia (m)';
+  String get distance => 'Distancia';
 
   @override
   String get direction => 'Dirección';
@@ -182,13 +182,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get update => 'Actualizar';
 
   @override
-  String get error => 'Error';
+  String error(String message) {
+    return 'Error: $message';
+  }
 
   @override
   String get success => 'Éxito';
 
   @override
-  String get singleJoin => 'Unión Simple';
+  String get singleJoin => 'Unión simple';
 
   @override
   String get polar => 'Polar';
@@ -200,19 +202,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get secondPoint => '2do Punto';
 
   @override
-  String get heightDiff => 'Dif. Altura';
+  String get heightDiff => 'Diferencia de altura';
 
   @override
-  String get slopeDistanceLabel => 'Distancia Inclinada';
+  String get slopeDistanceLabel => 'Distancia de pendiente';
 
   @override
-  String get gradeSlope => 'Pendiente 1:';
+  String get gradeSlope => 'Pendiente/Grado 1:';
 
   @override
-  String get gradeSlopePercent => 'Pendiente %';
+  String get gradeSlopePercent => 'Pendiente/Grado %';
 
   @override
-  String get slopeAngle => 'Ángulo de Pendiente';
+  String get slopeAngle => 'Ángulo de pendiente';
 
   @override
   String get area => 'Área';
@@ -221,28 +223,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get joins => 'Uniones';
 
   @override
-  String get searchPoint => 'Buscar Punto';
+  String get searchPoint => 'Buscar punto';
 
   @override
-  String get addPoint => 'Agregar Punto';
+  String get addPoint => 'Agregar punto';
 
   @override
-  String get targetHeightWithUnit => 'Altura del Objetivo (m)';
+  String get targetHeightWithUnit => 'Altura objetivo (m)';
 
   @override
-  String get useCurvatureAndRefraction => 'Usar Curvatura y Refracción';
+  String get useCurvatureAndRefraction => 'Usar curvatura y refracción';
 
   @override
-  String get firstPointHint => 'Primer Punto';
+  String get firstPointHint => 'Primer punto';
 
   @override
-  String get nextPointHint => 'Siguiente Punto';
+  String get nextPointHint => 'Siguiente punto';
 
   @override
-  String get addPointTitle => 'Agregar Punto';
+  String get addPointTitle => 'Agregar punto';
 
   @override
-  String get invalidComment => 'Comentario Inválido';
+  String get invalidComment => 'Comentario inválido';
 
   @override
   String get comment => 'Comentario';
@@ -251,22 +253,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get descriptor => 'Descriptor';
 
   @override
-  String get coords => 'Coords';
+  String get coords => 'Coordenadas';
 
   @override
-  String get sortBy => 'Ordenar Por';
+  String get sortBy => 'Ordenar por';
 
   @override
-  String get sortByComment => 'Ordenar por Comentario';
+  String get sortByComment => 'Ordenar por comentario';
 
   @override
-  String get sortByCoordinate => 'Ordenar por Coordenada';
+  String get sortByCoordinate => 'Ordenar por coordenada';
 
   @override
   String get viewOnGoogleMaps => 'Ver en Google Maps';
 
   @override
-  String get addPointDialog => 'Add Point';
+  String get addPointDialog => 'Agregar punto';
 
   @override
   String characterCount(int current, int max) {
@@ -274,13 +276,13 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get searchPoints => 'Search Points';
+  String get searchPoints => 'Buscar puntos';
 
   @override
-  String get editPoint => 'Editar Punto';
+  String get editPoint => 'Editar punto';
 
   @override
-  String get validComment => 'Comentario Válido';
+  String get validComment => 'Comentario válido';
 
   @override
   String get pleaseEnterComment => 'Por favor ingrese un comentario';
@@ -304,10 +306,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nameZtoA => 'Nombre (Z a A)';
 
   @override
-  String get dateModifiedNewest => 'Fecha de modificación (Más reciente)';
+  String get dateModifiedNewest => 'Fecha de modificación (más reciente)';
 
   @override
-  String get dateModifiedOldest => 'Fecha de modificación (Más antiguo)';
+  String get dateModifiedOldest => 'Fecha de modificación (más antigua)';
 
   @override
   String get createNewJob => 'Crear nuevo trabajo';
@@ -316,10 +318,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get info => 'Información';
 
   @override
-  String get jobSettings => 'Configuración del Trabajo';
+  String get jobSettings => 'Configuración del trabajo';
 
   @override
-  String get jobName => 'Nombre del Trabajo';
+  String get jobName => 'Nombre del trabajo';
 
   @override
   String get jobInformation => 'Información del trabajo';
@@ -328,58 +330,58 @@ class AppLocalizationsEs extends AppLocalizations {
   String get jobDescription => 'Descripción del trabajo';
 
   @override
-  String get coordinateFormat => 'Formato de Coordenadas';
+  String get coordinateFormat => 'Formato de coordenadas';
 
   @override
   String get instrument => 'Instrumento';
 
   @override
-  String get dualCapture => 'Captura Dual';
+  String get dualCapture => 'Captura dual';
 
   @override
-  String get measurementUnits => 'Unidades de Medida';
+  String get measurementUnits => 'Unidades de medida';
 
   @override
-  String get angularMeasurement => 'Medición Angular';
+  String get angularMeasurement => 'Medición angular';
 
   @override
-  String get commsBaudRate => 'Velocidad de Baudios';
+  String get commsBaudRate => 'Velocidad de baudios de comunicación';
 
   @override
-  String get calculationSettings => 'Configuración de Cálculos';
+  String get calculationSettings => 'Configuración de cálculo';
 
   @override
-  String get scaleFactor => 'Factor de Escala';
+  String get scaleFactor => 'Factor de escala';
 
   @override
-  String get heightAboveMSL => 'Altura sobre el Nivel del Mar';
+  String get heightAboveMSL => 'Altura sobre el nivel del mar';
 
   @override
-  String get meanYValue => 'Valor Medio Y';
+  String get meanYValue => 'Valor medio Y';
 
   @override
-  String get verticalAngleIndexError => 'Error de Índice de Ángulo Vertical';
+  String get verticalAngleIndexError => 'Error de índice de ángulo vertical';
 
   @override
-  String get toleranceSettings => 'Configuración de Tolerancias';
+  String get toleranceSettings => 'Configuración de tolerancia';
 
   @override
-  String get spotShotTolerance => 'Tolerancia de Punto';
+  String get spotShotTolerance => 'Tolerancia de disparo puntual';
 
   @override
-  String get horizontalAlignmentOffsetTolerance => 'Tolerancia de Desplazamiento de Alineación Horizontal';
+  String get horizontalAlignmentOffsetTolerance => 'Tolerancia de desplazamiento de alineación horizontal';
 
   @override
-  String get maximumSearchDistanceFromCL => 'Distancia Máxima de Búsqueda desde CL';
+  String get maximumSearchDistanceFromCL => 'Distancia máxima de búsqueda desde CL';
 
   @override
-  String get timingSettings => 'Configuración de Tiempo';
+  String get timingSettings => 'Configuración de tiempo';
 
   @override
-  String get numberOfRetries => 'Número de Reintentos';
+  String get numberOfRetries => 'Número de reintentos';
 
   @override
-  String get timeout => 'Tiempo de Espera';
+  String get timeout => 'Tiempo de espera';
 
   @override
   String get instrumentSettings => 'Configuración del instrumento';
@@ -400,49 +402,49 @@ class AppLocalizationsEs extends AppLocalizations {
   String get export => 'Exportar';
 
   @override
-  String get horzAlignment => 'Alineación Horizontal';
+  String get horzAlignment => 'Alineación horizontal';
 
   @override
   String get dtmTot => 'DTM (TOT)';
 
   @override
-  String get roadDesign => 'Diseño de Carretera';
+  String get roadDesign => 'Diseño de carretera';
 
   @override
-  String get strings => 'Cuerdas';
+  String get strings => 'Cadenas';
 
   @override
-  String get tacheRaw => 'Taqueo (Bruto)';
+  String get tacheRaw => 'Tache (crudo)';
 
   @override
-  String get tacheReduced => 'Taqueo (Reducido)';
+  String get tacheReduced => 'Tache (reducido)';
 
   @override
-  String get fieldbook => 'Libreta de Campo';
+  String get fieldbook => 'Libro de campo';
 
   @override
   String get importCoordinatesHint => 'Importar datos de coordenadas desde archivo. Formato delimitado por coma, espacio o tabulación. Formato CYXZ o CENZ. Restringido a 20 caracteres';
 
   @override
-  String get importHorzAlignmentHint => 'Importar datos de alineación horizontal desde archivos PID de Model y Road Maker';
+  String get importHorzAlignmentHint => 'Importar datos de alineación horizontal de archivos PID de Model y Road Maker';
 
   @override
   String get importDtmTotHint => 'Leer archivo TOT de Model Maker. Modelo TIN';
 
   @override
-  String get importRoadDesignHint => 'Importar datos y especificaciones de diseño de carretera desde Road Maker. Archivo PR3';
+  String get importRoadDesignHint => 'Importar datos y especificaciones de diseño de carretera de Road Maker. Archivo PR3';
 
   @override
-  String get importStringsHint => 'Importar cuerdas desde Model Maker';
+  String get importStringsHint => 'Importar cadenas de Model Maker.';
 
   @override
-  String get exportTacheRawHint => 'Exportar datos brutos de taqueometría';
+  String get exportTacheRawHint => 'Exportar datos de taquimetría crudos';
 
   @override
-  String get exportTacheReducedHint => 'Exportar datos procesados de taqueometría Comentario YXZ/ENZ';
+  String get exportTacheReducedHint => 'Exportar datos de taquimetría procesados Comentario YXZ/ENZ';
 
   @override
-  String get exportFieldbookHint => 'Exportar datos de libreta de campo';
+  String get exportFieldbookHint => 'Exportar datos del libro de campo';
 
   @override
   String get exportRoadDesignHint => 'Exportar datos de diseño de carretera';
@@ -451,7 +453,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deletingYourJob => 'Eliminando su trabajo';
 
   @override
-  String deleteJobConfirmation(Object jobName) {
+  String deleteJobConfirmation(String jobName) {
     return '¿Está seguro de que desea eliminar \"$jobName\" y todo su contenido?';
   }
 
@@ -500,4 +502,35 @@ class AppLocalizationsEs extends AppLocalizations {
   String longitude(String longitude) {
     return 'Longitud: $longitude';
   }
+
+  @override
+  String plotCoordinatesTitle(int count) {
+    return 'Coordenadas de trama - $count';
+  }
+
+  @override
+  String get showComments => 'Mostrar comentarios';
+
+  @override
+  String get showDescriptors => 'Mostrar descriptores';
+
+  @override
+  String get showZValues => 'Mostrar valores Z';
+
+  @override
+  String zDecimals(int count) {
+    return 'Decimales Z: $count';
+  }
+
+  @override
+  String get setGridInterval => 'Establecer intervalo de cuadrícula';
+
+  @override
+  String get pointUpdatedSuccess => 'Punto actualizado correctamente';
+
+  @override
+  String get pointMovedOutOfView => 'Punto movido fuera de vista';
+
+  @override
+  String get plotCoordinates => 'Plot Coordinates';
 }

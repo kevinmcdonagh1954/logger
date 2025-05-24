@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import '../coordinate_formatter.dart';
 import '../../../../domain_layer/coordinates/point.dart';
 import '../../../application_layer/jobs/job_service.dart';
-import '../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PointDialog extends StatefulWidget {
   final JobService jobService;

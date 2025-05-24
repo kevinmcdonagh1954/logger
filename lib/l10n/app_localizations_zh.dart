@@ -183,7 +183,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String error(String message) {
-    return '错误';
+    return '错误：$message';
   }
 
   @override
@@ -453,7 +453,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deletingYourJob => '删除您的工作';
 
   @override
-  String deleteJobConfirmation(Object jobName) {
+  String deleteJobConfirmation(String jobName) {
     return '您确定要删除\"$jobName\"及其所有内容吗？';
   }
 
@@ -530,4 +530,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pointMovedOutOfView => 'Point moved out of view';
+
+  @override
+  String get plotCoordinates => 'Plot Coordinates';
 }

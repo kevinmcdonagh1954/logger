@@ -1,0 +1,745 @@
+{
+  "@@locale": "es",
+  "appTitle": "Logger",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "softwareName": "Logger Software",
+  "@softwareName": {
+    "description": "The name of the software"
+  },
+  "developmentDate": "Fecha de desarrollo",
+  "@developmentDate": {
+    "description": "Label for development date"
+  },
+  "version": "Versión",
+  "@version": {
+    "description": "Label for version number"
+  },
+  "contact": "Contacto",
+  "@contact": {
+    "description": "Label for contact information"
+  },
+  "phone": "Teléfono",
+  "@phone": {
+    "description": "Label for phone number"
+  },
+  "whatsapp": "WhatsApp",
+  "@whatsapp": {
+    "description": "Label for WhatsApp contact"
+  },
+  "email": "Correo electrónico",
+  "@email": {
+    "description": "Label for email address"
+  },
+  "location": "Ubicación",
+  "@location": {
+    "description": "Label for location"
+  },
+  "slopeDistance": "Distancia de pendiente",
+  "@slopeDistance": {
+    "description": "Label for slope distance"
+  },
+  "verticalAngle": "Ángulo vertical",
+  "@verticalAngle": {
+    "description": "Label for vertical angle"
+  },
+  "invalidSlopeDistance": "Distancia de pendiente inválida",
+  "@invalidSlopeDistance": {
+    "description": "Error message for invalid slope distance"
+  },
+  "invalidVerticalAngle": "Ángulo vertical inválido",
+  "@invalidVerticalAngle": {
+    "description": "Error message for invalid vertical angle"
+  },
+  "calculationError": "Error en el cálculo",
+  "@calculationError": {
+    "description": "Error message for calculation errors"
+  },
+  "swapPoints": "Intercambiar puntos",
+  "@swapPoints": {
+    "description": "Label for swapping points"
+  },
+  "settings": "Configuraciones",
+  "@settings": {
+    "description": "Label for settings"
+  },
+  "setout": "Replanteo",
+  "@setout": {
+    "description": "Label for setout"
+  },
+  "moveForward": "Mover hacia adelante",
+  "@moveForward": {
+    "description": "Label for moving forward"
+  },
+  "moveBack": "Mover hacia atrás",
+  "@moveBack": {
+    "description": "Label for moving back"
+  },
+  "moveLeft": "Mover a la izquierda",
+  "@moveLeft": {
+    "description": "Label for moving left"
+  },
+  "moveRight": "Mover a la derecha",
+  "@moveRight": {
+    "description": "Label for moving right"
+  },
+  "moveUp": "Mover hacia arriba",
+  "@moveUp": {
+    "description": "Label for moving up"
+  },
+  "moveDown": "Mover hacia abajo",
+  "@moveDown": {
+    "description": "Label for moving down"
+  },
+  "onLine": "En línea",
+  "@onLine": {
+    "description": "Label for on line status"
+  },
+  "language": "Idioma",
+  "@language": {
+    "description": "Label for language selection"
+  },
+  "selectLanguage": "Seleccionar idioma",
+  "@selectLanguage": {
+    "description": "Label for language selection dropdown"
+  },
+  "homePage": "Página principal",
+  "@homePage": {
+    "description": "Label for home page"
+  },
+  "jobs": "Trabajos",
+  "@jobs": {
+    "description": "Label for jobs section"
+  },
+  "jobsHint": "Seleccionar, Crear o Administrar",
+  "@jobsHint": {
+    "description": "Hint text for jobs section"
+  },
+  "coordinates": "Coordenadas",
+  "@coordinates": {
+    "description": "Label for coordinates section"
+  },
+  "coordinatesHint": "Ver, Agregar, Editar, Eliminar",
+  "@coordinatesHint": {
+    "description": "Hint text for coordinates section"
+  },
+  "calculations": "Cálculos",
+  "@calculations": {
+    "description": "Label for calculations section"
+  },
+  "calculationsHint": "Unir, Polar",
+  "@calculationsHint": {
+    "description": "Hint text for calculations section"
+  },
+  "fixes": "Fijaciones",
+  "@fixes": {
+    "description": "Label for fixes section"
+  },
+  "roads": "Carreteras",
+  "@roads": {
+    "description": "Label for roads section"
+  },
+  "quit": "Salir",
+  "@quit": {
+    "description": "Label for quit button"
+  },
+  "noCurrentJob": "Sin trabajo actual",
+  "@noCurrentJob": {
+    "description": "Message when no job is selected"
+  },
+  "currentJob": "Trabajo actual: {jobName}",
+  "@currentJob": {
+    "description": "Label showing current job name",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Project 1"
+      }
+    }
+  },
+  "comingSoon": "Próximamente",
+  "@comingSoon": {
+    "description": "Label for upcoming features"
+  },
+  "importPoints": "Importar puntos",
+  "@importPoints": {
+    "description": "Label for importing points"
+  },
+  "exportPoints": "Exportar puntos",
+  "@exportPoints": {
+    "description": "Label for exporting points"
+  },
+  "readyToImport": "Listo para importar",
+  "@readyToImport": {
+    "description": "Message when ready to import"
+  },
+  "importStatus": "Estado de importación:",
+  "@importStatus": {
+    "description": "Label for import status"
+  },
+  "slopeDistanceWithUnit": "Distancia de pendiente (m)",
+  "@slopeDistanceWithUnit": {
+    "description": "Label for slope distance with unit"
+  },
+  "targetHeight": "Altura objetivo (m)",
+  "@targetHeight": {
+    "description": "Label for target height"
+  },
+  "horizontalAngle": "Ángulo horizontal",
+  "@horizontalAngle": {
+    "description": "Label for horizontal angle"
+  },
+  "setupAt": "Configurar en",
+  "@setupAt": {
+    "description": "Label for setup location"
+  },
+  "pointName": "Nombre del punto",
+  "@pointName": {
+    "description": "Label for point name"
+  },
+  "search": "Buscar",
+  "@search": {
+    "description": "Label for search button"
+  },
+  "add": "Agregar",
+  "@add": {
+    "description": "Label for add button"
+  },
+  "calculatedPosition": "Posición calculada",
+  "@calculatedPosition": {
+    "description": "Label for calculated position"
+  },
+  "distance": "Distancia",
+  "@distance": {
+    "description": "Label for distance"
+  },
+  "direction": "Dirección",
+  "@direction": {
+    "description": "Label for direction"
+  },
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Label for cancel button"
+  },
+  "save": "Guardar",
+  "@save": {
+    "description": "Label for save button"
+  },
+  "delete": "Eliminar",
+  "@delete": {
+    "description": "Label for delete button"
+  },
+  "update": "Actualizar",
+  "@update": {
+    "description": "Label for update button"
+  },
+  "error": "Error: {message}",
+  "@error": {
+    "description": "Error message with details",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Invalid input"
+      }
+    }
+  },
+  "success": "Éxito",
+  "@success": {
+    "description": "Success message"
+  },
+  "singleJoin": "Unión simple",
+  "@singleJoin": {
+    "description": "Label for single join"
+  },
+  "polar": "Polar",
+  "@polar": {
+    "description": "Label for polar"
+  },
+  "firstPoint": "1er Punto",
+  "@firstPoint": {
+    "description": "Label for first point"
+  },
+  "secondPoint": "2do Punto",
+  "@secondPoint": {
+    "description": "Label for second point"
+  },
+  "heightDiff": "Diferencia de altura",
+  "@heightDiff": {
+    "description": "Label for height difference"
+  },
+  "slopeDistanceLabel": "Distancia de pendiente",
+  "@slopeDistanceLabel": {
+    "description": "Label for slope distance"
+  },
+  "gradeSlope": "Pendiente/Grado 1:",
+  "@gradeSlope": {
+    "description": "Label for grade slope"
+  },
+  "gradeSlopePercent": "Pendiente/Grado %",
+  "@gradeSlopePercent": {
+    "description": "Label for grade slope percentage"
+  },
+  "slopeAngle": "Ángulo de pendiente",
+  "@slopeAngle": {
+    "description": "Label for slope angle"
+  },
+  "area": "Área",
+  "@area": {
+    "description": "Label for area"
+  },
+  "joins": "Uniones",
+  "@joins": {
+    "description": "Label for joins"
+  },
+  "searchPoint": "Buscar punto",
+  "@searchPoint": {
+    "description": "Label for searching points"
+  },
+  "addPoint": "Agregar punto",
+  "@addPoint": {
+    "description": "Label for adding points"
+  },
+  "targetHeightWithUnit": "Altura objetivo (m)",
+  "@targetHeightWithUnit": {
+    "description": "Label for target height with unit"
+  },
+  "useCurvatureAndRefraction": "Usar curvatura y refracción",
+  "@useCurvatureAndRefraction": {
+    "description": "Label for using curvature and refraction"
+  },
+  "firstPointHint": "Primer punto",
+  "@firstPointHint": {
+    "description": "Hint for first point"
+  },
+  "nextPointHint": "Siguiente punto",
+  "@nextPointHint": {
+    "description": "Hint for next point"
+  },
+  "addPointTitle": "Agregar punto",
+  "@addPointTitle": {
+    "description": "Title for add point dialog"
+  },
+  "invalidComment": "Comentario inválido",
+  "@invalidComment": {
+    "description": "Error message for invalid comment"
+  },
+  "comment": "Comentario",
+  "@comment": {
+    "description": "Label for comment"
+  },
+  "descriptor": "Descriptor",
+  "@descriptor": {
+    "description": "Label for descriptor"
+  },
+  "coords": "Coordenadas",
+  "@coords": {
+    "description": "Label for coordinates"
+  },
+  "sortBy": "Ordenar por",
+  "@sortBy": {
+    "description": "Label for sort by"
+  },
+  "sortByComment": "Ordenar por comentario",
+  "@sortByComment": {
+    "description": "Label for sorting by comment"
+  },
+  "sortByCoordinate": "Ordenar por coordenada",
+  "@sortByCoordinate": {
+    "description": "Label for sorting by coordinate"
+  },
+  "viewOnGoogleMaps": "Ver en Google Maps",
+  "@viewOnGoogleMaps": {
+    "description": "Label for viewing on Google Maps"
+  },
+  "addPointDialog": "Agregar punto",
+  "@addPointDialog": {
+    "description": "Title for add point dialog"
+  },
+  "characterCount": "{current}/{max}",
+  "@characterCount": {
+    "description": "Character count display",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "5"
+      },
+      "max": {
+        "type": "int",
+        "example": "20"
+      }
+    }
+  },
+  "searchPoints": "Buscar puntos",
+  "@searchPoints": {
+    "description": "Label for searching points"
+  },
+  "editPoint": "Editar punto",
+  "@editPoint": {
+    "description": "Label for editing point"
+  },
+  "validComment": "Comentario válido",
+  "@validComment": {
+    "description": "Message for valid comment"
+  },
+  "pleaseEnterComment": "Por favor ingrese un comentario",
+  "@pleaseEnterComment": {
+    "description": "Prompt to enter comment"
+  },
+  "commentExists": "El comentario ya existe",
+  "@commentExists": {
+    "description": "Error message for existing comment"
+  },
+  "backup": "Copia de seguridad",
+  "@backup": {
+    "description": "Label for backup"
+  },
+  "searchJob": "Buscar trabajo",
+  "@searchJob": {
+    "description": "Label for searching jobs"
+  },
+  "sortJobsBy": "Ordenar trabajos por",
+  "@sortJobsBy": {
+    "description": "Label for sorting jobs"
+  },
+  "nameAtoZ": "Nombre (A a Z)",
+  "@nameAtoZ": {
+    "description": "Label for sorting by name A to Z"
+  },
+  "nameZtoA": "Nombre (Z a A)",
+  "@nameZtoA": {
+    "description": "Label for sorting by name Z to A"
+  },
+  "dateModifiedNewest": "Fecha de modificación (más reciente)",
+  "@dateModifiedNewest": {
+    "description": "Label for sorting by newest modification date"
+  },
+  "dateModifiedOldest": "Fecha de modificación (más antigua)",
+  "@dateModifiedOldest": {
+    "description": "Label for sorting by oldest modification date"
+  },
+  "createNewJob": "Crear nuevo trabajo",
+  "@createNewJob": {
+    "description": "Label for creating new job"
+  },
+  "info": "Información",
+  "@info": {
+    "description": "Label for information"
+  },
+  "jobSettings": "Configuración del trabajo",
+  "@jobSettings": {
+    "description": "Label for job settings"
+  },
+  "jobName": "Nombre del trabajo",
+  "@jobName": {
+    "description": "Label for job name"
+  },
+  "jobInformation": "Información del trabajo",
+  "@jobInformation": {
+    "description": "Label for job information"
+  },
+  "jobDescription": "Descripción del trabajo",
+  "@jobDescription": {
+    "description": "Label for job description"
+  },
+  "coordinateFormat": "Formato de coordenadas",
+  "@coordinateFormat": {
+    "description": "Label for coordinate format"
+  },
+  "instrument": "Instrumento",
+  "@instrument": {
+    "description": "Label for instrument"
+  },
+  "dualCapture": "Captura dual",
+  "@dualCapture": {
+    "description": "Label for dual capture"
+  },
+  "measurementUnits": "Unidades de medida",
+  "@measurementUnits": {
+    "description": "Label for measurement units"
+  },
+  "angularMeasurement": "Medición angular",
+  "@angularMeasurement": {
+    "description": "Label for angular measurement"
+  },
+  "commsBaudRate": "Velocidad de baudios de comunicación",
+  "@commsBaudRate": {
+    "description": "Label for communication baud rate"
+  },
+  "calculationSettings": "Configuración de cálculo",
+  "@calculationSettings": {
+    "description": "Label for calculation settings"
+  },
+  "scaleFactor": "Factor de escala",
+  "@scaleFactor": {
+    "description": "Label for scale factor"
+  },
+  "heightAboveMSL": "Altura sobre el nivel del mar",
+  "@heightAboveMSL": {
+    "description": "Label for height above mean sea level"
+  },
+  "meanYValue": "Valor medio Y",
+  "@meanYValue": {
+    "description": "Label for mean Y value"
+  },
+  "verticalAngleIndexError": "Error de índice de ángulo vertical",
+  "@verticalAngleIndexError": {
+    "description": "Label for vertical angle index error"
+  },
+  "toleranceSettings": "Configuración de tolerancia",
+  "@toleranceSettings": {
+    "description": "Label for tolerance settings"
+  },
+  "spotShotTolerance": "Tolerancia de disparo puntual",
+  "@spotShotTolerance": {
+    "description": "Label for spot shot tolerance"
+  },
+  "horizontalAlignmentOffsetTolerance": "Tolerancia de desplazamiento de alineación horizontal",
+  "@horizontalAlignmentOffsetTolerance": {
+    "description": "Label for horizontal alignment offset tolerance"
+  },
+  "maximumSearchDistanceFromCL": "Distancia máxima de búsqueda desde CL",
+  "@maximumSearchDistanceFromCL": {
+    "description": "Label for maximum search distance from centerline"
+  },
+  "timingSettings": "Configuración de tiempo",
+  "@timingSettings": {
+    "description": "Label for timing settings"
+  },
+  "numberOfRetries": "Número de reintentos",
+  "@numberOfRetries": {
+    "description": "Label for number of retries"
+  },
+  "timeout": "Tiempo de espera",
+  "@timeout": {
+    "description": "Label for timeout"
+  },
+  "instrumentSettings": "Configuración del instrumento",
+  "@instrumentSettings": {
+    "description": "Label for instrument settings"
+  },
+  "manualInstrument": "MANUAL",
+  "@manualInstrument": {
+    "description": "Label for manual instrument"
+  },
+  "importExport": "Importar/Exportar",
+  "@importExport": {
+    "description": "Label for import/export section"
+  },
+  "exportCoordinatesHint": "Exportar datos de coordenadas a archivo",
+  "@exportCoordinatesHint": {
+    "description": "Hint for exporting coordinates"
+  },
+  "import": "Importar",
+  "@import": {
+    "description": "Label for import button"
+  },
+  "export": "Exportar",
+  "@export": {
+    "description": "Label for export button"
+  },
+  "horzAlignment": "Alineación horizontal",
+  "@horzAlignment": {
+    "description": "Label for horizontal alignment"
+  },
+  "dtmTot": "DTM (TOT)",
+  "@dtmTot": {
+    "description": "Label for DTM TOT"
+  },
+  "roadDesign": "Diseño de carretera",
+  "@roadDesign": {
+    "description": "Label for road design"
+  },
+  "strings": "Cadenas",
+  "@strings": {
+    "description": "Label for strings"
+  },
+  "tacheRaw": "Tache (crudo)",
+  "@tacheRaw": {
+    "description": "Label for raw tache"
+  },
+  "tacheReduced": "Tache (reducido)",
+  "@tacheReduced": {
+    "description": "Label for reduced tache"
+  },
+  "fieldbook": "Libro de campo",
+  "@fieldbook": {
+    "description": "Label for fieldbook"
+  },
+  "importCoordinatesHint": "Importar datos de coordenadas desde archivo. Formato delimitado por coma, espacio o tabulación. Formato CYXZ o CENZ. Restringido a 20 caracteres",
+  "@importCoordinatesHint": {
+    "description": "Hint for importing coordinates"
+  },
+  "importHorzAlignmentHint": "Importar datos de alineación horizontal de archivos PID de Model y Road Maker",
+  "@importHorzAlignmentHint": {
+    "description": "Hint for importing horizontal alignment"
+  },
+  "importDtmTotHint": "Leer archivo TOT de Model Maker. Modelo TIN",
+  "@importDtmTotHint": {
+    "description": "Hint for importing DTM TOT"
+  },
+  "importRoadDesignHint": "Importar datos y especificaciones de diseño de carretera de Road Maker. Archivo PR3",
+  "@importRoadDesignHint": {
+    "description": "Hint for importing road design"
+  },
+  "importStringsHint": "Importar cadenas de Model Maker.",
+  "@importStringsHint": {
+    "description": "Hint for importing strings"
+  },
+  "exportTacheRawHint": "Exportar datos de taquimetría crudos",
+  "@exportTacheRawHint": {
+    "description": "Hint for exporting raw tache"
+  },
+  "exportTacheReducedHint": "Exportar datos de taquimetría procesados Comentario YXZ/ENZ",
+  "@exportTacheReducedHint": {
+    "description": "Hint for exporting reduced tache"
+  },
+  "exportFieldbookHint": "Exportar datos del libro de campo",
+  "@exportFieldbookHint": {
+    "description": "Hint for exporting fieldbook"
+  },
+  "exportRoadDesignHint": "Exportar datos de diseño de carretera",
+  "@exportRoadDesignHint": {
+    "description": "Hint for exporting road design"
+  },
+  "deletingYourJob": "Eliminando su trabajo",
+  "@deletingYourJob": {
+    "description": "Message when deleting job"
+  },
+  "deleteJobConfirmation": "¿Está seguro de que desea eliminar \"{jobName}\" y todo su contenido?",
+  "@deleteJobConfirmation": {
+    "description": "Confirmation message for deleting job",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Project 1"
+      }
+    }
+  },
+  "searchJobsHint": "Buscar trabajos...",
+  "@searchJobsHint": {
+    "description": "Hint for searching jobs"
+  },
+  "exit": "Salir",
+  "@exit": {
+    "description": "Label for exit button"
+  },
+  "lastModified": "Última modificación",
+  "@lastModified": {
+    "description": "Label for last modified date"
+  },
+  "created": "Creado",
+  "@created": {
+    "description": "Label for creation date"
+  },
+  "size": "Tamaño",
+  "@size": {
+    "description": "Label for size"
+  },
+  "jobInfoDialogTitle": "Información del trabajo - {jobName}",
+  "@jobInfoDialogTitle": {
+    "description": "Title for job information dialog",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Project 1"
+      }
+    }
+  },
+  "usageTimer": "Temporizador de uso",
+  "@usageTimer": {
+    "description": "Label for usage timer"
+  },
+  "currentSession": "Sesión actual: {duration}",
+  "@currentSession": {
+    "description": "Label for current session duration",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "2h 30m"
+      }
+    }
+  },
+  "totalJobTime": "Tiempo total para {jobName}: {duration}",
+  "@totalJobTime": {
+    "description": "Label for total job time",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Project 1"
+      },
+      "duration": {
+        "type": "String",
+        "example": "5h 45m"
+      }
+    }
+  },
+  "locationNotAvailable": "Ubicación no disponible",
+  "@locationNotAvailable": {
+    "description": "Message when location is not available"
+  },
+  "latitude": "Latitud: {latitude}",
+  "@latitude": {
+    "description": "Label for latitude",
+    "placeholders": {
+      "latitude": {
+        "type": "String",
+        "example": "40.7128° N"
+      }
+    }
+  },
+  "longitude": "Longitud: {longitude}",
+  "@longitude": {
+    "description": "Label for longitude",
+    "placeholders": {
+      "longitude": {
+        "type": "String",
+        "example": "74.0060° W"
+      }
+    }
+  },
+  "plotCoordinatesTitle": "Coordenadas de trama - {count}",
+  "@plotCoordinatesTitle": {
+    "description": "Title for plot coordinates",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "10"
+      }
+    }
+  },
+  "showComments": "Mostrar comentarios",
+  "@showComments": {
+    "description": "Label for showing comments"
+  },
+  "showDescriptors": "Mostrar descriptores",
+  "@showDescriptors": {
+    "description": "Label for showing descriptors"
+  },
+  "showZValues": "Mostrar valores Z",
+  "@showZValues": {
+    "description": "Label for showing Z values"
+  },
+  "zDecimals": "Decimales Z: {count}",
+  "@zDecimals": {
+    "description": "Label for Z decimals",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "setGridInterval": "Establecer intervalo de cuadrícula",
+  "@setGridInterval": {
+    "description": "Label for setting grid interval"
+  },
+  "pointUpdatedSuccess": "Punto actualizado correctamente",
+  "@pointUpdatedSuccess": {
+    "description": "Success message for point update"
+  },
+  "pointMovedOutOfView": "Punto movido fuera de vista",
+  "@pointMovedOutOfView": {
+    "description": "Message when point is moved out of view"
+  }
+} 

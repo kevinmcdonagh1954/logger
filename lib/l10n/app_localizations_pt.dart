@@ -4,120 +4,120 @@ import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
 
-/// The translations for English (`en`).
-class AppLocalizationsEn extends AppLocalizations {
-  AppLocalizationsEn([String locale = 'en']) : super(locale);
+/// The translations for Portuguese (`pt`).
+class AppLocalizationsPt extends AppLocalizations {
+  AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
   String get appTitle => 'Logger';
 
   @override
-  String get softwareName => 'Logger Software';
+  String get softwareName => 'Software Logger';
 
   @override
-  String get developmentDate => 'Development Date';
+  String get developmentDate => 'Data de desenvolvimento';
 
   @override
-  String get version => 'Version';
+  String get version => 'Versão';
 
   @override
-  String get contact => 'Contact';
+  String get contact => 'Contato';
 
   @override
-  String get phone => 'Phone';
+  String get phone => 'Telefone';
 
   @override
   String get whatsapp => 'WhatsApp';
 
   @override
-  String get email => 'Email';
+  String get email => 'E-mail';
 
   @override
-  String get location => 'Location';
+  String get location => 'Localização';
 
   @override
-  String get slopeDistance => 'Slope Distance';
+  String get slopeDistance => 'Distância inclinada';
 
   @override
-  String get verticalAngle => 'Vertical Angle';
+  String get verticalAngle => 'Ângulo vertical';
 
   @override
-  String get invalidSlopeDistance => 'Invalid slope distance';
+  String get invalidSlopeDistance => 'Distância inclinada inválida';
 
   @override
-  String get invalidVerticalAngle => 'Invalid vertical angle';
+  String get invalidVerticalAngle => 'Ângulo vertical inválido';
 
   @override
-  String get calculationError => 'Error in calculation';
+  String get calculationError => 'Erro no cálculo';
 
   @override
-  String get swapPoints => 'Swap Points';
+  String get swapPoints => 'Trocar pontos';
 
   @override
-  String get settings => 'Settings';
+  String get settings => 'Configurações';
 
   @override
-  String get setout => 'Set Out';
+  String get setout => 'Implantar';
 
   @override
-  String get moveForward => 'Move Forward';
+  String get moveForward => 'Mover para frente';
 
   @override
-  String get moveBack => 'Move Back';
+  String get moveBack => 'Mover para trás';
 
   @override
-  String get moveLeft => 'Move Left';
+  String get moveLeft => 'Mover para a esquerda';
 
   @override
-  String get moveRight => 'Move Right';
+  String get moveRight => 'Mover para a direita';
 
   @override
-  String get moveUp => 'Move Up';
+  String get moveUp => 'Mover para cima';
 
   @override
-  String get moveDown => 'Move Down';
+  String get moveDown => 'Mover para baixo';
 
   @override
-  String get onLine => 'On Line';
+  String get onLine => 'Na linha';
 
   @override
-  String get language => 'Language';
+  String get language => 'Idioma';
 
   @override
-  String get selectLanguage => 'Select Language';
+  String get selectLanguage => 'Selecionar idioma';
 
   @override
-  String get homePage => 'Home Page';
+  String get homePage => 'Página inicial';
 
   @override
-  String get jobs => 'Jobs';
+  String get jobs => 'Trabalhos';
 
   @override
-  String get jobsHint => 'Select, Create, or Manage';
+  String get jobsHint => 'Selecionar, Criar ou Gerenciar';
 
   @override
-  String get coordinates => 'Coordinates';
+  String get coordinates => 'Coordenadas';
 
   @override
-  String get coordinatesHint => 'View, Add, Edit, Delete';
+  String get coordinatesHint => 'Visualizar, Adicionar, Editar, Excluir';
 
   @override
-  String get calculations => 'Calculations';
+  String get calculations => 'Cálculos';
 
   @override
-  String get calculationsHint => 'Join, Polar';
+  String get calculationsHint => 'Juntar, Polar';
 
   @override
-  String get fixes => 'Fixes';
+  String get fixes => 'Correções';
 
   @override
-  String get roads => 'Roads';
+  String get roads => 'Estradas';
 
   @override
-  String get quit => 'Quit';
+  String get quit => 'Sair';
 
   @override
-  String get noCurrentJob => 'No Current Job';
+  String get noCurrentJob => 'Nenhum trabalho atual';
 
   @override
   String currentJob(String jobName) {

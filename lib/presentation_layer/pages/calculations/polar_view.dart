@@ -13,7 +13,7 @@ import '../../core/bearing_formatter.dart';
 import '../../core/bearing_format.dart';
 import '../../core/angle_converter.dart';
 import '../../../domain_layer/calculations/slope_calculator.dart';
-import '../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../jobs/jobs_viewmodel.dart';
 
 /// Class to handle vertical angle calculations with index correction

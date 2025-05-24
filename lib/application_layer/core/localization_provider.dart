@@ -12,6 +12,7 @@ class LocalizationProvider extends ChangeNotifier {
     const Locale('en'), // English
     const Locale('es'), // Spanish
     const Locale('zh'), // Chinese
+    const Locale('pt'), // Portuguese
   ];
 
   static String getLanguageName(String languageCode) {
@@ -22,6 +23,8 @@ class LocalizationProvider extends ChangeNotifier {
         return 'Español';
       case 'zh':
         return '中文';
+      case 'pt':
+        return 'Português';
       default:
         return 'Unknown';
     }

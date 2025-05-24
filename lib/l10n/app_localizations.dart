@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
+import 'app_localizations_pt.dart';
 import 'app_localizations_zh.dart';
 
 // ignore_for_file: type=lint
@@ -94,7 +95,8 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('es'),
-    Locale('zh')
+    Locale('zh'),
+    Locale('pt')
   ];
 
   /// The title of the application
@@ -859,133 +861,133 @@ abstract class AppLocalizations {
   /// **'Export coordinate data to file'**
   String get exportCoordinatesHint;
 
-  /// No description provided for @import.
+  /// Label for import action
   ///
   /// In en, this message translates to:
   /// **'Import'**
   String get import;
 
-  /// No description provided for @export.
+  /// Label for export action
   ///
   /// In en, this message translates to:
   /// **'Export'**
   String get export;
 
-  /// No description provided for @horzAlignment.
+  /// Label for horizontal alignment section
   ///
   /// In en, this message translates to:
   /// **'Horz Alignment'**
   String get horzAlignment;
 
-  /// No description provided for @dtmTot.
+  /// Label for DTM TOT section
   ///
   /// In en, this message translates to:
   /// **'DTM (TOT)'**
   String get dtmTot;
 
-  /// No description provided for @roadDesign.
+  /// Label for road design section
   ///
   /// In en, this message translates to:
   /// **'Road Design'**
   String get roadDesign;
 
-  /// No description provided for @strings.
+  /// Label for strings section
   ///
   /// In en, this message translates to:
   /// **'Strings'**
   String get strings;
 
-  /// No description provided for @tacheRaw.
+  /// Label for raw tacheometry data
   ///
   /// In en, this message translates to:
   /// **'Tache (Raw)'**
   String get tacheRaw;
 
-  /// No description provided for @tacheReduced.
+  /// Label for reduced tacheometry data
   ///
   /// In en, this message translates to:
   /// **'Tache (Reduced)'**
   String get tacheReduced;
 
-  /// No description provided for @fieldbook.
+  /// Label for fieldbook section
   ///
   /// In en, this message translates to:
   /// **'Fieldbook'**
   String get fieldbook;
 
-  /// No description provided for @importCoordinatesHint.
+  /// Hint text for importing coordinate data
   ///
   /// In en, this message translates to:
   /// **'Import coordinate data from file. Format comma,space,tab delimited. Format CYXZ or CENZ. Restricted to 20 Charaters'**
   String get importCoordinatesHint;
 
-  /// No description provided for @importHorzAlignmentHint.
+  /// Hint text for importing horizontal alignment data
   ///
   /// In en, this message translates to:
   /// **'Import horizontal alignment data from Model and Road Maker PID files'**
   String get importHorzAlignmentHint;
 
-  /// No description provided for @importDtmTotHint.
+  /// Hint text for importing DTM TOT data
   ///
   /// In en, this message translates to:
   /// **'Read Model Maker TOT file. TIN model'**
   String get importDtmTotHint;
 
-  /// No description provided for @importRoadDesignHint.
+  /// Hint text for importing road design data
   ///
   /// In en, this message translates to:
   /// **'Import road design data and specifications from Road Maker. PR3 file'**
   String get importRoadDesignHint;
 
-  /// No description provided for @importStringsHint.
+  /// Hint text for importing strings
   ///
   /// In en, this message translates to:
   /// **'Import strings from Model Maker.'**
   String get importStringsHint;
 
-  /// No description provided for @exportTacheRawHint.
+  /// Hint text for exporting raw tacheometry data
   ///
   /// In en, this message translates to:
   /// **'Export raw tacheometry data'**
   String get exportTacheRawHint;
 
-  /// No description provided for @exportTacheReducedHint.
+  /// Hint text for exporting reduced tacheometry data
   ///
   /// In en, this message translates to:
   /// **'Export processed tacheometry data Comment YXZ/ENZ'**
   String get exportTacheReducedHint;
 
-  /// No description provided for @exportFieldbookHint.
+  /// Hint text for exporting fieldbook data
   ///
   /// In en, this message translates to:
   /// **'Export fieldbook data'**
   String get exportFieldbookHint;
 
-  /// No description provided for @exportRoadDesignHint.
+  /// Hint text for exporting road design data
   ///
   /// In en, this message translates to:
   /// **'Export road design data'**
   String get exportRoadDesignHint;
 
-  /// No description provided for @deletingYourJob.
+  /// Title for job deletion dialog
   ///
   /// In en, this message translates to:
   /// **'Deleting Your Job'**
   String get deletingYourJob;
 
-  /// No description provided for @deleteJobConfirmation.
+  /// Confirmation message for job deletion
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete \"{jobName}\" and all its contents?'**
-  String deleteJobConfirmation(Object jobName);
+  String deleteJobConfirmation(String jobName);
 
-  /// No description provided for @searchJobsHint.
+  /// Hint text for job search field
   ///
   /// In en, this message translates to:
   /// **'Search jobs...'**
   String get searchJobsHint;
 
-  /// No description provided for @exit.
+  /// Label for exit action
   ///
   /// In en, this message translates to:
   /// **'Exit'**
@@ -1098,6 +1100,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Point moved out of view'**
   String get pointMovedOutOfView;
+
+  /// Option to plot coordinates from the popup menu
+  ///
+  /// In en, this message translates to:
+  /// **'Plot Coordinates'**
+  String get plotCoordinates;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -1109,7 +1117,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'es', 'pt', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1121,6 +1129,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
+    case 'pt': return AppLocalizationsPt();
     case 'zh': return AppLocalizationsZh();
   }
 

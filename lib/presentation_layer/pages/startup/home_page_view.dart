@@ -9,7 +9,7 @@ import '../../../application_layer/core/service_locator.dart';
 import '../coordinates/coordinates_view.dart';
 import '../../core/logger_app_bar.dart';
 import '../settings/settings_view.dart';
-import '../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import '../../viewmodels/usage_viewmodel.dart';
 // import 'coordinate_manager.dart';
@@ -210,7 +210,11 @@ class _HomePageState extends State<HomePage> with RouteAware {
           },
         ),
       ),
-      drawer: _buildDrawer(),
+      drawer: Drawer(
+        child: Builder(
+          builder: (context) => _buildDrawerContent(context),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -532,25 +536,11 @@ class _HomePageState extends State<HomePage> with RouteAware {
     );
   }
 
-  Widget _buildDrawer() {
-    return SizedBox(
-      width: 180.0,
-      child: Drawer(
-        elevation: 16.0,
-        child: Container(
-          width: 100.0,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color(0xFFF4EFEF),
-          ),
-          child: _buildDrawerContent(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDrawerContent() {
-    final l10n = AppLocalizations.of(context)!;
+  Widget _buildDrawerContent(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) {
+      return const Center(child: Text('Localization not available'));
+    }
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,

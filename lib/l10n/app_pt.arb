@@ -1,0 +1,151 @@
+{
+  "@@locale": "pt",
+  "appTitle": "Logger",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "softwareName": "Software Logger",
+  "@softwareName": {
+    "description": "Name of the software"
+  },
+  "developmentDate": "Data de desenvolvimento",
+  "@developmentDate": {
+    "description": "Label for development date"
+  },
+  "version": "Versão",
+  "@version": {
+    "description": "Label for version"
+  },
+  "contact": "Contato",
+  "@contact": {
+    "description": "Label for contact section"
+  },
+  "phone": "Telefone",
+  "@phone": {
+    "description": "Label for phone"
+  },
+  "whatsapp": "WhatsApp",
+  "@whatsapp": {
+    "description": "Label for WhatsApp"
+  },
+  "email": "E-mail",
+  "@email": {
+    "description": "Label for email"
+  },
+  "location": "Localização",
+  "@location": {
+    "description": "Label for location"
+  },
+  "slopeDistance": "Distância inclinada",
+  "@slopeDistance": {
+    "description": "Label for slope distance input"
+  },
+  "verticalAngle": "Ângulo vertical",
+  "@verticalAngle": {
+    "description": "Label for vertical angle input"
+  },
+  "invalidSlopeDistance": "Distância inclinada inválida",
+  "@invalidSlopeDistance": {
+    "description": "Error message for invalid slope distance"
+  },
+  "invalidVerticalAngle": "Ângulo vertical inválido",
+  "@invalidVerticalAngle": {
+    "description": "Error message for invalid vertical angle"
+  },
+  "calculationError": "Erro no cálculo",
+  "@calculationError": {
+    "description": "Error message for calculation failure"
+  },
+  "swapPoints": "Trocar pontos",
+  "@swapPoints": {
+    "description": "Label for swap points button"
+  },
+  "settings": "Configurações",
+  "@settings": {
+    "description": "Label for settings"
+  },
+  "setout": "Implantar",
+  "@setout": {
+    "description": "Label for setout"
+  },
+  "moveForward": "Mover para frente",
+  "@moveForward": {
+    "description": "Direction instruction"
+  },
+  "moveBack": "Mover para trás",
+  "@moveBack": {
+    "description": "Direction instruction"
+  },
+  "moveLeft": "Mover para a esquerda",
+  "@moveLeft": {
+    "description": "Direction instruction"
+  },
+  "moveRight": "Mover para a direita",
+  "@moveRight": {
+    "description": "Direction instruction"
+  },
+  "moveUp": "Mover para cima",
+  "@moveUp": {
+    "description": "Direction instruction"
+  },
+  "moveDown": "Mover para baixo",
+  "@moveDown": {
+    "description": "Direction instruction"
+  },
+  "onLine": "Na linha",
+  "@onLine": {
+    "description": "Position indicator"
+  },
+  "language": "Idioma",
+  "@language": {
+    "description": "Label for language selection"
+  },
+  "selectLanguage": "Selecionar idioma",
+  "@selectLanguage": {
+    "description": "Title for language selection dialog"
+  },
+  "homePage": "Página inicial",
+  "@homePage": {
+    "description": "Label for home page"
+  },
+  "jobs": "Trabalhos",
+  "@jobs": {
+    "description": "Label for jobs section"
+  },
+  "jobsHint": "Selecionar, Criar ou Gerenciar",
+  "@jobsHint": {
+    "description": "Hint text for jobs section in navigator drawer"
+  },
+  "coordinates": "Coordenadas",
+  "@coordinates": {
+    "description": "Label for coordinates section"
+  },
+  "coordinatesHint": "Visualizar, Adicionar, Editar, Excluir",
+  "@coordinatesHint": {
+    "description": "Hint text for coordinates section in navigator drawer"
+  },
+  "calculations": "Cálculos",
+  "@calculations": {
+    "description": "Label for calculations section"
+  },
+  "calculationsHint": "Juntar, Polar",
+  "@calculationsHint": {
+    "description": "Hint text for calculations section in navigator drawer"
+  },
+  "fixes": "Correções",
+  "@fixes": {
+    "description": "Label for fixes section"
+  },
+  "roads": "Estradas",
+  "@roads": {
+    "description": "Label for roads section"
+  },
+  "quit": "Sair",
+  "@quit": {
+    "description": "Label for quit option"
+  },
+  "noCurrentJob": "Nenhum trabalho atual",
+  "@noCurrentJob": {
+    "description": "Text shown when no job is selected"
+  }
+} 

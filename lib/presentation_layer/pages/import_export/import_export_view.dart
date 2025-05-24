@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../application_layer/jobs/job_service.dart';
 import '../../../application_layer/core/service_locator.dart';
 import '../jobs/jobs_view.dart';
-import '../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 

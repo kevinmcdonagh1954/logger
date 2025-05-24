@@ -227,9 +227,15 @@
   "@update": {
     "description": "Label for update action"
   },
-  "error": "错误",
+  "error": "错误：{message}",
   "@error": {
-    "description": "Label for error message"
+    "description": "Error message with details",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Failed to update point"
+      }
+    }
   },
   "success": "成功",
   "@success": {
@@ -510,17 +516,59 @@
     "description": "Label for manual instrument option"
   },
   "horzAlignment": "水平线形",
+  "@horzAlignment": {
+    "description": "Label for horizontal alignment section"
+  },
   "roadDesign": "道路设计",
+  "@roadDesign": {
+    "description": "Label for road design section"
+  },
   "strings": "线路",
+  "@strings": {
+    "description": "Label for strings section"
+  },
   "fieldbook": "现场手册",
+  "@fieldbook": {
+    "description": "Label for fieldbook section"
+  },
   "importHorzAlignmentHint": "从Model和Road Maker PID文件导入水平线形数据",
+  "@importHorzAlignmentHint": {
+    "description": "Hint text for importing horizontal alignment data"
+  },
   "importRoadDesignHint": "从Road Maker导入道路设计数据和规范。PR3文件",
+  "@importRoadDesignHint": {
+    "description": "Hint text for importing road design data"
+  },
   "importStringsHint": "从Model Maker导入线路",
+  "@importStringsHint": {
+    "description": "Hint text for importing strings"
+  },
   "exportFieldbookHint": "导出现场手册数据",
+  "@exportFieldbookHint": {
+    "description": "Hint text for exporting fieldbook data"
+  },
   "deletingYourJob": "删除您的工作",
+  "@deletingYourJob": {
+    "description": "Title for job deletion dialog"
+  },
   "deleteJobConfirmation": "您确定要删除\"{jobName}\"及其所有内容吗？",
+  "@deleteJobConfirmation": {
+    "description": "Confirmation message for job deletion",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Project 1"
+      }
+    }
+  },
   "searchJobsHint": "搜索工作...",
+  "@searchJobsHint": {
+    "description": "Hint text for job search field"
+  },
   "exit": "退出",
+  "@exit": {
+    "description": "Label for exit action"
+  },
   "coordinateFormat": "坐标格式",
   "@coordinateFormat": {
     "description": "Label for coordinate format field"

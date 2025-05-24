@@ -9,7 +9,7 @@ import '../../core/coordinate_formatter.dart';
 import '../../core/dialogs/point_dialog.dart';
 import 'coordinates_map_view.dart';
 import 'plot_coordinates_view.dart';
-import '../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CoordinatesView extends StatefulWidget {
   const CoordinatesView({super.key});
@@ -205,23 +205,23 @@ class _CoordinatesViewState extends State<CoordinatesView> {
             PopupMenuButton<String>(
               icon: const Icon(Icons.more_vert),
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'view_on_maps',
                   child: Row(
                     children: [
-                      Icon(Icons.map),
-                      SizedBox(width: 8),
-                      Text('View on Google Maps'),
+                      const Icon(Icons.map),
+                      const SizedBox(width: 8),
+                      Text(l10n.viewOnGoogleMaps),
                     ],
                   ),
                 ),
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'plot_coordinates',
                   child: Row(
                     children: [
-                      Icon(Icons.scatter_plot),
-                      SizedBox(width: 8),
-                      Text('Plot Coordinates'),
+                      const Icon(Icons.scatter_plot),
+                      const SizedBox(width: 8),
+                      Text(l10n.plotCoordinates),
                     ],
                   ),
                 ),

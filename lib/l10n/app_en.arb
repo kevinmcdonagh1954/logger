@@ -234,9 +234,15 @@
   "@update": {
     "description": "Label for update action"
   },
-  "error": "Error",
+  "error": "Error: {message}",
   "@error": {
-    "description": "Label for error message"
+    "description": "Error message with details",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Failed to update point"
+      }
+    }
   },
   "success": "Success",
   "@success": {
@@ -525,27 +531,99 @@
     "description": "Hint or tooltip for exporting coordinate data to a file."
   },
   "import": "Import",
+  "@import": {
+    "description": "Label for import action"
+  },
   "export": "Export",
+  "@export": {
+    "description": "Label for export action"
+  },
   "horzAlignment": "Horz Alignment",
+  "@horzAlignment": {
+    "description": "Label for horizontal alignment section"
+  },
   "dtmTot": "DTM (TOT)",
+  "@dtmTot": {
+    "description": "Label for DTM TOT section"
+  },
   "roadDesign": "Road Design",
+  "@roadDesign": {
+    "description": "Label for road design section"
+  },
   "strings": "Strings",
+  "@strings": {
+    "description": "Label for strings section"
+  },
   "tacheRaw": "Tache (Raw)",
+  "@tacheRaw": {
+    "description": "Label for raw tacheometry data"
+  },
   "tacheReduced": "Tache (Reduced)",
+  "@tacheReduced": {
+    "description": "Label for reduced tacheometry data"
+  },
   "fieldbook": "Fieldbook",
+  "@fieldbook": {
+    "description": "Label for fieldbook section"
+  },
   "importCoordinatesHint": "Import coordinate data from file. Format comma,space,tab delimited. Format CYXZ or CENZ. Restricted to 20 Charaters",
+  "@importCoordinatesHint": {
+    "description": "Hint text for importing coordinate data"
+  },
   "importHorzAlignmentHint": "Import horizontal alignment data from Model and Road Maker PID files",
+  "@importHorzAlignmentHint": {
+    "description": "Hint text for importing horizontal alignment data"
+  },
   "importDtmTotHint": "Read Model Maker TOT file. TIN model",
+  "@importDtmTotHint": {
+    "description": "Hint text for importing DTM TOT data"
+  },
   "importRoadDesignHint": "Import road design data and specifications from Road Maker. PR3 file",
+  "@importRoadDesignHint": {
+    "description": "Hint text for importing road design data"
+  },
   "importStringsHint": "Import strings from Model Maker.",
+  "@importStringsHint": {
+    "description": "Hint text for importing strings"
+  },
   "exportTacheRawHint": "Export raw tacheometry data",
+  "@exportTacheRawHint": {
+    "description": "Hint text for exporting raw tacheometry data"
+  },
   "exportTacheReducedHint": "Export processed tacheometry data Comment YXZ/ENZ",
+  "@exportTacheReducedHint": {
+    "description": "Hint text for exporting reduced tacheometry data"
+  },
   "exportFieldbookHint": "Export fieldbook data",
+  "@exportFieldbookHint": {
+    "description": "Hint text for exporting fieldbook data"
+  },
   "exportRoadDesignHint": "Export road design data",
+  "@exportRoadDesignHint": {
+    "description": "Hint text for exporting road design data"
+  },
   "deletingYourJob": "Deleting Your Job",
+  "@deletingYourJob": {
+    "description": "Title for job deletion dialog"
+  },
   "deleteJobConfirmation": "Are you sure you want to delete \"{jobName}\" and all its contents?",
+  "@deleteJobConfirmation": {
+    "description": "Confirmation message for job deletion",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Project 1"
+      }
+    }
+  },
   "searchJobsHint": "Search jobs...",
+  "@searchJobsHint": {
+    "description": "Hint text for job search field"
+  },
   "exit": "Exit",
+  "@exit": {
+    "description": "Label for exit action"
+  },
   "lastModified": "Last Modified",
   "@lastModified": {
     "description": "Label for last modified date in job info dialog"
@@ -664,14 +742,8 @@
   "@pointMovedOutOfView": {
     "description": "Message when point is moved outside visible area"
   },
-  "error": "Error: {message}",
-  "@error": {
-    "description": "Error message with details",
-    "placeholders": {
-      "message": {
-        "type": "String",
-        "example": "Failed to update point"
-      }
-    }
+  "plotCoordinates": "Plot Coordinates",
+  "@plotCoordinates": {
+    "description": "Option to plot coordinates from the popup menu"
   }
 } 
