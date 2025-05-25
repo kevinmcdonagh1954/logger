@@ -245,7 +245,7 @@
   "validComment": "Comentário Válido",
   "pleaseEnterComment": "Por favor, insira um comentário",
   "commentExists": "Comentário já existe",
-  "backup": "Backup",
+  "backup": "",
   "searchJob": "Pesquisar Trabalho",
   "sortJobsBy": "Ordenar Trabalhos Por",
   "nameAtoZ": "Nome (A a Z)",
