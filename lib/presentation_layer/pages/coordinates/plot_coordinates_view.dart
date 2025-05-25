@@ -1081,7 +1081,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         });
 
         return AlertDialog(
-          title: const Text('Set Grid Interval'),
+          title: Text(AppLocalizations.of(context)!.setGridInterval),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
@@ -1089,13 +1089,13 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
             ],
-            decoration:
-                const InputDecoration(labelText: 'Grid Spacing (meters)'),
+            decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.gridSpacing),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
               onPressed: () {
@@ -1107,7 +1107,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                   Navigator.of(context).pop();
                 }
               },
-              child: const Text('OK'),
+              child: Text(AppLocalizations.of(context)!.ok),
             ),
           ],
         );

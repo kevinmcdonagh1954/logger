@@ -108,15 +108,18 @@ class _CoordinatesViewState extends State<CoordinatesView> {
 
   Future<void> _showDeleteConfirmation(
       BuildContext context, Point point) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            'Delete Point${point.comment.isNotEmpty ? ': ${point.comment}' : ''}',
+            point.comment.isNotEmpty
+                ? l10n.deletePointWithComment(point.comment)
+                : l10n.deletePoint,
             style: const TextStyle(fontSize: 16),
           ),
-          content: const Text('Are you sure you want to delete this point?'),
+          content: Text(l10n.deletePointConfirmation),
           actions: <Widget>[
             Row(
               children: [
@@ -127,7 +130,7 @@ class _CoordinatesViewState extends State<CoordinatesView> {
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Cancel'),
+                    child: Text(l10n.cancel),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -138,7 +141,7 @@ class _CoordinatesViewState extends State<CoordinatesView> {
                       backgroundColor: Colors.red[50],
                       foregroundColor: Colors.red,
                     ),
-                    child: const Text('Delete'),
+                    child: Text(l10n.delete),
                   ),
                 ),
               ],
@@ -156,7 +159,7 @@ class _CoordinatesViewState extends State<CoordinatesView> {
           _updateFilteredPoints();
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Point deleted successfully')),
+          SnackBar(content: Text(l10n.pointDeletedSuccess)),
         );
       } catch (e) {
         if (!context.mounted) return;
@@ -300,7 +303,7 @@ class _CoordinatesViewState extends State<CoordinatesView> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  labelText: 'Search Points',
+                  labelText: l10n.searchPoints,
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: () {
@@ -325,7 +328,7 @@ class _CoordinatesViewState extends State<CoordinatesView> {
                       valueListenable: _viewModel.coordinateFormat,
                       builder: (context, format, _) {
                         return Text(
-                          '${CoordinateFormatter.formatCoordinates(point, format)}${point.descriptor != null ? '\nDescriptor: ${point.descriptor}' : ''}',
+                          '${CoordinateFormatter.formatCoordinates(point, format)}${point.descriptor != null ? '\n${l10n.descriptor}: ${point.descriptor}' : ''}',
                         );
                       },
                     ),
@@ -348,8 +351,7 @@ class _CoordinatesViewState extends State<CoordinatesView> {
                               _updateFilteredPoints();
                             });
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Point deleted successfully')),
+                              SnackBar(content: Text(l10n.pointDeletedSuccess)),
                             );
                           },
                         );
@@ -382,18 +384,18 @@ class _CoordinatesViewState extends State<CoordinatesView> {
   }
 
   String _getAdaptiveTitle(String jobName) {
+    final l10n = AppLocalizations.of(context)!;
     const int maxLength = 15;
-    String title = 'Coordinates - $jobName';
-
+    String title = l10n.coordinatesWithJob(jobName);
     if (title.length > maxLength) {
-      title = 'Coords - $jobName';
+      title = l10n.coordsWithJob(jobName);
     }
-
     return title;
   }
 
   void _showSortMenu() {
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => Container(
@@ -402,8 +404,8 @@ class _CoordinatesViewState extends State<CoordinatesView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title:
-                  Text('ID (${_sortAscending ? 'Ascending' : 'Descending'})'),
+              title: Text(l10n
+                  .sortById(_sortAscending ? l10n.ascending : l10n.descending)),
               trailing: Icon(
                   _sortAscending ? Icons.arrow_upward : Icons.arrow_downward),
               onTap: () {
@@ -417,7 +419,8 @@ class _CoordinatesViewState extends State<CoordinatesView> {
               },
             ),
             ListTile(
-              title: Text('Comment (${_sortAscending ? 'A-Z' : 'Z-A'})'),
+              title: Text(
+                  l10n.sortByComment(_sortAscending ? l10n.aToZ : l10n.zToA)),
               trailing: Icon(
                   _sortAscending ? Icons.arrow_upward : Icons.arrow_downward),
               onTap: () {
@@ -431,8 +434,8 @@ class _CoordinatesViewState extends State<CoordinatesView> {
               },
             ),
             ListTile(
-              title: Text(
-                  'Y Coordinate (${_sortAscending ? 'Ascending' : 'Descending'})'),
+              title: Text(l10n
+                  .sortByY(_sortAscending ? l10n.ascending : l10n.descending)),
               trailing: Icon(
                   _sortAscending ? Icons.arrow_upward : Icons.arrow_downward),
               onTap: () {
@@ -446,8 +449,8 @@ class _CoordinatesViewState extends State<CoordinatesView> {
               },
             ),
             ListTile(
-              title: Text(
-                  'X Coordinate (${_sortAscending ? 'Ascending' : 'Descending'})'),
+              title: Text(l10n
+                  .sortByX(_sortAscending ? l10n.ascending : l10n.descending)),
               trailing: Icon(
                   _sortAscending ? Icons.arrow_upward : Icons.arrow_downward),
               onTap: () {
@@ -461,8 +464,8 @@ class _CoordinatesViewState extends State<CoordinatesView> {
               },
             ),
             ListTile(
-              title: Text(
-                  'Z Coordinate (${_sortAscending ? 'Ascending' : 'Descending'})'),
+              title: Text(l10n
+                  .sortByZ(_sortAscending ? l10n.ascending : l10n.descending)),
               trailing: Icon(
                   _sortAscending ? Icons.arrow_upward : Icons.arrow_downward),
               onTap: () {
@@ -476,7 +479,8 @@ class _CoordinatesViewState extends State<CoordinatesView> {
               },
             ),
             ListTile(
-              title: Text('Descriptor (${_sortAscending ? 'A-Z' : 'Z-A'})'),
+              title: Text(l10n
+                  .sortByDescriptor(_sortAscending ? l10n.aToZ : l10n.zToA)),
               trailing: Icon(
                   _sortAscending ? Icons.arrow_upward : Icons.arrow_downward),
               onTap: () {

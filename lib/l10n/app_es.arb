@@ -340,10 +340,8 @@
   "@sortBy": {
     "description": "Label for sort by"
   },
-  "sortByComment": "Ordenar por comentario",
-  "@sortByComment": {
-    "description": "Label for sorting by comment"
-  },
+  "sortByComment": "Comentario ({order})",
+  "@sortByComment": {"description": "Ordenar por comentario con marcador de posición de orden","placeholders":{"order":{"type":"String","example":"A-Z"}}},
   "sortByCoordinate": "Ordenar por coordenada",
   "@sortByCoordinate": {
     "description": "Label for sorting by coordinate"
@@ -710,15 +708,15 @@
   },
   "showComments": "Mostrar comentarios",
   "@showComments": {
-    "description": "Label for showing comments"
+    "description": "Opción para mostrar u ocultar comentarios en el gráfico de coordenadas"
   },
   "showDescriptors": "Mostrar descriptores",
   "@showDescriptors": {
-    "description": "Label for showing descriptors"
+    "description": "Opción para mostrar u ocultar descriptores en el gráfico de coordenadas"
   },
   "showZValues": "Mostrar valores Z",
   "@showZValues": {
-    "description": "Label for showing Z values"
+    "description": "Opción para mostrar u ocultar valores Z en el gráfico de coordenadas"
   },
   "zDecimals": "Decimales Z: {count}",
   "@zDecimals": {
@@ -732,7 +730,15 @@
   },
   "setGridInterval": "Establecer intervalo de cuadrícula",
   "@setGridInterval": {
-    "description": "Label for setting grid interval"
+    "description": "Etiqueta para la opción de establecer el intervalo de cuadrícula"
+  },
+  "gridSpacing": "Espaciado de cuadrícula (metros)",
+  "@gridSpacing": {
+    "description": "Etiqueta para la entrada de espaciado de cuadrícula"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "Etiqueta para el botón OK"
   },
   "pointUpdatedSuccess": "Punto actualizado correctamente",
   "@pointUpdatedSuccess": {
@@ -741,5 +747,37 @@
   "pointMovedOutOfView": "Punto movido fuera de vista",
   "@pointMovedOutOfView": {
     "description": "Message when point is moved out of view"
-  }
+  },
+  "deletePoint": "Eliminar punto",
+  "@deletePoint": {"description": "Dialog title for deleting a point"},
+  "deletePointWithComment": "Eliminar punto: {comment}",
+  "@deletePointWithComment": {"description": "Dialog title for deleting a point with comment","placeholders":{"comment":{"type":"String","example":"A1"}}},
+  "deletePointConfirmation": "¿Está seguro de que desea eliminar este punto?",
+  "@deletePointConfirmation": {"description": "Confirmation message for deleting a point"},
+  "pointDeletedSuccess": "Punto eliminado correctamente",
+  "@pointDeletedSuccess": {"description": "Success message when a point is deleted"},
+  "sortById": "ID ({order})",
+  "@sortById": {"description": "Sort by ID with order placeholder","placeholders":{"order":{"type":"String","example":"Ascendente"}}},
+  "sortByY": "Coordenada Y ({order})",
+  "@sortByY": {"description": "Sort by Y coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Ascendente"}}},
+  "sortByX": "Coordenada X ({order})",
+  "@sortByX": {"description": "Sort by X coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Ascendente"}}},
+  "sortByZ": "Coordenada Z ({order})",
+  "@sortByZ": {"description": "Sort by Z coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Ascendente"}}},
+  "ascending": "Ascendente",
+  "@ascending": {"description": "Ascending order label"},
+  "descending": "Descendente",
+  "@descending": {"description": "Descending order label"},
+  "coordinatesWithJob": "Coordenadas - {jobName}",
+  "@coordinatesWithJob": {"description": "Long title for coordinates view with job name","placeholders":{"jobName":{"type":"String","example":"Job1"}}},
+  "coordsWithJob": "Coords - {jobName}",
+  "@coordsWithJob": {"description": "Short title for coordinates view with job name","placeholders":{"jobName":{"type":"String","example":"Job1"}}},
+  "plotCoordinates": "Coordenadas de la trama",
+  "@plotCoordinates": {"description": "Opción para graficar coordenadas desde el menú emergente"},
+  "aToZ": "A-Z",
+  "@aToZ": {"description": "Etiqueta para orden alfabético ascendente"},
+  "zToA": "Z-A",
+  "@zToA": {"description": "Etiqueta para orden alfabético descendente"},
+  "sortByDescriptor": "Descriptor ({order})",
+  "@sortByDescriptor": {"description": "Ordenar por descriptor con marcador de posición de orden","placeholders":{"order":{"type":"String","example":"A-Z"}}}
 } 

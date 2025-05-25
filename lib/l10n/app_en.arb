@@ -340,10 +340,8 @@
   "@sortBy": {
     "description": "Label for sort options"
   },
-  "sortByComment": "Sort by Comment",
-  "@sortByComment": {
-    "description": "Sort option for comment"
-  },
+  "sortByComment": "Comment ({order})",
+  "@sortByComment": {"description": "Sort by comment with order placeholder","placeholders":{"order":{"type":"String","example":"A-Z"}}},
   "sortByCoordinate": "Sort by Coordinate",
   "@sortByCoordinate": {
     "description": "Sort option for coordinate"
@@ -734,6 +732,14 @@
   "@setGridInterval": {
     "description": "Label for setting grid interval option"
   },
+  "gridSpacing": "Grid Spacing (meters)",
+  "@gridSpacing": {
+    "description": "Label for grid spacing input"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "Label for OK button"
+  },
   "pointUpdatedSuccess": "Point updated successfully",
   "@pointUpdatedSuccess": {
     "description": "Success message when point is updated"
@@ -745,5 +751,35 @@
   "plotCoordinates": "Plot Coordinates",
   "@plotCoordinates": {
     "description": "Option to plot coordinates from the popup menu"
-  }
+  },
+  "deletePoint": "Delete Point",
+  "@deletePoint": {"description": "Dialog title for deleting a point"},
+  "deletePointWithComment": "Delete Point: {comment}",
+  "@deletePointWithComment": {"description": "Dialog title for deleting a point with comment","placeholders":{"comment":{"type":"String","example":"A1"}}},
+  "deletePointConfirmation": "Are you sure you want to delete this point?",
+  "@deletePointConfirmation": {"description": "Confirmation message for deleting a point"},
+  "pointDeletedSuccess": "Point deleted successfully",
+  "@pointDeletedSuccess": {"description": "Success message when a point is deleted"},
+  "sortById": "ID ({order})",
+  "@sortById": {"description": "Sort by ID with order placeholder","placeholders":{"order":{"type":"String","example":"Ascending"}}},
+  "sortByY": "Y Coordinate ({order})",
+  "@sortByY": {"description": "Sort by Y coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Ascending"}}},
+  "sortByX": "X Coordinate ({order})",
+  "@sortByX": {"description": "Sort by X coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Ascending"}}},
+  "sortByZ": "Z Coordinate ({order})",
+  "@sortByZ": {"description": "Sort by Z coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Ascending"}}},
+  "ascending": "Ascending",
+  "@ascending": {"description": "Ascending order label"},
+  "descending": "Descending",
+  "@descending": {"description": "Descending order label"},
+  "coordinatesWithJob": "Coordinates - {jobName}",
+  "@coordinatesWithJob": {"description": "Long title for coordinates view with job name","placeholders":{"jobName":{"type":"String","example":"Job1"}}},
+  "coordsWithJob": "Coords - {jobName}",
+  "@coordsWithJob": {"description": "Short title for coordinates view with job name","placeholders":{"jobName":{"type":"String","example":"Job1"}}},
+  "aToZ": "A-Z",
+  "@aToZ": {"description": "Label for ascending alphabetical order"},
+  "zToA": "Z-A",
+  "@zToA": {"description": "Label for descending alphabetical order"},
+  "sortByDescriptor": "Descriptor ({order})",
+  "@sortByDescriptor": {"description": "Sort by descriptor with order placeholder","placeholders":{"order":{"type":"String","example":"A-Z"}}}
 } 
