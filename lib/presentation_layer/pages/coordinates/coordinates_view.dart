@@ -4,7 +4,7 @@ import '../../../application_layer/jobs/job_service.dart';
 import '../../../domain_layer/coordinates/point.dart';
 import '../startup/home_page_view.dart';
 import 'coordinates_viewmodel.dart';
-import '../../../presentation_layer/pages/jobs/jobs_viewmodel.dart';
+import '../jobs/jobs_viewmodel.dart';
 import '../../core/coordinate_formatter.dart';
 import '../../core/dialogs/point_dialog.dart';
 import 'coordinates_map_view.dart';
@@ -33,17 +33,35 @@ class _CoordinatesViewState extends State<CoordinatesView> {
     super.initState();
     _viewModel = locator<CoordinatesViewModel>();
     _jobsViewModel = locator<JobsViewModel>();
-    _viewModel.init();
-    _jobsViewModel.init();
+    _initializeViewModels();
     _viewModel.points.addListener(_updateFilteredPoints);
     _jobsViewModel.currentJobName.addListener(_onJobChanged);
-    _updateFilteredPoints();
   }
 
-  void _onJobChanged() {
-    // Reload points for the new job
-    _viewModel.init();
-    _updateFilteredPoints();
+  Future<void> _initializeViewModels() async {
+    try {
+      await _jobsViewModel.init();
+      await _viewModel.init();
+      _updateFilteredPoints();
+    } catch (e) {
+      debugPrint('Error initializing view models: $e');
+    } finally {
+      if (mounted) {
+      }
+    }
+  }
+
+  Future<void> _onJobChanged() async {
+    if (!mounted) return;
+    try {
+      await _viewModel.init();
+      _updateFilteredPoints();
+    } catch (e) {
+      debugPrint('Error changing job: $e');
+    } finally {
+      if (mounted) {
+      }
+    }
   }
 
   @override

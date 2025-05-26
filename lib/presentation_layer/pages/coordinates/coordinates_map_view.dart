@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../domain_layer/coordinates/point.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:logger/presentation_layer/core/coordinate_converter.dart';
-import 'package:logger/domain_layer/coordinates/point.dart';
 
 class CoordinatesMapView extends StatefulWidget {
   final List<Point> points;

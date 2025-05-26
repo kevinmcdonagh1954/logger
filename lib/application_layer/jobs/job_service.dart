@@ -14,6 +14,8 @@ import '../../../domain_layer/calculations/angle_converter.dart';
 class JobService {
   // Flag to track if a job is currently open
   bool _isJobOpen = false;
+  bool _isInitialized = false;
+  bool _isOpeningJob = false;
 
   // File service for safe file operations
   // Remove the 'late' keyword and initialize with null
@@ -68,6 +70,8 @@ class JobService {
 
   /// Initialize the service
   Future<void> init() async {
+    if (_isInitialized) return;
+
     try {
       _logger?.info(_logName, 'Initializing JobService');
 
@@ -83,8 +87,8 @@ class JobService {
       // Load all jobs first
       await loadAllJobs();
 
-      // If there are jobs, open the most recently used one
-      if (_allJobs.value.isNotEmpty) {
+      // Only open the most recent job if no job is currently open
+      if (_allJobs.value.isNotEmpty && !_isJobOpen) {
         // Get the most recent job (first in the list since it's sorted by last modified)
         final String mostRecentJob = _allJobs.value.first;
         _logger?.info(_logName, 'Opening most recent job: $mostRecentJob');
@@ -92,6 +96,7 @@ class JobService {
       }
 
       _logger?.info(_logName, 'Job service initialized successfully');
+      _isInitialized = true;
     } catch (e) {
       _logger?.error(_logName, 'Failed to initialize JobService', e);
       throw Exception('Failed to initialize JobService: $e');
@@ -177,6 +182,9 @@ class JobService {
 
   /// Open a job
   Future<bool> openJob(String jobName) async {
+    if (_isOpeningJob) return false;
+    _isOpeningJob = true;
+
     try {
       _logger?.info(_logName, 'Opening job: $jobName');
 
@@ -217,6 +225,8 @@ class JobService {
       _errorMessage.value = errorMsg;
       _logger?.error(_logName, errorMsg, e);
       return false;
+    } finally {
+      _isOpeningJob = false;
     }
   }
 

@@ -365,20 +365,20 @@ class DatabaseService {
       _logger?.debug(_logName, 'Ensured Coords table exists before import');
 
       // Now perform the insert transaction
-    await _database!.transaction((txn) async {
-      for (var point in points) {
-        await txn.insert(
-          'Coords',
-          point.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-        count++;
-      }
-    });
+      await _database!.transaction((txn) async {
+        for (var point in points) {
+          await txn.insert(
+            'Coords',
+            point.toMap(),
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+          count++;
+        }
+      });
 
-    _logger?.info(_logName,
-        'Successfully imported $count points to job: $_currentJobName');
-    return count;
+      _logger?.info(_logName,
+          'Successfully imported $count points to job: $_currentJobName');
+      return count;
     } catch (e) {
       _logger?.error(_logName, 'Failed to import points: $e');
       throw Exception('Failed to import points: $e');
@@ -398,13 +398,13 @@ class DatabaseService {
       // Query all points from the Coords table (no job_name filter needed as each job has its own database)
       final List<Map<String, dynamic>> maps = await _database!.query('Coords');
 
-    final points = List.generate(maps.length, (i) {
-      return Point.fromMap(maps[i]);
-    });
+      final points = List.generate(maps.length, (i) {
+        return Point.fromMap(maps[i]);
+      });
 
-    _logger?.debug(_logName,
-        'Retrieved ${points.length} points from job: $_currentJobName');
-    return points;
+      _logger?.debug(_logName,
+          'Retrieved ${points.length} points from job: $_currentJobName');
+      return points;
     } catch (e) {
       // If table doesn't exist, try creating it
       _logger?.warning(_logName, 'Error querying Coords table: $e');

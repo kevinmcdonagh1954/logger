@@ -150,14 +150,14 @@ class _PointsPlotPainter extends CustomPainter {
       for (double x = (minX / gridSpacing).ceil() * gridSpacing;
           x <= maxX;
           x += gridSpacing) {
-        final dx = _mapX(x, size.width);
+        final dx = _mapX(x, size.height);
         canvas.drawLine(Offset(dx, 0), Offset(dx, size.height), gridPaint);
       }
       // Horizontal grid lines
       for (double y = (minY / gridSpacing).ceil() * gridSpacing;
           y <= maxY;
           y += gridSpacing) {
-        final dy = _mapY(y, size.height);
+        final dy = _mapY(y, size.width);
         canvas.drawLine(Offset(0, dy), Offset(size.width, dy), gridPaint);
       }
     }
@@ -171,9 +171,9 @@ class _PointsPlotPainter extends CustomPainter {
 
     // Draw points
     for (final point in points) {
-      final dx = _mapX(point.x, size.width);
-      final dy = _mapY(point.y, size.height);
-      canvas.drawCircle(Offset(dx, dy), 2, paint);
+      final dx = _mapY(point.y, size.width);
+      final dy = _mapX(point.x, size.height);
+      canvas.drawCircle(Offset(dx, dy), 1, paint);
 
       // Draw labels if enabled
       if ((showComment || showDescriptor) &&
@@ -211,14 +211,16 @@ class _PointsPlotPainter extends CustomPainter {
     }
   }
 
-  // Map data X to canvas X
-  double _mapX(double x, double width) {
-    return ((x - minX) / (maxX - minX)) * width;
+  // Map data X to canvas Y (vertical)
+  double _mapX(double x, double height) {
+    // x (was horizontal) now maps to vertical (height)
+    return ((x - minX) / (maxX - minX)) * height;
   }
 
-  // Map data Y to canvas Y (invert Y axis for typical plot orientation)
-  double _mapY(double y, double height) {
-    return height - ((y - minY) / (maxY - minY)) * height;
+  // Map data Y to canvas X (horizontal, inverted for right rotation)
+  double _mapY(double y, double width) {
+    // y (was vertical) now maps to horizontal (width), invert for right rotation
+    return width - ((y - minY) / (maxY - minY)) * width;
   }
 
   @override
@@ -984,19 +986,23 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           viewMinX: _viewMinX,
           viewMaxX: _viewMaxX,
         );
+
         // Calculate the plot boundaries based on the zoom box
         final minY = min(startPlot.dx, endPlot.dx);
         final maxY = max(startPlot.dx, endPlot.dx);
         final minX = min(startPlot.dy, endPlot.dy);
         final maxX = max(startPlot.dy, endPlot.dy);
+
         // Calculate the side length for a square zoom box
         final side = min(maxY - minY, maxX - minX);
+
         // Always use the picked top-left as anchor
         final newMinY = minY;
         final newMinX = minX;
         final newMaxY = minY + side;
         final newMaxX = minX + side;
 
+        // Immediately update the plot without showing a dialog
         setState(() {
           _minY = newMinY;
           _maxY = newMaxY;
