@@ -137,6 +137,11 @@ class _PointsPlotPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Save the canvas state and clip to the plot area
+    canvas.save();
+    final plotRect = Rect.fromLTWH(0, 0, size.width, size.height);
+    canvas.clipRect(plotRect);
+
     final paint = Paint()
       ..color = pointColor
       ..style = PaintingStyle.fill;
@@ -152,6 +157,21 @@ class _PointsPlotPainter extends CustomPainter {
           x += gridSpacing) {
         final dx = _mapX(x, size.height);
         canvas.drawLine(Offset(dx, 0), Offset(dx, size.height), gridPaint);
+        // Draw vertical grid value at the bottom, written vertically up
+        final xLabel = x.toStringAsFixed(0);
+        final textPainter = TextPainter(
+          text: TextSpan(
+            text: xLabel,
+            style: const TextStyle(color: Colors.white, fontSize: 10),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        canvas.save();
+        canvas.translate(dx, size.height - 24); // 2 px from bottom
+        canvas.rotate(
+            -pi / 2); // Rotate 90 degrees counterclockwise (vertical up)
+        textPainter.paint(canvas, Offset(-textPainter.width / 2, 0));
+        canvas.restore();
       }
       // Horizontal grid lines
       for (double y = (minY / gridSpacing).ceil() * gridSpacing;
@@ -159,6 +179,16 @@ class _PointsPlotPainter extends CustomPainter {
           y += gridSpacing) {
         final dy = _mapY(y, size.width);
         canvas.drawLine(Offset(0, dy), Offset(size.width, dy), gridPaint);
+        // Draw horizontal grid value at the left
+        final yLabel = y.toStringAsFixed(0);
+        final textPainter = TextPainter(
+          text: TextSpan(
+            text: yLabel,
+            style: const TextStyle(color: Colors.white, fontSize: 10),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        textPainter.paint(canvas, Offset(2, dy - textPainter.height / 2));
       }
     }
 
@@ -167,59 +197,71 @@ class _PointsPlotPainter extends CustomPainter {
       ..color = Colors.white
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), borderPaint);
+    canvas.drawRect(plotRect, borderPaint);
 
-    // Draw points
+    // Draw points that are within the view boundaries
     for (final point in points) {
-      final dx = _mapY(point.y, size.width);
-      final dy = _mapX(point.x, size.height);
-      canvas.drawCircle(Offset(dx, dy), 1, paint);
+      if (point.y >= minY &&
+          point.y <= maxY &&
+          point.x >= minX &&
+          point.x <= maxX) {
+        final dx = _mapY(point.y, size.width);
+        final dy = _mapX(point.x, size.height);
 
-      // Draw labels if enabled
-      if ((showComment || showDescriptor) &&
-          (point.comment.isNotEmpty ||
-              (showDescriptor &&
-                  point.descriptor != null &&
-                  point.descriptor!.isNotEmpty))) {
-        String label = '';
-        if (showComment && point.comment.isNotEmpty) label += point.comment;
-        if (showDescriptor &&
-            point.descriptor != null &&
-            point.descriptor!.isNotEmpty) {
-          if (label.isNotEmpty) label += '/';
-          label += point.descriptor!;
+        // Only draw if the point is within the canvas bounds
+        if (dx >= 0 && dx <= size.width && dy >= 0 && dy <= size.height) {
+          canvas.drawCircle(Offset(dx, dy), 1, paint);
+
+          // Draw labels if enabled
+          if ((showComment || showDescriptor) &&
+              (point.comment.isNotEmpty ||
+                  (showDescriptor &&
+                      point.descriptor != null &&
+                      point.descriptor!.isNotEmpty))) {
+            String label = '';
+            if (showComment && point.comment.isNotEmpty) label += point.comment;
+            if (showDescriptor &&
+                point.descriptor != null &&
+                point.descriptor!.isNotEmpty) {
+              if (label.isNotEmpty) label += '/';
+              label += point.descriptor!;
+            }
+            final textPainter = TextPainter(
+              text: TextSpan(
+                text: label,
+                style: const TextStyle(color: Colors.white, fontSize: 10),
+              ),
+              textDirection: TextDirection.ltr,
+            )..layout();
+            textPainter.paint(
+                canvas, Offset(dx - textPainter.width / 2, dy - 12));
+          }
+          if (showZ) {
+            final textPainter = TextPainter(
+              text: TextSpan(
+                text: point.z.toStringAsFixed(zDecimals),
+                style: const TextStyle(color: Colors.white, fontSize: 10),
+              ),
+              textDirection: TextDirection.ltr,
+            )..layout();
+            textPainter.paint(
+                canvas, Offset(dx - textPainter.width / 2, dy + 8));
+          }
         }
-        final textPainter = TextPainter(
-          text: TextSpan(
-            text: label,
-            style: const TextStyle(color: Colors.white, fontSize: 10),
-          ),
-          textDirection: TextDirection.ltr,
-        )..layout();
-        textPainter.paint(canvas, Offset(dx - textPainter.width / 2, dy - 12));
-      }
-      if (showZ) {
-        final textPainter = TextPainter(
-          text: TextSpan(
-            text: point.z.toStringAsFixed(zDecimals),
-            style: const TextStyle(color: Colors.white, fontSize: 10),
-          ),
-          textDirection: TextDirection.ltr,
-        )..layout();
-        textPainter.paint(canvas, Offset(dx - textPainter.width / 2, dy + 8));
       }
     }
+
+    // Restore the canvas state
+    canvas.restore();
   }
 
   // Map data X to canvas Y (vertical)
   double _mapX(double x, double height) {
-    // x (was horizontal) now maps to vertical (height)
     return ((x - minX) / (maxX - minX)) * height;
   }
 
   // Map data Y to canvas X (horizontal, inverted for right rotation)
   double _mapY(double y, double width) {
-    // y (was vertical) now maps to horizontal (width), invert for right rotation
     return width - ((y - minY) / (maxY - minY)) * width;
   }
 
@@ -240,8 +282,91 @@ class _PointsPlotPainter extends CustomPainter {
   }
 }
 
+class PlotViewManager {
+  final double minScale;
+  final double maxScale;
+  final double zoomIncrement;
+  final double borderPercentage;
+
+  PlotViewManager({
+    this.minScale = 0.1,
+    this.maxScale = 10000.0,
+    this.zoomIncrement = 1.2,
+    this.borderPercentage = 0.1,
+  });
+
+  void adjustViewForZoom({
+    required double currentScale,
+    required double newScale,
+    required double centerY,
+    required double centerX,
+    required double currentRangeY,
+    required double currentRangeX,
+    required Function(double, double, double, double) onViewUpdated,
+  }) {
+    // Calculate new range based on zoom direction
+    final newRangeY = newScale > currentScale
+        ? currentRangeY / zoomIncrement // Zoom in: reduce range
+        : currentRangeY * zoomIncrement; // Zoom out: increase range
+    final newRangeX = newScale > currentScale
+        ? currentRangeX / zoomIncrement // Zoom in: reduce range
+        : currentRangeX * zoomIncrement; // Zoom out: increase range
+
+    // Calculate new view boundaries
+    double newMinY = centerY - newRangeY / 2;
+    double newMaxY = centerY + newRangeY / 2;
+    double newMinX = centerX - newRangeX / 2;
+    double newMaxX = centerX + newRangeX / 2;
+
+    // Update the view
+    onViewUpdated(newMinY, newMaxY, newMinX, newMaxX);
+  }
+
+  void calculateInitialBounds(List<Point> points,
+      Function(double, double, double, double) onBoundsCalculated) {
+    if (points.isEmpty) return;
+
+    double minY = points.map((p) => p.y).reduce((a, b) => a < b ? a : b);
+    double maxY = points.map((p) => p.y).reduce((a, b) => a > b ? a : b);
+    double minX = points.map((p) => p.x).reduce((a, b) => a < b ? a : b);
+    double maxX = points.map((p) => p.x).reduce((a, b) => a > b ? a : b);
+
+    // Calculate ranges
+    final rangeY = maxY - minY;
+    final rangeX = maxX - minX;
+
+    // Use the larger range for both axes to maintain square proportions
+    final maxRange = max(rangeY, rangeX);
+
+    // Calculate border size based on percentage of the larger range
+    final borderSize = maxRange * borderPercentage;
+
+    // Center the smaller range within the larger one
+    if (rangeY > rangeX) {
+      // Y range is larger, center X range
+      final extraX = (rangeY - rangeX) / 2;
+      minX -= (extraX + borderSize);
+      maxX += (extraX + borderSize);
+      minY -= borderSize;
+      maxY += borderSize;
+    } else {
+      // X range is larger, center Y range
+      final extraY = (rangeX - rangeY) / 2;
+      minY -= (extraY + borderSize);
+      maxY += (extraY + borderSize);
+      minX -= borderSize;
+      maxX += borderSize;
+    }
+
+    onBoundsCalculated(minY, maxY, minX, maxX);
+  }
+}
+
+enum PlotTool { none, pan, zoomBox }
+
 class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   final JobService _jobService = locator<JobService>();
+  final PlotViewManager _viewManager = PlotViewManager();
   List<Point> _points = [];
   List<Point> _visiblePointsCache = [];
   double _minY = 0;
@@ -250,32 +375,38 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   double _maxX = 0;
   Color _pointColor = Colors.white;
   bool _showGrid = true;
-  double _gridSpacing = 100.0; // Grid spacing in meters
+  double _gridSpacing = 100.0;
 
   // Display options
   bool _showComment = false;
   bool _showZ = false;
   bool _showDescriptor = false;
-  int _zDecimals = 2; // Z decimal places, default 3
+  int _zDecimals = 2;
 
   // View state
   double _currentScale = 1.0;
   Offset _currentOffset = Offset.zero;
-
-  // Zoom constants
-  static const double _minScale = 0.1;
-  static const double _maxScale = 10000.0;
-  static const double _zoomIncrement = 1.2;
-
-  // Border constant - 50% of the range for more padding
-  static const double _borderPercentage = 0.1;
-
-  // Add temporary offset for smooth panning
-  Offset _tempOffset = Offset.zero;
+  double? _origMinY, _origMaxY, _origMinX, _origMaxX;
 
   // Add timer for debouncing
   Timer? _panTimer;
   bool _isPanning = false;
+
+  // Add timer for zoom debounce
+  Timer? _zoomDebounceTimer;
+
+  // Tool mode management
+  PlotTool _activeTool = PlotTool.none;
+  Offset? _panStartLocal;
+  Offset? _panStartPlot;
+  Offset? _zoomBoxStart;
+  Offset? _zoomBoxEnd;
+  Offset? _zoomBoxStartLocal;
+  Offset? _zoomBoxEndLocal;
+  bool _isZoomBoxValid = true;
+
+  // Add temporary offset for smooth panning
+  Offset _tempOffset = Offset.zero;
 
   // Add snapshot controller
   final GlobalKey _plotKey = GlobalKey();
@@ -308,26 +439,8 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
 
   // Add fields to store pan start info
 
-  // Add a timer for zoom debounce
-  Timer? _zoomDebounceTimer;
-
-  // Store original bounds for clamping pan
-  double? _origMinY, _origMaxY, _origMinX, _origMaxX;
-
-  // Add zoom box state variables
-  bool _isZoomBoxMode = false;
-  Offset? _zoomBoxStart;
-  Offset? _zoomBoxEnd;
-
   // Add minimum zoom box size (in pixels)
   static const double _minZoomBoxSize = 20.0;
-
-  // Add zoom box validation state
-  bool _isZoomBoxValid = true;
-
-  // Add local positions for zoom box overlay
-  Offset? _zoomBoxStartLocal;
-  Offset? _zoomBoxEndLocal;
 
   @override
   void initState() {
@@ -344,43 +457,18 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
   Future<void> _loadPoints() async {
     final points = _jobService.points.value;
     if (points.isNotEmpty) {
-      _minY = points.map((p) => p.y).reduce((a, b) => a < b ? a : b);
-      _maxY = points.map((p) => p.y).reduce((a, b) => a > b ? a : b);
-      _minX = points.map((p) => p.x).reduce((a, b) => a < b ? a : b);
-      _maxX = points.map((p) => p.x).reduce((a, b) => a > b ? a : b);
+      _viewManager.calculateInitialBounds(points, (minY, maxY, minX, maxX) {
+        _minY = minY;
+        _maxY = maxY;
+        _minX = minX;
+        _maxX = maxX;
 
-      // Calculate ranges
-      final rangeY = _maxY - _minY;
-      final rangeX = _maxX - _minX;
-
-      // Use the larger range for both axes to maintain square proportions
-      final maxRange = max(rangeY, rangeX);
-
-      // Calculate border size based on percentage of the larger range
-      final borderSize = maxRange * _borderPercentage;
-
-      // Center the smaller range within the larger one
-      if (rangeY > rangeX) {
-        // Y range is larger, center X range
-        final extraX = (rangeY - rangeX) / 2;
-        _minX -= (extraX + borderSize);
-        _maxX += (extraX + borderSize);
-        _minY -= borderSize;
-        _maxY += borderSize;
-      } else {
-        // X range is larger, center Y range
-        final extraY = (rangeX - rangeY) / 2;
-        _minY -= (extraY + borderSize);
-        _maxY += (extraY + borderSize);
-        _minX -= borderSize;
-        _maxX += borderSize;
-      }
-
-      // Store original bounds for pan clamping
-      _origMinY = _minY;
-      _origMaxY = _maxY;
-      _origMinX = _minX;
-      _origMaxX = _maxX;
+        // Store original bounds for pan clamping
+        _origMinY = minY;
+        _origMaxY = maxY;
+        _origMinX = minX;
+        _origMaxX = maxX;
+      });
     }
     setState(() {
       _points = points;
@@ -428,7 +516,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       _isPanning = false;
       _snapshot = null;
       _panOffset = Offset.zero;
-      _isZoomBoxMode = false;
+      _activeTool = PlotTool.none;
       _zoomBoxStart = null;
       _zoomBoxEnd = null;
       _isZoomBoxValid = true;
@@ -439,13 +527,36 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
 
   void _zoomIn() {
     _zoomDebounceTimer?.cancel();
-    final newScale =
-        (_currentScale * _zoomIncrement).clamp(_minScale, _maxScale);
+    final newScale = (_currentScale * _viewManager.zoomIncrement)
+        .clamp(_viewManager.minScale, _viewManager.maxScale);
     debugPrint('Zooming in - Old scale: $_currentScale, New scale: $newScale');
     if (newScale != _currentScale) {
       _zoomDebounceTimer = Timer(const Duration(milliseconds: 250), () {
         if (mounted) {
           setState(() {
+            // Calculate the center point of the current view
+            final centerY = (_viewMinY + _viewMaxY) / 2;
+            final centerX = (_viewMinX + _viewMaxX) / 2;
+
+            // Calculate the current range
+            final currentRangeY = _viewMaxY - _viewMinY;
+            final currentRangeX = _viewMaxX - _viewMinX;
+
+            _viewManager.adjustViewForZoom(
+              currentScale: _currentScale,
+              newScale: newScale,
+              centerY: centerY,
+              centerX: centerX,
+              currentRangeY: currentRangeY,
+              currentRangeX: currentRangeX,
+              onViewUpdated: (newMinY, newMaxY, newMinX, newMaxX) {
+                _minY = newMinY;
+                _maxY = newMaxY;
+                _minX = newMinX;
+                _maxX = newMaxX;
+              },
+            );
+
             _currentScale = newScale;
             _constrainOffset();
             _clampViewToBounds();
@@ -458,13 +569,36 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
 
   void _zoomOut() {
     _zoomDebounceTimer?.cancel();
-    final newScale =
-        (_currentScale / _zoomIncrement).clamp(_minScale, _maxScale);
+    final newScale = (_currentScale / _viewManager.zoomIncrement)
+        .clamp(_viewManager.minScale, _viewManager.maxScale);
     debugPrint('Zooming out - Old scale: $_currentScale, New scale: $newScale');
     if (newScale != _currentScale) {
       _zoomDebounceTimer = Timer(const Duration(milliseconds: 250), () {
         if (mounted) {
           setState(() {
+            // Calculate the center point of the current view
+            final centerY = (_viewMinY + _viewMaxY) / 2;
+            final centerX = (_viewMinX + _viewMaxX) / 2;
+
+            // Calculate the current range
+            final currentRangeY = _viewMaxY - _viewMinY;
+            final currentRangeX = _viewMaxX - _viewMinX;
+
+            _viewManager.adjustViewForZoom(
+              currentScale: _currentScale,
+              newScale: newScale,
+              centerY: centerY,
+              centerX: centerX,
+              currentRangeY: currentRangeY,
+              currentRangeX: currentRangeX,
+              onViewUpdated: (newMinY, newMaxY, newMinX, newMaxX) {
+                _minY = newMinY;
+                _maxY = newMaxY;
+                _minX = newMinX;
+                _maxX = newMaxX;
+              },
+            );
+
             _currentScale = newScale;
             _constrainOffset();
             _clampViewToBounds();
@@ -520,38 +654,27 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           if (mounted) {
             setState(() {
               _points.removeWhere((p) => p.id == point.id);
+              _updateVisiblePoints(); // Update visible points after deletion
             });
           }
         },
       );
 
       if (updatedPoint != null && mounted) {
-        // If only name or Z changed, just replot in place
-        if (updatedPoint.y == point.y && updatedPoint.x == point.x) {
-          setState(() {
-            final idx = _points.indexWhere((p) => p.id == updatedPoint.id);
-            if (idx != -1) {
-              _points[idx] = updatedPoint;
-            }
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content:
-                    Text(AppLocalizations.of(context)!.pointUpdatedSuccess)),
-          );
-          return;
-        }
-        // If Y or X changed, check if new point is within current bounds
+        // Check if Y or X changed and if new point is within current bounds
         final inBounds = updatedPoint.y >= _viewMinY &&
             updatedPoint.y <= _viewMaxY &&
             updatedPoint.x >= _viewMinX &&
             updatedPoint.x <= _viewMaxX;
+
         setState(() {
           final idx = _points.indexWhere((p) => p.id == updatedPoint.id);
           if (idx != -1) {
             _points[idx] = updatedPoint;
+            _updateVisiblePoints(); // Always update visible points after modification
           }
         });
+
         if (!inBounds) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -740,7 +863,8 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                           height: size + 32.0,
                           child: Stack(
                             children: [
-                              if (_isPanning && _snapshot != null)
+                              if (_activeTool == PlotTool.pan &&
+                                  _snapshot != null)
                                 Transform.translate(
                                   offset: _panOffset,
                                   child: Image.memory(_snapshot!),
@@ -750,7 +874,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                                   key: _plotKey,
                                   child: _buildPlotWidget(),
                                 ),
-                              if (_isZoomBoxMode &&
+                              if (_activeTool == PlotTool.zoomBox &&
                                   _zoomBoxStartLocal != null &&
                                   _zoomBoxEndLocal != null)
                                 Positioned(
@@ -817,12 +941,25 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
+            icon: Icon(Icons.open_with,
+                color:
+                    _activeTool == PlotTool.pan ? Colors.blue : Colors.white),
+            onPressed: () {
+              setState(() {
+                _activeTool =
+                    _activeTool == PlotTool.pan ? PlotTool.none : PlotTool.pan;
+              });
+            },
+            tooltip: 'Pan Mode - Drag to move view',
+          ),
+          IconButton(
             icon: Icon(Icons.grid_on,
                 color: _showGrid ? Colors.white : Colors.grey),
             onPressed: () {
               setState(() {
                 _showGrid = !_showGrid;
-                if (_isZoomBoxMode) _isZoomBoxMode = false;
+                if (_activeTool == PlotTool.zoomBox)
+                  _activeTool = PlotTool.none;
               });
             },
             tooltip: 'Toggle Grid',
@@ -832,7 +969,8 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
             icon: const Icon(Icons.color_lens, color: Colors.white),
             onPressed: () {
               setState(() {
-                if (_isZoomBoxMode) _isZoomBoxMode = false;
+                if (_activeTool == PlotTool.zoomBox)
+                  _activeTool = PlotTool.none;
               });
               showDialog(
                 context: context,
@@ -871,15 +1009,22 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           const SizedBox(width: 8),
           IconButton(
             icon: Icon(Icons.zoom_in,
-                color: _isZoomBoxMode ? Colors.blue : Colors.white),
+                color: _activeTool == PlotTool.zoomBox
+                    ? Colors.blue
+                    : Colors.white),
             onPressed: () {
               setState(() {
-                _isZoomBoxMode = !_isZoomBoxMode;
-                _zoomBoxStart = null;
-                _zoomBoxEnd = null;
-                _zoomBoxStartLocal = null;
-                _zoomBoxEndLocal = null;
-                _isZoomBoxValid = true;
+                _activeTool = _activeTool == PlotTool.zoomBox
+                    ? PlotTool.none
+                    : PlotTool.zoomBox;
+                // Reset zoom box state if toggling
+                if (_activeTool != PlotTool.zoomBox) {
+                  _zoomBoxStart = null;
+                  _zoomBoxEnd = null;
+                  _zoomBoxStartLocal = null;
+                  _zoomBoxEndLocal = null;
+                  _isZoomBoxValid = true;
+                }
               });
             },
             tooltip:
@@ -890,7 +1035,8 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
             icon: const Icon(Icons.zoom_out_map, color: Colors.white),
             onPressed: () {
               setState(() {
-                if (_isZoomBoxMode) _isZoomBoxMode = false;
+                if (_activeTool == PlotTool.zoomBox)
+                  _activeTool = PlotTool.none;
               });
               _resetView();
             },
@@ -901,13 +1047,28 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
     );
   }
 
-  void _handlePanStart(DragStartDetails details) async {
-    if (_isZoomBoxMode) {
+  void _handlePanStart(DragStartDetails details) {
+    if (_activeTool == PlotTool.pan) {
+      final RenderBox? renderBox =
+          _plotKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        _panStartLocal = renderBox.globalToLocal(details.globalPosition);
+        _panStartPlot = PlotCoordinateUtils.screenToPlotYX(
+          globalPosition: details.globalPosition,
+          renderBox: renderBox,
+          viewMinY: _viewMinY,
+          viewMaxY: _viewMaxY,
+          viewMinX: _viewMinX,
+          viewMaxX: _viewMaxX,
+        );
+      }
+      return;
+    }
+    if (_activeTool == PlotTool.zoomBox) {
       final RenderBox? renderBox =
           _plotKey.currentContext?.findRenderObject() as RenderBox?;
       if (renderBox != null) {
         final localPosition = renderBox.globalToLocal(details.globalPosition);
-        // Check if the start position is within the plot area
         if (localPosition.dx >= 16 &&
             localPosition.dx <= renderBox.size.width - 16 &&
             localPosition.dy >= 16 &&
@@ -923,18 +1084,43 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       }
       return;
     }
-    // Do not allow panning
-    // if (_currentScale == 1.0) return;
-    // ... rest of pan code is now disabled ...
   }
 
   void _handlePanUpdate(DragUpdateDetails details) {
-    if (_isZoomBoxMode) {
+    if (_activeTool == PlotTool.pan &&
+        _panStartLocal != null &&
+        _panStartPlot != null) {
       final RenderBox? renderBox =
           _plotKey.currentContext?.findRenderObject() as RenderBox?;
       if (renderBox != null) {
         final localPosition = renderBox.globalToLocal(details.globalPosition);
-        // Constrain the end position to the plot area
+        final plotYX = PlotCoordinateUtils.screenToPlotYX(
+          globalPosition: details.globalPosition,
+          renderBox: renderBox,
+          viewMinY: _viewMinY,
+          viewMaxY: _viewMaxY,
+          viewMinX: _viewMinX,
+          viewMaxX: _viewMaxX,
+        );
+        final dx = plotYX.dy - _panStartPlot!.dy;
+        final dy = plotYX.dx - _panStartPlot!.dx;
+        setState(() {
+          _minX -= dx;
+          _maxX -= dx;
+          _minY -= dy;
+          _maxY -= dy;
+          _updateVisiblePoints();
+        });
+        _panStartLocal = localPosition;
+        _panStartPlot = plotYX;
+      }
+      return;
+    }
+    if (_activeTool == PlotTool.zoomBox) {
+      final RenderBox? renderBox =
+          _plotKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        final localPosition = renderBox.globalToLocal(details.globalPosition);
         final constrainedX =
             localPosition.dx.clamp(16.0, renderBox.size.width - 16.0);
         final constrainedY =
@@ -944,7 +1130,6 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
         setState(() {
           _zoomBoxEnd = constrainedGlobal;
           _zoomBoxEndLocal = Offset(constrainedX, constrainedY);
-          // Check if the zoom box is large enough
           if (_zoomBoxStartLocal != null) {
             final width = (_zoomBoxEndLocal!.dx - _zoomBoxStartLocal!.dx).abs();
             final height =
@@ -956,14 +1141,15 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       }
       return;
     }
-    // Do not allow panning
-    // if (_currentScale == 1.0) return;
-    // if (!_isPanning) return;
-    // ... rest of pan code is now disabled ...
   }
 
   void _handlePanEnd(DragEndDetails details) {
-    if (_isZoomBoxMode &&
+    if (_activeTool == PlotTool.pan) {
+      _panStartLocal = null;
+      _panStartPlot = null;
+      return;
+    }
+    if (_activeTool == PlotTool.zoomBox &&
         _zoomBoxStart != null &&
         _zoomBoxEnd != null &&
         _isZoomBoxValid) {
@@ -986,23 +1172,15 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           viewMinX: _viewMinX,
           viewMaxX: _viewMaxX,
         );
-
-        // Calculate the plot boundaries based on the zoom box
         final minY = min(startPlot.dx, endPlot.dx);
         final maxY = max(startPlot.dx, endPlot.dx);
         final minX = min(startPlot.dy, endPlot.dy);
         final maxX = max(startPlot.dy, endPlot.dy);
-
-        // Calculate the side length for a square zoom box
         final side = min(maxY - minY, maxX - minX);
-
-        // Always use the picked top-left as anchor
         final newMinY = minY;
         final newMinX = minX;
         final newMaxY = minY + side;
         final newMaxX = minX + side;
-
-        // Immediately update the plot without showing a dialog
         setState(() {
           _minY = newMinY;
           _maxY = newMaxY;
@@ -1018,8 +1196,6 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
       }
       return;
     }
-    // Do not allow panning
-    // ... rest of pan end code is now disabled ...
   }
 
   void _handleTapUp(TapUpDetails details) {
@@ -1050,16 +1226,16 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           ),
           // Add scale indicator at bottom left
           Positioned(
-            left: 20,
-            bottom: 20,
+            left: 2,
+            bottom: 2,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: -0, vertical: 0),
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                'Scale: ${(_viewMaxY - _viewMinY).toInt()}m',
+                'Scale: ${(_viewMaxY - _viewMinY).round()}m',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,
