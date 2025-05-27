@@ -253,7 +253,7 @@
   "@firstPoint": {
     "description": "Label for first point input"
   },
-  "secondPoint": "第二点",
+  "secondPoint": "下一个点",
   "@secondPoint": {
     "description": "Label for second point input"
   },
@@ -711,5 +711,9 @@
   "selectSecondPoint": "选择第二个点",
   "@selectSecondPoint": {
     "description": "需要选择第二个点进行测量时显示的消息"
-  }
+  },
+  "searchFirstPoint": "搜索第一个点",
+  "@searchFirstPoint": {"description": "搜索第一个点的对话框标题"},
+  "searchByIdOrComment": "按ID或注释搜索",
+  "@searchByIdOrComment": {"description": "按ID或注释搜索的提示"}
 } 

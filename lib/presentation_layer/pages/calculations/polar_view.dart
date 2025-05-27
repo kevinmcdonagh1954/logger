@@ -15,29 +15,7 @@ import '../../core/angle_converter.dart';
 import '../../../domain_layer/calculations/slope_calculator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../jobs/jobs_viewmodel.dart';
-
-/// Class to handle vertical angle calculations with index correction
-class VerticalAngle {
-  /// Calculates the corrected vertical angle given a decimal angle and vertical index correction
-  /// [verticalAngle] is the input angle in decimal degrees (0-360)
-  /// [verticalIndexCorrection] is the correction to be applied (default 0)
-  /// Returns the corrected vertical angle in decimal degrees
-  static double calculateVerticalAngle(double verticalAngle,
-      [double verticalIndexCorrection = 0]) {
-    double correctedAngle;
-
-    if (verticalAngle > 0 && verticalAngle < 180) {
-      correctedAngle = 90 - verticalAngle;
-    } else if (verticalAngle > 180 && verticalAngle < 360) {
-      correctedAngle = verticalAngle - 270;
-    } else {
-      correctedAngle = verticalAngle; // Handle edge cases
-    }
-
-    // Add vertical index correction
-    return correctedAngle + verticalIndexCorrection;
-  }
-}
+import '../../core/vertical_angle.dart';
 
 class PolarView extends StatefulWidget {
   final String jobName;
@@ -319,13 +297,15 @@ class _PolarViewState extends State<PolarView> with RouteAware {
 
     if (!mounted) return;
 
+    final l10n = AppLocalizations.of(context)!;
+
     await showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Search ${isStartPoint ? 'First' : 'Second'} Point'),
+              title: Text(l10n.searchFirstPoint),
               content: SizedBox(
                 width: double.maxFinite,
                 child: Column(
@@ -333,8 +313,8 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                   children: [
                     TextField(
                       controller: _searchController,
-                      decoration: const InputDecoration(
-                        hintText: 'Search by ID or comment',
+                      decoration: InputDecoration(
+                        hintText: l10n.searchByIdOrComment,
                         prefixIcon: Icon(Icons.search),
                       ),
                       onChanged: (value) {
@@ -387,7 +367,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
               ],
             );
@@ -1081,23 +1061,23 @@ class _PolarViewState extends State<PolarView> with RouteAware {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
+              PopupMenuItem<String>(
                 value: 'search',
                 child: Row(
                   children: [
                     Icon(Icons.search, size: 20),
                     SizedBox(width: 8),
-                    Text('Search Point'),
+                    Text(l10n.searchPoint),
                   ],
                 ),
               ),
-              const PopupMenuItem<String>(
+              PopupMenuItem<String>(
                 value: 'add',
                 child: Row(
                   children: [
                     Icon(Icons.add_circle_outline, size: 20),
                     SizedBox(width: 8),
-                    Text('Add Point'),
+                    Text(l10n.addPoint),
                   ],
                 ),
               ),

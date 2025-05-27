@@ -1647,7 +1647,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           final screenX = renderBox.size.width -
               ((closest!.y - _viewMinY) / (_viewMaxY - _viewMinY)) *
                   renderBox.size.width;
-          final screenY = ((closest!.x - _viewMinX) / (_viewMaxX - _viewMinX)) *
+          final screenY = ((closest.x - _viewMinX) / (_viewMaxX - _viewMinX)) *
               renderBox.size.height;
           _firstJoinScreenPosition = Offset(screenX, screenY);
           debugPrint(
@@ -1655,7 +1655,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(l10n.firstPointSelected(
-                  closest?.descriptor ?? closest?.comment ?? "Point")),
+                  closest.descriptor ?? closest.comment)),
               duration: const Duration(seconds: 1),
             ),
           );

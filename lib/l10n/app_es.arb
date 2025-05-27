@@ -260,7 +260,7 @@
   "@firstPoint": {
     "description": "Label for first point"
   },
-  "secondPoint": "2do Punto",
+  "secondPoint": "Punto siguiente",
   "@secondPoint": {
     "description": "Label for second point"
   },
@@ -804,5 +804,9 @@
   "selectSecondPoint": "Seleccione el segundo punto",
   "@selectSecondPoint": {
     "description": "Mensaje mostrado cuando se necesita seleccionar el segundo punto para medición"
-  }
+  },
+  "searchFirstPoint": "Buscar primer punto",
+  "@searchFirstPoint": {"description": "Título del diálogo para buscar el primer punto"},
+  "searchByIdOrComment": "Buscar por ID o comentario",
+  "@searchByIdOrComment": {"description": "Sugerencia para buscar por ID o comentario"}
 } 

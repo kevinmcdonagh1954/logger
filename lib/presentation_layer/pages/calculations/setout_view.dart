@@ -9,10 +9,10 @@ import '../../core/dialogs/point_dialog.dart';
 import '../../core/dropdowns/comment_dropdown.dart';
 import '../../core/angle_validator.dart';
 import 'dart:math';
-import 'polar_view.dart';
 import '../../core/angle_converter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../jobs/jobs_viewmodel.dart';
+import '../../core/vertical_angle.dart';
 
 class SetoutView extends StatefulWidget {
   final String jobName;
@@ -483,6 +483,7 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
   }
 
   Widget _buildPointInputRow() {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
         const SizedBox(
@@ -539,23 +540,23 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
           itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-            const PopupMenuItem<String>(
+            PopupMenuItem<String>(
               value: 'search',
               child: Row(
                 children: [
                   Icon(Icons.search, size: 20),
                   SizedBox(width: 8),
-                  Text('Search Point'),
+                  Text(l10n.searchPoint),
                 ],
               ),
             ),
-            const PopupMenuItem<String>(
+            PopupMenuItem<String>(
               value: 'add',
               child: Row(
                 children: [
                   Icon(Icons.add_circle_outline, size: 20),
                   SizedBox(width: 8),
-                  Text('Add Point'),
+                  Text(l10n.addPoint),
                 ],
               ),
             ),
@@ -780,8 +781,9 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
+            final l10n = AppLocalizations.of(context)!;
             return AlertDialog(
-              title: Text('Search ${isStartPoint ? 'First' : 'Second'} Point'),
+              title: Text(l10n.searchFirstPoint),
               content: SizedBox(
                 width: double.maxFinite,
                 child: Column(
@@ -789,8 +791,8 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
                   children: [
                     TextField(
                       controller: _searchController,
-                      decoration: const InputDecoration(
-                        hintText: 'Search by ID or comment',
+                      decoration: InputDecoration(
+                        hintText: l10n.searchByIdOrComment,
                         prefixIcon: Icon(Icons.search),
                       ),
                       onChanged: (value) {
@@ -840,7 +842,7 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
               ],
             );

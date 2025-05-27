@@ -130,6 +130,7 @@
   "distance": "Distância",
   "direction": "Direção",
   "cancel": "Cancelar",
+  "@cancel": {"description": "Rótulo para o botão cancelar"},
   "save": "Salvar",
   "delete": "Excluir",
   "update": "Atualizar",
@@ -139,7 +140,7 @@
   "singleJoin": "União Simples",
   "polar": "Polar",
   "firstPoint": "1º Ponto",
-  "secondPoint": "2º Ponto",
+  "secondPoint": "Próximo Ponto",
   "heightDiff": "Diferença de Altura",
   "slopeDistanceLabel": "Distância Inclinada",
   "gradeSlope": "Inclinação/Declive 1:",
@@ -282,5 +283,9 @@
   "selectSecondPoint": "Selecione o segundo ponto",
   "@selectSecondPoint": {
     "description": "Mensagem mostrada quando o segundo ponto precisa ser selecionado para medição"
-  }
+  },
+  "searchFirstPoint": "Pesquisar primeiro ponto",
+  "@searchFirstPoint": {"description": "Título do diálogo para pesquisar o primeiro ponto"},
+  "searchByIdOrComment": "Pesquisar por ID ou comentário",
+  "@searchByIdOrComment": {"description": "Dica para pesquisar por ID ou comentário"}
 } 

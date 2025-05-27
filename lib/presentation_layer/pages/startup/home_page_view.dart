@@ -9,6 +9,7 @@ import '../../../application_layer/core/service_locator.dart';
 import '../coordinates/coordinates_view.dart';
 import '../../core/logger_app_bar.dart';
 import '../settings/settings_view.dart';
+import '../fixing/fixing_page_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import '../../viewmodels/usage_viewmodel.dart';
@@ -128,8 +129,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
       NavigationItemConfig(
         icon: Icons.gps_fixed,
         label: l10n.fixes,
-        viewBuilder: _buildPlaceholderWidget,
-        placeholderLabel: l10n.fixes,
+        viewBuilder: (label) => const FixingPageView(),
       ),
       NavigationItemConfig(
         icon: Icons.timeline,
@@ -270,7 +270,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'Developing 5th May 2025',
+                  'Developing 27th May 2025',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.black,

@@ -276,7 +276,7 @@
   "@firstPoint": {
     "description": "Label for first point input"
   },
-  "secondPoint": "2nd Point",
+  "secondPoint": "Next Point",
   "@secondPoint": {
     "description": "Label for second point input"
   },
@@ -827,5 +827,9 @@
   "selectSecondPoint": "Select second point",
   "@selectSecondPoint": {
     "description": "Message shown when second point needs to be selected for measurement"
-  }
+  },
+  "searchFirstPoint": "Search First Point",
+  "@searchFirstPoint": {"description": "Dialog title for searching the first point"},
+  "searchByIdOrComment": "Search by ID or comment",
+  "@searchByIdOrComment": {"description": "Hint for searching by ID or comment"}
 } 

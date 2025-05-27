@@ -353,21 +353,19 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
   }
 
   Future<void> _showSearchDialog(bool isFirstPoint) async {
-    // Hide dropdowns before showing dialog
     _hideSearchResults();
-
     _searchController.clear();
     _filteredPoints = _jobService.points.value;
-
     if (!mounted) return;
-
+    final l10n = AppLocalizations.of(context)!;
     await showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Search ${isFirstPoint ? 'First' : 'Next'} Point'),
+              title:
+                  Text(isFirstPoint ? l10n.searchFirstPoint : l10n.secondPoint),
               content: SizedBox(
                 width: double.maxFinite,
                 child: Column(
@@ -375,8 +373,8 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
                   children: [
                     TextField(
                       controller: _searchController,
-                      decoration: const InputDecoration(
-                        hintText: 'Search by ID or comment',
+                      decoration: InputDecoration(
+                        hintText: l10n.searchByIdOrComment,
                         prefixIcon: Icon(Icons.search),
                       ),
                       onChanged: (value) {
@@ -427,7 +425,7 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
               ],
             );
