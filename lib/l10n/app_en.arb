@@ -248,6 +248,22 @@
   "@success": {
     "description": "Label for success message"
   },
+  "quickDistance": "Quick Distance",
+  "@quickDistance": {
+    "description": "Title for quick distance measurement dialog"
+  },
+  "fromPoint": "From Point",
+  "@fromPoint": {
+    "description": "Label for the starting point in distance measurement"
+  },
+  "toPoint": "To Point",
+  "@toPoint": {
+    "description": "Label for the ending point in distance measurement"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Label for close button"
+  },
   "singleJoin": "Single Join",
   "@singleJoin": {
     "description": "Label for single join calculation"
@@ -781,5 +797,29 @@
   "zToA": "Z-A",
   "@zToA": {"description": "Label for descending alphabetical order"},
   "sortByDescriptor": "Descriptor ({order})",
-  "@sortByDescriptor": {"description": "Sort by descriptor with order placeholder","placeholders":{"order":{"type":"String","example":"A-Z"}}}
+  "@sortByDescriptor": {"description": "Sort by descriptor with order placeholder","placeholders":{"order":{"type":"String","example":"A-Z"}}},
+  "selectFromPlot": "Select from Plot",
+  "@selectFromPlot": {
+    "description": "Label for selecting a point from the plot view"
+  },
+  "selectPointFromPlot": "Select Point from Plot",
+  "@selectPointFromPlot": {
+    "description": "Title for the plot view when in selection mode"
+  },
+  "joinModeSelectFirst": "Join Mode - Select first point",
+  "@joinModeSelectFirst": {
+    "description": "Message shown when join mode is activated"
+  },
+  "firstPointSelected": "First point selected: {pointName}",
+  "@firstPointSelected": {
+    "description": "Message shown when first point is selected in join mode",
+    "placeholders": {
+      "pointName": {
+        "type": "String",
+        "example": "Point A1"
+      }
+    }
+  },
+  "selectFirstPoint": "Select first point",
+  "selectSecondPoint": "Select second point"
 } 

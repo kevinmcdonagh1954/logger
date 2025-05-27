@@ -17,10 +17,20 @@ import '../../core/dialogs/point_dialog.dart';
 import '../../core/dropdowns/comment_dropdown.dart';
 import '../jobs/jobs_viewmodel.dart';
 import '../startup/home_page_view.dart';
+import '../coordinates/plot_coordinates_view.dart';
 
 class SingleJoinView extends StatefulWidget {
   final String jobName;
-  const SingleJoinView({super.key, required this.jobName});
+  final Point? initialFirstPoint;
+  final Point? initialSecondPoint;
+  final bool fromPlotScreen;
+  const SingleJoinView({
+    super.key,
+    required this.jobName,
+    this.initialFirstPoint,
+    this.initialSecondPoint,
+    this.fromPlotScreen = false,
+  });
 
   @override
   State<SingleJoinView> createState() => _SingleJoinViewState();
@@ -91,6 +101,16 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
 
     // Listen for job changes
     _jobsViewModel.currentJobName.addListener(_onJobChanged);
+
+    // Initialize with provided points if any
+    if (widget.initialFirstPoint != null) {
+      _firstPointController.text = widget.initialFirstPoint!.comment;
+      _updatePointCoordinates(widget.initialFirstPoint!, true);
+    }
+    if (widget.initialSecondPoint != null) {
+      _nextPointController.text = widget.initialSecondPoint!.comment;
+      _updatePointCoordinates(widget.initialSecondPoint!, false);
+    }
   }
 
   void _onJobChanged() {
@@ -422,9 +442,13 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
     final l10n = AppLocalizations.of(context)!;
     return WillPopScope(
       onWillPop: () async {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
+        if (widget.fromPlotScreen) {
+          Navigator.of(context).pop(); // Return to plot screen
+        } else {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        }
         return false;
       },
       child: GestureDetector(
@@ -433,9 +457,15 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              ),
+              onPressed: () {
+                if (widget.fromPlotScreen) {
+                  Navigator.of(context).pop(); // Return to plot screen
+                } else {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+                }
+              },
             ),
             title: Text(l10n.joins),
             backgroundColor: const Color(0xFF0D47A1),
@@ -668,9 +698,13 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
       ),
       onPressed: () {
         if (label == l10n.quit) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const HomePage()),
-          );
+          if (widget.fromPlotScreen) {
+            Navigator.of(context).pop(); // Return to plot screen
+          } else {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          }
         }
       },
       child: Text(label),
@@ -769,6 +803,16 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
                 ],
               ),
             ),
+            PopupMenuItem<String>(
+              value: 'select_from_plot',
+              child: Row(
+                children: [
+                  const Icon(Icons.map, size: 20),
+                  const SizedBox(width: 8),
+                  Text(l10n.selectFromPlot),
+                ],
+              ),
+            ),
             if (!isFirstPoint)
               PopupMenuItem<String>(
                 value: 'up',
@@ -781,13 +825,32 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
                 ),
               ),
           ],
-          onSelected: (String value) {
+          onSelected: (String value) async {
             switch (value) {
               case 'search':
                 _showSearchDialog(isFirstPoint);
                 break;
               case 'add':
                 _showAddPointDialog(context, isFirstPoint);
+                break;
+              case 'select_from_plot':
+                final result = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const PlotCoordinatesView(isSelectionMode: true),
+                  ),
+                );
+                if (result != null && result is Point) {
+                  setState(() {
+                    if (isFirstPoint) {
+                      _firstPointController.text = result.comment;
+                      _updatePointCoordinates(result, true);
+                    } else {
+                      _nextPointController.text = result.comment;
+                      _updatePointCoordinates(result, false);
+                    }
+                  });
+                }
                 break;
               case 'up':
                 setState(() {
