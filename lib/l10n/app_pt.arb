@@ -257,5 +257,30 @@
   "zToA": "Z-A",
   "@zToA": {"description": "Rótulo para ordem alfabética decrescente"},
   "sortByDescriptor": "Descritor ({order})",
-  "@sortByDescriptor": {"description": "Ordenar por descritor com marcador de ordem","placeholders":{"order":{"type":"String","example":"A-Z"}}}
+  "@sortByDescriptor": {"description": "Ordenar por descritor com marcador de ordem","placeholders":{"order":{"type":"String","example":"A-Z"}}},
+  "quickDistance": "Distância Rápida",
+  "fromPoint": "Ponto de Origem",
+  "toPoint": "Ponto de Destino",
+  "close": "Fechar",
+  "selectFromPlot": "Selecionar do Gráfico",
+  "selectPointFromPlot": "Selecionar Ponto do Gráfico",
+  "joinModeSelectFirst": "Modo de Junção - Selecione o primeiro ponto",
+  "firstPointSelected": "Primeiro ponto selecionado: {pointName}",
+  "@firstPointSelected": {
+    "description": "Mensagem mostrada quando o primeiro ponto é selecionado no modo de junção",
+    "placeholders": {
+      "pointName": {
+        "type": "String",
+        "example": "Ponto A1"
+      }
+    }
+  },
+  "selectFirstPoint": "Selecione o primeiro ponto",
+  "@selectFirstPoint": {
+    "description": "Mensagem mostrada quando o primeiro ponto precisa ser selecionado para medição"
+  },
+  "selectSecondPoint": "Selecione o segundo ponto",
+  "@selectSecondPoint": {
+    "description": "Mensagem mostrada quando o segundo ponto precisa ser selecionado para medição"
+  }
 } 

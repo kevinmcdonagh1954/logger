@@ -1078,51 +1078,62 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              Text(l10n.slopeAngle,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              if (AngleConverter.gradsFactor == 1.0) ...[
-                const SizedBox(width: 24),
-                SizedBox(
-                  height: 30,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(254, 247, 255, 1.0),
-                      border: Border(
-                        bottom:
-                            BorderSide(color: Colors.grey.shade400, width: 1),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.slopeAngle,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                if (AngleConverter.gradsFactor == 1.0)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: SizedBox(
+                      height: 30,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(254, 247, 255, 1.0),
+                          border: Border(
+                            bottom: BorderSide(
+                                color: Colors.grey.shade400, width: 1),
+                          ),
+                        ),
+                        child: DropdownButton<BearingFormat>(
+                          value: _selectedAngleFormat,
+                          isDense: true,
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.black),
+                          dropdownColor:
+                              const Color.fromRGBO(254, 247, 255, 1.0),
+                          underline: Container(),
+                          icon: const Icon(Icons.arrow_drop_down,
+                              color: Colors.black54),
+                          elevation: 1,
+                          onChanged: (BearingFormat? newFormat) {
+                            if (newFormat != null) {
+                              setState(() {
+                                _selectedAngleFormat = newFormat;
+                                _updateAngleFormat();
+                              });
+                            }
+                          },
+                          items: _buildAngleFormatItems(),
+                        ),
                       ),
                     ),
-                    child: DropdownButton<BearingFormat>(
-                      value: _selectedAngleFormat,
-                      isDense: true,
-                      style: const TextStyle(fontSize: 12, color: Colors.black),
-                      dropdownColor: const Color.fromRGBO(254, 247, 255, 1.0),
-                      underline: Container(),
-                      icon: const Icon(Icons.arrow_drop_down,
-                          color: Colors.black54),
-                      elevation: 1,
-                      onChanged: (BearingFormat? newFormat) {
-                        if (newFormat != null) {
-                          setState(() {
-                            _selectedAngleFormat = newFormat;
-                            _updateAngleFormat();
-                          });
-                        }
-                      },
-                      items: _buildAngleFormatItems(),
-                    ),
                   ),
-                ),
               ],
-            ],
+            ),
           ),
+          const SizedBox(width: 8),
           Text(
             angle,
-            style: const TextStyle(fontSize: 14),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ],
       ),

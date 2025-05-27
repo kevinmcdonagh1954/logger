@@ -821,5 +821,11 @@
     }
   },
   "selectFirstPoint": "Select first point",
-  "selectSecondPoint": "Select second point"
+  "@selectFirstPoint": {
+    "description": "Message shown when first point needs to be selected for measurement"
+  },
+  "selectSecondPoint": "Select second point",
+  "@selectSecondPoint": {
+    "description": "Message shown when second point needs to be selected for measurement"
+  }
 } 

@@ -686,5 +686,30 @@
   "zToA": "Z-A",
   "@zToA": {"description": "降序字母顺序标签"},
   "sortByDescriptor": "描述符（{order}）",
-  "@sortByDescriptor": {"description": "按描述符排序，带顺序占位符","placeholders":{"order":{"type":"String","example":"A-Z"}}}
+  "@sortByDescriptor": {"description": "按描述符排序，带顺序占位符","placeholders":{"order":{"type":"String","example":"A-Z"}}},
+  "quickDistance": "快速距离",
+  "fromPoint": "起点",
+  "toPoint": "终点",
+  "close": "关闭",
+  "selectFromPlot": "从图中选择",
+  "selectPointFromPlot": "从图中选择点",
+  "joinModeSelectFirst": "连接模式 - 选择第一个点",
+  "firstPointSelected": "已选择第一个点：{pointName}",
+  "@firstPointSelected": {
+    "description": "连接模式中选择第一个点时显示的消息",
+    "placeholders": {
+      "pointName": {
+        "type": "String",
+        "example": "点 A1"
+      }
+    }
+  },
+  "selectFirstPoint": "选择第一个点",
+  "@selectFirstPoint": {
+    "description": "需要选择第一个点进行测量时显示的消息"
+  },
+  "selectSecondPoint": "选择第二个点",
+  "@selectSecondPoint": {
+    "description": "需要选择第二个点进行测量时显示的消息"
+  }
 } 
