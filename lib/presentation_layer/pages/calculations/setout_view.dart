@@ -490,7 +490,7 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
       children: [
         SizedBox(
           width: 80,
-          child: Text(AppLocalizations.of(context)!.setoutSection,
+          child: Text(AppLocalizations.of(context)!.setoutPtSection,
               style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         CompositedTransformTarget(
@@ -567,10 +567,10 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
           onSelected: (String value) {
             switch (value) {
               case 'search':
-                _showSearchDialog(true);
+                _showSearchDialog(false);
                 break;
               case 'add':
-                _showPointDialog(true);
+                _showPointDialog(false);
                 break;
             }
           },
@@ -865,7 +865,9 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
   Future<void> _showPointDialog(bool isFirstPoint) async {
     _hideSearchResults();
 
-    final existingText = _pointNameController.text;
+    final existingText = isFirstPoint
+        ? _setupPointNameController.text
+        : _pointNameController.text;
 
     try {
       final point = await PointDialog.showAddEditPointDialog(
@@ -883,8 +885,13 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
 
       if (point != null && mounted) {
         setState(() {
-          _pointNameController.text = point.comment;
-          _updatePointCoordinates(point);
+          if (isFirstPoint) {
+            _setupPointNameController.text = point.comment;
+            _updateSetupPointCoordinates(point);
+          } else {
+            _pointNameController.text = point.comment;
+            _updatePointCoordinates(point);
+          }
         });
       }
     } catch (e) {

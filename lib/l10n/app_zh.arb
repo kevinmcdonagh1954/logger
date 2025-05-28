@@ -720,9 +720,9 @@
   "@setupAtSection": {
     "description": "Section header for the setup point input row in setout view"
   },
-  "setoutSection": "放样",
-  "@setoutSection": {
-    "description": "Section header for the setout point input row in setout view"
+  "setoutPtSection": "Setout Pt",
+  "@setoutPtSection": {
+    "description": "Label for the setout point input field."
   },
   "calculatedPositionSection": "计算位置",
   "@calculatedPositionSection": {

@@ -292,9 +292,9 @@
   "@setupAtSection": {
     "description": "Section header for the setup point input row in setout view"
   },
-  "setoutSection": "Implantar",
-  "@setoutSection": {
-    "description": "Section header for the setout point input row in setout view"
+  "setoutPtSection": "Setout Pt",
+  "@setoutPtSection": {
+    "description": "Label for the setout point input field."
   },
   "calculatedPositionSection": "Posição Calculada",
   "@calculatedPositionSection": {

@@ -813,9 +813,9 @@
   "@setupAtSection": {
     "description": "Section header for the setup point input row in setout view"
   },
-  "setoutSection": "Replanteo",
-  "@setoutSection": {
-    "description": "Section header for the setout point input row in setout view"
+  "setoutPtSection": "Setout Pt",
+  "@setoutPtSection": {
+    "description": "Label for the setout point input field."
   },
   "calculatedPositionSection": "Posición Calculada",
   "@calculatedPositionSection": {
