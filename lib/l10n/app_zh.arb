@@ -715,5 +715,39 @@
   "searchFirstPoint": "搜索第一个点",
   "@searchFirstPoint": {"description": "搜索第一个点的对话框标题"},
   "searchByIdOrComment": "按ID或注释搜索",
-  "@searchByIdOrComment": {"description": "按ID或注释搜索的提示"}
+  "@searchByIdOrComment": {"description": "按ID或注释搜索的提示"},
+  "setupAtSection": "设置于",
+  "@setupAtSection": {
+    "description": "Section header for the setup point input row in setout view"
+  },
+  "setoutSection": "放样",
+  "@setoutSection": {
+    "description": "Section header for the setout point input row in setout view"
+  },
+  "calculatedPositionSection": "计算位置",
+  "@calculatedPositionSection": {
+    "description": "Section header for the calculated position results in setout view"
+  },
+  "resultsSection": "结果",
+  "@resultsSection": {
+    "description": "Section header for the results section in setout view"
+  },
+  "valuesMenu": "{format}值",
+  "@valuesMenu": {
+    "description": "Popup menu item for showing YXZ or ENZ values. {format} is either YXZ or ENZ.",
+    "placeholders": {
+      "format": {
+        "type": "String",
+        "example": "YXZ"
+      }
+    }
+  },
+  "optionsTooltip": "选项",
+  "@optionsTooltip": {
+    "description": "Tooltip for the three-dot menu in setout view"
+  },
+  "coordinatesSection": "坐标",
+  "@coordinatesSection": {
+    "description": "Section header for the coordinates display in setout view"
+  }
 } 

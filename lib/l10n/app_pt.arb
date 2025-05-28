@@ -287,5 +287,39 @@
   "searchFirstPoint": "Pesquisar primeiro ponto",
   "@searchFirstPoint": {"description": "Título do diálogo para pesquisar o primeiro ponto"},
   "searchByIdOrComment": "Pesquisar por ID ou comentário",
-  "@searchByIdOrComment": {"description": "Dica para pesquisar por ID ou comentário"}
+  "@searchByIdOrComment": {"description": "Dica para pesquisar por ID ou comentário"},
+  "setupAtSection": "Configurar em",
+  "@setupAtSection": {
+    "description": "Section header for the setup point input row in setout view"
+  },
+  "setoutSection": "Implantar",
+  "@setoutSection": {
+    "description": "Section header for the setout point input row in setout view"
+  },
+  "calculatedPositionSection": "Posição Calculada",
+  "@calculatedPositionSection": {
+    "description": "Section header for the calculated position results in setout view"
+  },
+  "resultsSection": "Resultados",
+  "@resultsSection": {
+    "description": "Section header for the results section in setout view"
+  },
+  "valuesMenu": "Valores {format}",
+  "@valuesMenu": {
+    "description": "Popup menu item for showing YXZ or ENZ values. {format} is either YXZ or ENZ.",
+    "placeholders": {
+      "format": {
+        "type": "String",
+        "example": "YXZ"
+      }
+    }
+  },
+  "optionsTooltip": "Opções",
+  "@optionsTooltip": {
+    "description": "Tooltip for the three-dot menu in setout view"
+  },
+  "coordinatesSection": "Coordenadas",
+  "@coordinatesSection": {
+    "description": "Section header for the coordinates display in setout view"
+  }
 } 

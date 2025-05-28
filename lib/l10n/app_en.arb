@@ -190,7 +190,7 @@
   "@horizontalAngle": {
     "description": "Label for horizontal angle input"
   },
-  "setupAt": "Setup at",
+  "setupAt": "Setup At",
   "@setupAt": {
     "description": "Label for setup point location"
   },
@@ -831,5 +831,39 @@
   "searchFirstPoint": "Search First Point",
   "@searchFirstPoint": {"description": "Dialog title for searching the first point"},
   "searchByIdOrComment": "Search by ID or comment",
-  "@searchByIdOrComment": {"description": "Hint for searching by ID or comment"}
+  "@searchByIdOrComment": {"description": "Hint for searching by ID or comment"},
+  "setupAtSection": "Setup At",
+  "@setupAtSection": {
+    "description": "Section header for the setup point input row in setout view"
+  },
+  "setoutSection": "Setout",
+  "@setoutSection": {
+    "description": "Section header for the setout point input row in setout view"
+  },
+  "calculatedPositionSection": "Calculated Position",
+  "@calculatedPositionSection": {
+    "description": "Section header for the calculated position results in setout view"
+  },
+  "resultsSection": "Results",
+  "@resultsSection": {
+    "description": "Section header for the results section in setout view"
+  },
+  "valuesMenu": "{format} Values",
+  "@valuesMenu": {
+    "description": "Popup menu item for showing YXZ or ENZ values. {format} is either YXZ or ENZ.",
+    "placeholders": {
+      "format": {
+        "type": "String",
+        "example": "YXZ"
+      }
+    }
+  },
+  "optionsTooltip": "Options",
+  "@optionsTooltip": {
+    "description": "Tooltip for the three-dot menu in setout view"
+  },
+  "coordinatesSection": "Coordinates",
+  "@coordinatesSection": {
+    "description": "Section header for the coordinates display in setout view"
+  }
 } 

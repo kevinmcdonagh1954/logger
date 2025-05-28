@@ -73,6 +73,10 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   final BearingFormat _selectedAngleFormat = BearingFormat.dmsSymbols;
   String angle = "0° 00' 00\"";
 
+  // Add flags for input validity
+  bool _isFirstPointUnique = false;
+  bool _isSecondPointValid = false;
+
   @override
   void initState() {
     super.initState();
@@ -235,7 +239,9 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         onSelected: (point) {
           _firstPointController.text = point.comment;
           _updatePointCoordinates(point, true);
-          _calculateSecondPoint();
+          setState(() {
+            _isFirstPointUnique = false;
+          });
         },
         isSelectable: true,
       );
@@ -245,8 +251,14 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         context: context,
         query: query,
         points: _jobService.points.value,
-        onSelected: (_) {},
-        isSelectable: false,
+        onSelected: (point) {
+          _nextPointController.text = point.comment;
+          _updatePointCoordinates(point, false);
+          setState(() {
+            _isSecondPointValid = true;
+          });
+        },
+        isSelectable: true,
       );
     }
   }
@@ -307,7 +319,6 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                                 if (isStartPoint) {
                                   _firstPointController.text = point.comment;
                                   _updatePointCoordinates(point, true);
-                                  _calculateSecondPoint();
                                 } else {
                                   _nextPointController.text = point.comment;
                                   _updatePointCoordinates(point, false);
@@ -358,7 +369,6 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
           if (isFirstPoint) {
             _firstPointController.text = point.comment;
             _updatePointCoordinates(point, true);
-            _calculateSecondPoint();
           } else {
             _nextPointController.text = point.comment;
             _updatePointCoordinates(point, false);
@@ -509,6 +519,20 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     final label = isFirstPoint ? l10n.setupAt : l10n.secondPoint;
     final hintText = isFirstPoint ? l10n.setupAt : l10n.nextPointHint;
 
+    // Validation logic
+    bool isValid = false;
+    if (isFirstPoint) {
+      isValid = controller.text.isNotEmpty;
+      final exists = _jobService.points.value
+          .any((p) => p.comment.toLowerCase() == controller.text.toLowerCase());
+      _isFirstPointUnique = !exists && controller.text.isNotEmpty;
+    } else {
+      final exists = _jobService.points.value
+          .any((p) => p.comment.toLowerCase() == controller.text.toLowerCase());
+      isValid = controller.text.isNotEmpty && exists;
+      _isSecondPointValid = isValid;
+    }
+
     return Row(
       children: [
         SizedBox(
@@ -519,20 +543,38 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         CompositedTransformTarget(
           link: layerLink,
           child: SizedBox(
-            width: 160,
+            width: 130,
             height: 36,
             child: TextField(
               controller: controller,
               focusNode: focusNode,
-              style: const TextStyle(fontSize: 14),
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+              ),
               decoration: InputDecoration(
                 hintText: hintText,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                filled: !isFirstPoint,
+                filled: true,
+                fillColor: isValid
+                    ? Colors.green.withOpacity(0.15)
+                    : Colors.red.withOpacity(0.15),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: isValid ? Colors.green : Colors.red,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: isValid ? Colors.green : Colors.red,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
               onChanged: (value) {
                 if (isFirstPoint) {
@@ -541,15 +583,36 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                     orElse: () =>
                         const Point(id: 0, comment: '', y: 0, x: 0, z: 0),
                   );
-                  _updatePointCoordinates(point, true);
+                  if (point.id != 0) {
+                    _updatePointCoordinates(point, true);
+                    setState(() {
+                      _isFirstPointUnique = false;
+                    });
+                  } else {
+                    // Unique name, set YXZ to 0,0,0 and set flag
+                    _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+                    setState(() {
+                      _isFirstPointUnique = value.isNotEmpty;
+                    });
+                  }
                 } else {
-                  if (!mounted) return;
-                  setState(() {
-                    _showUpArrow =
-                        _hasValidCoordinates() && _hasValidPointName();
-                  });
+                  final point = _jobService.points.value.firstWhere(
+                    (p) => p.comment.toLowerCase() == value.toLowerCase(),
+                    orElse: () =>
+                        const Point(id: 0, comment: '', y: 0, x: 0, z: 0),
+                  );
+                  if (point.id != 0) {
+                    _updatePointCoordinates(point, false);
+                    setState(() {
+                      _isSecondPointValid = true;
+                    });
+                  } else {
+                    setState(() {
+                      _isSecondPointValid = false;
+                      _secondPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+                    });
+                  }
                 }
-                if (!mounted) return;
                 setState(() {});
                 _showSearchResults(value, isFirstPoint, context);
               },
@@ -569,31 +632,27 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
           icon: const Icon(Icons.close, color: Colors.red),
           iconSize: 20,
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
+          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
           onPressed: () {
             controller.clear();
             if (!mounted) return;
             setState(() {
               if (isFirstPoint) {
                 _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
-                _calculateSecondPoint();
+                _showUpArrow = false;
+                _isFirstPointUnique = false;
               } else {
                 _secondPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
-                _showUpArrow = false;
-                final defaultValues = SlopeCalculator.getDefaultValues();
-                slopeAngle = double.parse(defaultValues['angle']!);
-                gradeI = double.parse(defaultValues['grade']!);
-                gradePercent = double.parse(defaultValues['gradePercent']!);
-                angle = BearingFormatter.format(0, _selectedAngleFormat);
+                _isSecondPointValid = false;
               }
             });
             _hideSearchResults();
           },
         ),
         PopupMenuButton<String>(
-          icon: const Icon(Icons.more_vert),
+          icon: const Icon(Icons.more_vert, size: 20),
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
+          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
           itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
             PopupMenuItem<String>(
               value: 'search',
@@ -628,29 +687,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
           },
         ),
         if (!isFirstPoint && _showUpArrow) ...[
-          const SizedBox(width: 20),
-          IconButton(
-            icon: const Icon(Icons.arrow_upward, color: Colors.black),
-            onPressed: _swapPoints,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-          ),
-          if (_canSavePoint()) ...[
-            const SizedBox(width: 16),
-            ElevatedButton(
-              onPressed: _savePoint,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              child: const Text('SAVE'),
-            ),
-          ],
+          // (No widgets here)
         ],
       ],
     );
@@ -707,6 +744,16 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     );
   }
 
+  bool _areBothPointsValid() {
+    final setupAtValid = _firstPointCoords['Y'] != 0 ||
+        _firstPointCoords['X'] != 0 ||
+        _firstPointCoords['Z'] != 0;
+    final nextPointValid = _secondPointCoords['Y'] != 0 ||
+        _secondPointCoords['X'] != 0 ||
+        _secondPointCoords['Z'] != 0;
+    return setupAtValid && nextPointValid;
+  }
+
   Widget _buildInputRow(
     String label,
     TextEditingController controller,
@@ -725,6 +772,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
       displayLabel = label.replaceAll(
           '(m)', '(${_selectedPrecision == 'Meters' ? 'm' : 'Ft'})');
     }
+    final bool disabled = !_areBothPointsValid();
     return Row(
       children: [
         SizedBox(
@@ -741,6 +789,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
           child: TextField(
             controller: controller,
             focusNode: focusNode,
+            enabled: !disabled,
             keyboardType: const TextInputType.numberWithOptions(
               decimal: true,
               signed: true,
@@ -808,13 +857,15 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                   }
                 }),
             ],
-            style: const TextStyle(fontSize: 14),
+            style: TextStyle(
+                fontSize: 14, color: disabled ? Colors.red : Colors.black),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               isDense: true,
               filled: true,
+              fillColor: disabled ? Colors.red.withOpacity(0.1) : Colors.white,
             ),
           ),
         ),
@@ -852,13 +903,9 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
           'X': point.x,
           'Z': point.z,
         };
-        if (_isInputValid()) {
-          _calculateSecondPoint();
-        } else {
-          _secondPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
-          _showUpArrow = false;
-        }
+        _showUpArrow = false;
       } else {
+        // Allow Next Point to be updated anytime
         _secondPointCoords = {
           'Y': point.y,
           'X': point.x,

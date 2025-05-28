@@ -293,8 +293,8 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Calculated Position:',
+        Text(
+          AppLocalizations.of(context)!.calculatedPositionSection + ':',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 8),
@@ -346,10 +346,10 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
   Widget _buildSetupPointInputRow() {
     return Row(
       children: [
-        const SizedBox(
+        SizedBox(
           width: 80,
-          child:
-              Text('Setup At', style: TextStyle(fontWeight: FontWeight.bold)),
+          child: Text(AppLocalizations.of(context)!.setupAtSection,
+              style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         CompositedTransformTarget(
           link: _setupPointLayerLink,
@@ -361,7 +361,7 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
               focusNode: _setupPointNameFocus,
               style: const TextStyle(fontSize: 14),
               decoration: InputDecoration(
-                hintText: 'Point Name',
+                hintText: AppLocalizations.of(context)!.pointName,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -398,7 +398,7 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
           },
         ),
         PopupMenuButton<String>(
-          tooltip: 'Options',
+          tooltip: AppLocalizations.of(context)!.optionsTooltip,
           icon: const Icon(Icons.more_vert),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
@@ -409,7 +409,8 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
                 children: [
                   const Icon(Icons.grid_on, size: 20),
                   const SizedBox(width: 8),
-                  Text('${_coordinateFormat == 'YXZ' ? 'YXZ' : 'ENZ'} Values'),
+                  Text(AppLocalizations.of(context)!
+                      .valuesMenu(_coordinateFormat == 'YXZ' ? 'YXZ' : 'ENZ')),
                 ],
               ),
             ),
@@ -432,7 +433,8 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            '${_coordinateFormat == 'YXZ' ? 'YXZ' : 'ENZ'} Values',
+            AppLocalizations.of(context)!
+                .valuesMenu(_coordinateFormat == 'YXZ' ? 'YXZ' : 'ENZ'),
             style: const TextStyle(fontSize: 16),
           ),
           content: Column(
@@ -458,7 +460,7 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Close'),
+              child: Text(AppLocalizations.of(context)!.close),
             ),
           ],
         );
@@ -486,9 +488,10 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
     final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
-        const SizedBox(
+        SizedBox(
           width: 80,
-          child: Text('Setout', style: TextStyle(fontWeight: FontWeight.bold)),
+          child: Text(AppLocalizations.of(context)!.setoutSection,
+              style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         CompositedTransformTarget(
           link: _pointLayerLink,
@@ -500,7 +503,7 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
               focusNode: _pointNameFocus,
               style: const TextStyle(fontSize: 14),
               decoration: InputDecoration(
-                hintText: 'Point Name',
+                hintText: AppLocalizations.of(context)!.pointName,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -577,55 +580,62 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
   }
 
   Widget _buildCoordinatesRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
       children: [
-        // Y coordinate
-        Expanded(
-          child: Column(
-            children: [
-              Text(
-                CoordinateFormatter.getCoordinateLabel('Y', _coordinateFormat),
-                style: const TextStyle(fontWeight: FontWeight.bold),
+        Text(AppLocalizations.of(context)!.coordinatesSection,
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Y coordinate
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    CoordinateFormatter.getCoordinateLabel(
+                        'Y', _coordinateFormat),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    _pointCoords['Y']!.toStringAsFixed(3),
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
               ),
-              Text(
-                _pointCoords['Y']!.toStringAsFixed(3),
-                style: const TextStyle(fontSize: 14),
+            ),
+            // X coordinate
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    CoordinateFormatter.getCoordinateLabel(
+                        'X', _coordinateFormat),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    _pointCoords['X']!.toStringAsFixed(3),
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-
-        // X coordinate
-        Expanded(
-          child: Column(
-            children: [
-              Text(
-                CoordinateFormatter.getCoordinateLabel('X', _coordinateFormat),
-                style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            // Z coordinate
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    CoordinateFormatter.getCoordinateLabel(
+                        'Z', _coordinateFormat),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    _pointCoords['Z']!.toStringAsFixed(3),
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
               ),
-              Text(
-                _pointCoords['X']!.toStringAsFixed(3),
-                style: const TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
-        ),
-
-        // Z coordinate
-        Expanded(
-          child: Column(
-            children: [
-              Text(
-                CoordinateFormatter.getCoordinateLabel('Z', _coordinateFormat),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                _pointCoords['Z']!.toStringAsFixed(3),
-                style: const TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );
@@ -658,19 +668,19 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
 
     // Format the label based on type
     String getFormattedLabel() {
-      if (label.startsWith('Slope Distance') ||
-          label.startsWith('Target Height')) {
-        return '${label.split(' ')[0]} ${label.split(' ')[1]} (${_selectedPrecision == 'Meters' ? 'm' : 'Ft'})';
-      } else if (isAngle) {
-        return '${label.split(' ')[0]} ${label.split(' ')[1]} (${_angularMeasurement == 'degrees' ? '°' : 'g'})';
+      if (isAngle) {
+        return '$label (${_angularMeasurement == 'degrees' ? '°' : 'g'})';
+      } else if (label.contains('(m)') || label.contains('(ft)')) {
+        return label; // Already has unit
+      } else {
+        return '$label (${_selectedPrecision == 'Meters' ? 'm' : 'Ft'})';
       }
-      return label;
     }
 
     return Row(
       children: [
         SizedBox(
-          width: 140,
+          width: 145,
           child: Text(
             getFormattedLabel(),
             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -929,7 +939,7 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
         ),
       ),
       onPressed: () {
-        if (label == 'Quit') {
+        if (label == AppLocalizations.of(context)!.quit) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const HomePage()),
           );
@@ -983,28 +993,28 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
 
                 // Input Fields Section
                 _buildInputRow(
-                  'Slope Distance (m)',
+                  AppLocalizations.of(context)!.slopeDistanceWithUnit,
                   _slopeDistanceController,
                   false,
                   allowNegative: false,
                 ),
                 const SizedBox(height: 8),
                 _buildInputRow(
-                  'Vertical Angle',
+                  AppLocalizations.of(context)!.verticalAngle,
                   _verticalAngleController,
                   true,
                   allowNegative: false,
                 ),
                 const SizedBox(height: 8),
                 _buildInputRow(
-                  'Target Height (m)',
+                  AppLocalizations.of(context)!.targetHeightWithUnit,
                   _targetHeightController,
                   false,
                   allowNegative: true,
                 ),
                 const SizedBox(height: 8),
                 _buildInputRow(
-                  'Horizontal Angle',
+                  AppLocalizations.of(context)!.horizontalAngle,
                   _horizontalAngleController,
                   true,
                   allowNegative: false,
@@ -1037,7 +1047,7 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildNavButton('Quit'),
+                    _buildNavButton(AppLocalizations.of(context)!.quit),
                   ],
                 ),
               ],
