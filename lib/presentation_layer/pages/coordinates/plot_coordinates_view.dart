@@ -883,7 +883,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                                         color: Colors.grey,
                                         width: 2,
                                       ),
-                                      color: Colors.grey.withOpacity(0.3),
+                                      color: Colors.grey.withAlpha(77),
                                     ),
                                     child: !_isZoomBoxValid
                                         ? const Center(
@@ -1471,7 +1471,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
                 width: 16,
                 height: 16,
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.5),
+                  color: Colors.red.withAlpha(128),
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: Colors.red,
@@ -1487,7 +1487,7 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: -0, vertical: 0),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
+                color: Colors.black.withAlpha(179),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
@@ -1654,8 +1654,8 @@ class _PlotCoordinatesViewState extends State<PlotCoordinatesView> {
               'First join point screen position: $_firstJoinScreenPosition');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(l10n.firstPointSelected(
-                  closest.descriptor ?? closest.comment)),
+              content: Text(l10n
+                  .firstPointSelected(closest.descriptor ?? closest.comment)),
               duration: const Duration(seconds: 1),
             ),
           );
@@ -1934,7 +1934,7 @@ class _MeasurementLinePainter extends CustomPainter {
         height: painter.height + 4,
       );
       final bgPaint = Paint()
-        ..color = Colors.black.withOpacity(0.7)
+        ..color = Colors.black.withAlpha(179)
         ..style = PaintingStyle.fill;
       canvas.drawRect(rect, bgPaint);
       painter.paint(canvas, Offset(-painter.width / 2, -painter.height / 2));

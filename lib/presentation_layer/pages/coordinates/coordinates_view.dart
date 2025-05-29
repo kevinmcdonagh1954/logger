@@ -46,8 +46,7 @@ class _CoordinatesViewState extends State<CoordinatesView> {
     } catch (e) {
       debugPrint('Error initializing view models: $e');
     } finally {
-      if (mounted) {
-      }
+      if (mounted) {}
     }
   }
 
@@ -59,8 +58,7 @@ class _CoordinatesViewState extends State<CoordinatesView> {
     } catch (e) {
       debugPrint('Error changing job: $e');
     } finally {
-      if (mounted) {
-      }
+      if (mounted) {}
     }
   }
 
@@ -194,12 +192,14 @@ class _CoordinatesViewState extends State<CoordinatesView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-        return false;
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        }
       },
       child: Scaffold(
         appBar: AppBar(

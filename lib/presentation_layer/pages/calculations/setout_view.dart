@@ -294,7 +294,7 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          AppLocalizations.of(context)!.calculatedPositionSection + ':',
+          '${AppLocalizations.of(context)!.calculatedPositionSection}:',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 8),
@@ -958,12 +958,14 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-        return false;
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        }
       },
       child: GestureDetector(
         onTap: _hideSearchResults,

@@ -438,16 +438,18 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return WillPopScope(
-      onWillPop: () async {
-        if (widget.fromPlotScreen) {
-          Navigator.of(context).pop(); // Return to plot screen
-        } else {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const HomePage()),
-          );
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          if (widget.fromPlotScreen) {
+            Navigator.of(context).pop();
+          } else {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          }
         }
-        return false;
       },
       child: GestureDetector(
         onTap: _hideSearchResults,

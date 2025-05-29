@@ -21,24 +21,24 @@ class AngleValidator extends TextInputFormatter {
     if (parts.length > 1) {
       final decimal = parts[1];
 
+      // Allow partial input: if less than 2 digits, user is still typing minutes
+      if (decimal.length < 2) return true;
       // Check minutes (first two digits)
-      if (decimal.length >= 2) {
-        try {
-          final minutes = int.parse(decimal.substring(0, 2));
-          if (minutes > 59) return false;
-        } catch (e) {
-          return false;
-        }
+      try {
+        final minutes = int.parse(decimal.substring(0, 2));
+        if (minutes > 59) return false;
+      } catch (e) {
+        return false;
       }
 
+      // Allow partial input: if less than 4 digits, user is still typing seconds
+      if (decimal.length < 4) return true;
       // Check seconds (next two digits)
-      if (decimal.length >= 4) {
-        try {
-          final seconds = int.parse(decimal.substring(2, 4));
-          if (seconds > 59) return false;
-        } catch (e) {
-          return false;
-        }
+      try {
+        final seconds = int.parse(decimal.substring(2, 4));
+        if (seconds > 59) return false;
+      } catch (e) {
+        return false;
       }
 
       // Don't allow more than 4 decimal places
@@ -53,22 +53,34 @@ class AngleValidator extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
+    // Debug logging
+    print(
+        'AngleValidator: oldValue="${oldValue.text}", newValue="${newValue.text}"');
+
     // Allow empty value
     if (newValue.text.isEmpty) {
       return newValue;
     }
 
+    // Replace commas with dots
+    final replaced = newValue.text.replaceAll(',', '.');
+    print('AngleValidator: replaced="$replaced"');
+    final newValueWithDot = newValue.copyWith(text: replaced);
+
     // Only allow digits and one decimal point
-    if (!RegExp(r'^\d*\.?\d*$').hasMatch(newValue.text)) {
+    if (!RegExp(r'^\d*\.?\d*$').hasMatch(newValueWithDot.text)) {
+      print('AngleValidator: rejected by regex');
       return oldValue;
     }
 
     // Validate the angle
-    if (!isValidDMSAngle(newValue.text)) {
+    if (!isValidDMSAngle(newValueWithDot.text)) {
+      print('AngleValidator: rejected by isValidDMSAngle');
       return oldValue;
     }
 
-    return newValue;
+    print('AngleValidator: accepted');
+    return newValueWithDot;
   }
 
   /// Format a numeric angle value to DMS string representation

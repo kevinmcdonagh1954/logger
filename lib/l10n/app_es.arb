@@ -842,5 +842,9 @@
   "coordinatesSection": "Coordenadas",
   "@coordinatesSection": {
     "description": "Section header for the coordinates display in setout view"
-  }
+  },
+  "computedDirection": "Dirección calculada",
+  "enteredDirection": "Dirección ingresada",
+  "difference": "Diferencia",
+  "fixResults": "Resultados de Fijación"
 } 

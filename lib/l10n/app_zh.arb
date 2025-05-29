@@ -749,5 +749,9 @@
   "coordinatesSection": "坐标",
   "@coordinatesSection": {
     "description": "Section header for the coordinates display in setout view"
-  }
+  },
+  "computedDirection": "计算方向",
+  "enteredDirection": "输入方向",
+  "difference": "差值",
+  "fixResults": "定向结果"
 } 

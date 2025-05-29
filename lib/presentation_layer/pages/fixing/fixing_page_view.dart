@@ -15,6 +15,7 @@ import '../../../domain_layer/calculations/slope_calculator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../jobs/jobs_viewmodel.dart';
 import '../../core/vertical_angle.dart';
+import '../../../domain_layer/calculations/bearing_calculator.dart';
 
 class FixingPageView extends StatefulWidget {
   const FixingPageView({super.key});
@@ -72,10 +73,9 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   bool _showUpArrow = false;
   final BearingFormat _selectedAngleFormat = BearingFormat.dmsSymbols;
   String angle = "0° 00' 00\"";
+  BearingFormat _selectedBearingFormat = BearingFormat.dmsSymbols;
 
   // Add flags for input validity
-  bool _isFirstPointUnique = false;
-  bool _isSecondPointValid = false;
 
   @override
   void initState() {
@@ -141,12 +141,14 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-        return false;
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        }
       },
       child: GestureDetector(
         onTap: _hideSearchResults,
@@ -167,54 +169,68 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
             color: Colors.grey[50],
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildPointInputRow(true),
-                    const SizedBox(height: 10),
-                    _buildCoordinatesRow(true),
-                    const SizedBox(height: 10),
-                    _buildPointInputRow(false),
-                    const SizedBox(height: 10),
-                    _buildCoordinatesRow(false),
-                    const SizedBox(height: 10),
-                    _buildInputRow(
-                      l10n.slopeDistanceWithUnit,
-                      _slopeDistanceController,
-                      false,
-                      allowNegative: false,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildPointInputRow(true),
+                          const SizedBox(height: 10),
+                          _buildCoordinatesRow(true),
+                          const SizedBox(height: 10),
+                          _buildPointInputRow(false),
+                          const SizedBox(height: 10),
+                          _buildCoordinatesRow(false),
+                          const SizedBox(height: 10),
+                          _buildInputRow(
+                            l10n.slopeDistanceWithUnit,
+                            _slopeDistanceController,
+                            false,
+                            allowNegative: false,
+                            l10n: l10n,
+                          ),
+                          const SizedBox(height: 8),
+                          _buildInputRow(
+                            l10n.verticalAngle,
+                            _verticalAngleController,
+                            true,
+                            allowNegative: false,
+                            l10n: l10n,
+                          ),
+                          const SizedBox(height: 8),
+                          _buildInputRow(
+                            l10n.targetHeightWithUnit,
+                            _targetHeightController,
+                            false,
+                            allowNegative: true,
+                            l10n: l10n,
+                          ),
+                          const SizedBox(height: 8),
+                          _buildInputRow(
+                            l10n.horizontalAngle,
+                            _horizontalAngleController,
+                            true,
+                            allowNegative: false,
+                            l10n: l10n,
+                          ),
+                          const SizedBox(height: 16),
+                          _buildFixesResults(l10n),
+                          const SizedBox(height: 8),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 8),
-                    _buildInputRow(
-                      l10n.verticalAngle,
-                      _verticalAngleController,
-                      true,
-                      allowNegative: false,
-                    ),
-                    const SizedBox(height: 8),
-                    _buildInputRow(
-                      l10n.targetHeightWithUnit,
-                      _targetHeightController,
-                      false,
-                      allowNegative: true,
-                    ),
-                    const SizedBox(height: 8),
-                    _buildInputRow(
-                      l10n.horizontalAngle,
-                      _horizontalAngleController,
-                      true,
-                      allowNegative: false,
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildNavButton(l10n.quit),
-                      ],
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildNavButton(l10n.quit),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -239,9 +255,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         onSelected: (point) {
           _firstPointController.text = point.comment;
           _updatePointCoordinates(point, true);
-          setState(() {
-            _isFirstPointUnique = false;
-          });
+          setState(() {});
         },
         isSelectable: true,
       );
@@ -254,9 +268,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         onSelected: (point) {
           _nextPointController.text = point.comment;
           _updatePointCoordinates(point, false);
-          setState(() {
-            _isSecondPointValid = true;
-          });
+          setState(() {});
         },
         isSelectable: true,
       );
@@ -460,56 +472,6 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     }
   }
 
-  void _swapPoints() {
-    if (!mounted) return;
-    setState(() {
-      _firstPointCoords = _secondPointCoords;
-      _secondPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
-      _firstPointController.text = _nextPointController.text;
-      _nextPointController.text = '';
-      _showUpArrow = false;
-    });
-  }
-
-  bool _canSavePoint() {
-    if (_nextPointController.text.isEmpty) return false;
-    bool isDuplicate = _jobService.points.value.any((point) =>
-        point.comment.toLowerCase() == _nextPointController.text.toLowerCase());
-    bool hasValidCoordinates =
-        _secondPointCoords['Y'] != 0 || _secondPointCoords['X'] != 0;
-    return !isDuplicate && hasValidCoordinates;
-  }
-
-  Future<void> _savePoint() async {
-    if (!mounted) return;
-    try {
-      final newPoint = Point(
-        id: 0,
-        comment: _nextPointController.text,
-        y: _secondPointCoords['Y']!,
-        x: _secondPointCoords['X']!,
-        z: _secondPointCoords['Z']!,
-      );
-      await _jobService.addPoint(newPoint);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Point saved successfully'),
-          backgroundColor: Colors.green,
-          duration: Duration(milliseconds: 1000),
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error saving point: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
   Widget _buildPointInputRow(bool isFirstPoint) {
     final l10n = AppLocalizations.of(context)!;
     final controller =
@@ -523,14 +485,12 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     bool isValid = false;
     if (isFirstPoint) {
       isValid = controller.text.isNotEmpty;
-      final exists = _jobService.points.value
+      _jobService.points.value
           .any((p) => p.comment.toLowerCase() == controller.text.toLowerCase());
-      _isFirstPointUnique = !exists && controller.text.isNotEmpty;
     } else {
       final exists = _jobService.points.value
           .any((p) => p.comment.toLowerCase() == controller.text.toLowerCase());
       isValid = controller.text.isNotEmpty && exists;
-      _isSecondPointValid = isValid;
     }
 
     return Row(
@@ -559,8 +519,8 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                 ),
                 filled: true,
                 fillColor: isValid
-                    ? Colors.green.withOpacity(0.15)
-                    : Colors.red.withOpacity(0.15),
+                    ? Colors.green.withValues(alpha: 38)
+                    : Colors.red.withValues(alpha: 38),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                 enabledBorder: OutlineInputBorder(
@@ -585,15 +545,11 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                   );
                   if (point.id != 0) {
                     _updatePointCoordinates(point, true);
-                    setState(() {
-                      _isFirstPointUnique = false;
-                    });
+                    setState(() {});
                   } else {
                     // Unique name, set YXZ to 0,0,0 and set flag
                     _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
-                    setState(() {
-                      _isFirstPointUnique = value.isNotEmpty;
-                    });
+                    setState(() {});
                   }
                 } else {
                   final point = _jobService.points.value.firstWhere(
@@ -603,12 +559,9 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                   );
                   if (point.id != 0) {
                     _updatePointCoordinates(point, false);
-                    setState(() {
-                      _isSecondPointValid = true;
-                    });
+                    setState(() {});
                   } else {
                     setState(() {
-                      _isSecondPointValid = false;
                       _secondPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
                     });
                   }
@@ -640,10 +593,8 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
               if (isFirstPoint) {
                 _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
                 _showUpArrow = false;
-                _isFirstPointUnique = false;
               } else {
                 _secondPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
-                _isSecondPointValid = false;
               }
             });
             _hideSearchResults();
@@ -759,14 +710,20 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     TextEditingController controller,
     bool isAngle, {
     bool allowNegative = false,
+    required AppLocalizations l10n,
   }) {
-    final FocusNode focusNode = switch (label) {
-      'Slope Distance (m)' => _slopeDistanceFocus,
-      'Vertical Angle' => _verticalAngleFocus,
-      'Target Height (m)' => _targetHeightFocus,
-      'Horizontal Angle' => _horizontalAngleFocus,
-      _ => FocusNode(),
-    };
+    FocusNode focusNode;
+    if (label == l10n.slopeDistanceWithUnit) {
+      focusNode = _slopeDistanceFocus;
+    } else if (label == l10n.verticalAngle) {
+      focusNode = _verticalAngleFocus;
+    } else if (label == l10n.targetHeightWithUnit) {
+      focusNode = _targetHeightFocus;
+    } else if (label == l10n.horizontalAngle) {
+      focusNode = _horizontalAngleFocus;
+    } else {
+      focusNode = FocusNode(); // fallback, but should not happen
+    }
     String displayLabel = label;
     if (label == 'Slope Distance (m)' || label == 'Target Height (m)') {
       displayLabel = label.replaceAll(
@@ -802,12 +759,16 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
             },
             onSubmitted: (_) {
               FocusScope.of(context).nextFocus();
-              _calculateSecondPoint();
+              if (label == l10n.horizontalAngle) {
+                setState(() {}); // Only update results for horizontal angle
+              }
             },
             onChanged: (value) {
               if (!mounted) return;
-              setState(() {});
-              if (label == 'Slope Distance (m)' && value.isNotEmpty) {
+              if (label == l10n.horizontalAngle) {
+                setState(() {}); // Only update results for horizontal angle
+              }
+              if (label == l10n.slopeDistanceWithUnit && value.isNotEmpty) {
                 final distance = double.tryParse(value);
                 if (distance == 0) {
                   final currentContext = context;
@@ -819,7 +780,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                     ),
                   );
                 }
-              } else if (label == 'Vertical Angle' && value.isNotEmpty) {
+              } else if (label == l10n.verticalAngle && value.isNotEmpty) {
                 final angle = double.tryParse(value);
                 if (angle == 0) {
                   final currentContext = context;
@@ -832,7 +793,6 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                   );
                 }
               }
-              _calculateSecondPoint();
             },
             inputFormatters: [
               if (isAngle)
@@ -865,7 +825,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               isDense: true,
               filled: true,
-              fillColor: disabled ? Colors.red.withOpacity(0.1) : Colors.white,
+              fillColor: disabled ? Colors.red.withAlpha(26) : Colors.white,
             ),
           ),
         ),
@@ -914,5 +874,115 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         _showUpArrow = _hasValidCoordinates() && _hasValidPointName();
       }
     });
+  }
+
+  Widget _buildFixesResults(AppLocalizations l10n) {
+    // Only show if both points are valid and horizontal angle is entered
+    final hasPoints =
+        _firstPointCoords['Y'] != 0 || _firstPointCoords['X'] != 0;
+    final hasNext =
+        _secondPointCoords['Y'] != 0 || _secondPointCoords['X'] != 0;
+    final angleText = _horizontalAngleController.text;
+    final hasAngle =
+        angleText.isNotEmpty && AngleValidator.parseFromDMS(angleText) != null;
+    if (!hasPoints || !hasNext || !hasAngle) return const SizedBox.shrink();
+
+    // Use the established join direction routine
+    double computedAzimuth = BearingCalculator.calculate(
+      _firstPointCoords['Y']!,
+      _firstPointCoords['X']!,
+      _secondPointCoords['Y']!,
+      _secondPointCoords['X']!,
+    );
+    String formattedAzimuth =
+        BearingFormatter.format(computedAzimuth, _selectedBearingFormat);
+
+    // Parse entered direction as D.MMSS (DMS)
+    final enteredDirection = AngleValidator.parseFromDMS(angleText) ?? 0.0;
+    String formattedEntered =
+        BearingFormatter.format(enteredDirection, _selectedBearingFormat);
+
+    // Difference (correction)
+    double difference = enteredDirection - computedAzimuth;
+    // Normalize to [-180, 180]
+    if (difference > 180) difference -= 360;
+    if (difference < -180) difference += 360;
+    String formattedDifference =
+        BearingFormatter.format(difference, _selectedBearingFormat);
+
+    return Card(
+      color: Colors.blue[50],
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(l10n.resultsSection,
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                const SizedBox(width: 16),
+                DropdownButton<BearingFormat>(
+                  value: _selectedBearingFormat,
+                  onChanged: (format) {
+                    if (format != null)
+                      setState(() => _selectedBearingFormat = format);
+                  },
+                  items: _buildBearingFormatItemsForFix(computedAzimuth),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text('${l10n.computedDirection}:   $formattedAzimuth'),
+            Text('${l10n.enteredDirection}:   $formattedEntered'),
+            Text('${l10n.difference}:         $formattedDifference'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<DropdownMenuItem<BearingFormat>> _buildBearingFormatItemsForFix(
+      double bearing) {
+    return [
+      DropdownMenuItem(
+        value: BearingFormat.dms,
+        child: Text(
+            'D.M.S (${BearingFormatter.format(bearing, BearingFormat.dms)})',
+            style: const TextStyle(fontSize: 12)),
+      ),
+      DropdownMenuItem(
+        value: BearingFormat.dmsCompact,
+        child: Text(
+            'D.MS (${BearingFormatter.format(bearing, BearingFormat.dmsCompact)})',
+            style: const TextStyle(fontSize: 12)),
+      ),
+      DropdownMenuItem(
+        value: BearingFormat.dm,
+        child: Text(
+            'D.M (${BearingFormatter.format(bearing, BearingFormat.dm)})',
+            style: const TextStyle(fontSize: 12)),
+      ),
+      DropdownMenuItem(
+        value: BearingFormat.dmsNoSeparator,
+        child: Text(
+            'DMS (${BearingFormatter.format(bearing, BearingFormat.dmsNoSeparator)})',
+            style: const TextStyle(fontSize: 12)),
+      ),
+      DropdownMenuItem(
+        value: BearingFormat.dmsSymbols,
+        child: Text(
+            'D M S (${BearingFormatter.format(bearing, BearingFormat.dmsSymbols)})',
+            style: const TextStyle(fontSize: 12)),
+      ),
+      DropdownMenuItem(
+        value: BearingFormat.dmsSymbolsCompact,
+        child: Text(
+            'DMS (${BearingFormatter.format(bearing, BearingFormat.dmsSymbolsCompact)})',
+            style: const TextStyle(fontSize: 12)),
+      ),
+    ];
   }
 }

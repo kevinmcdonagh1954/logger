@@ -270,7 +270,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'Developing 27th May 2025',
+                  'Developing 28th May 2025',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.black,
@@ -813,6 +813,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 ),
               TextButton(
                 onPressed: () {
+                  if (!mounted) return;
                   Navigator.of(context).pop();
                 },
                 child: Text(l10n.cancel),
@@ -867,6 +868,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 ),
               TextButton(
                 onPressed: () {
+                  if (!mounted) return;
                   Navigator.of(context).pop();
                 },
                 child: Text(l10n.cancel),
