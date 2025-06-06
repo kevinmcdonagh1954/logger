@@ -261,65 +261,65 @@ class DatabaseService {
   // Get all jobs
   Future<Map<String, dynamic>> getAllJobs() async {
     try {
-      _logger?.info(_logName, 'Getting all jobs');
-      final String loggerPath = await loggerDirectoryPath;
-      final Directory loggerDir = Directory(loggerPath);
+    _logger?.info(_logName, 'Getting all jobs');
+    final String loggerPath = await loggerDirectoryPath;
+    final Directory loggerDir = Directory(loggerPath);
 
       _logger?.debug(_logName, 'Checking directory: $loggerPath');
 
-      if (!await loggerDir.exists()) {
-        _logger?.warning(_logName,
-            'Logger directory does not exist, returning empty job list');
-        return {'jobs': []};
-      }
+    if (!await loggerDir.exists()) {
+      _logger?.warning(_logName,
+          'Logger directory does not exist, returning empty job list');
+      return {'jobs': []};
+    }
 
-      final List<FileSystemEntity> entities = await loggerDir.list().toList();
-      final List<Map<String, dynamic>> jobsWithDates = [];
+    final List<FileSystemEntity> entities = await loggerDir.list().toList();
+    final List<Map<String, dynamic>> jobsWithDates = [];
 
-      for (var entity in entities) {
-        if (entity is Directory) {
-          final String jobName = path.basename(entity.path);
+    for (var entity in entities) {
+      if (entity is Directory) {
+        final String jobName = path.basename(entity.path);
           _logger?.debug(_logName, 'Found directory: $jobName');
 
-          // Skip folders that contain DELETED or BACKUPS in their name (case insensitive)
-          if (jobName.toUpperCase().contains('DELETED') ||
-              jobName.toUpperCase().contains('BACKUPS')) {
-            _logger?.debug(_logName, 'Skipping special folder: ${entity.path}');
-            continue;
-          }
+        // Skip folders that contain DELETED or BACKUPS in their name (case insensitive)
+        if (jobName.toUpperCase().contains('DELETED') ||
+            jobName.toUpperCase().contains('BACKUPS')) {
+          _logger?.debug(_logName, 'Skipping special folder: ${entity.path}');
+          continue;
+        }
 
-          // Check for corresponding .db file
-          final String dbPath = path.join(entity.path, '$jobName.db');
-          final File dbFile = File(dbPath);
+        // Check for corresponding .db file
+        final String dbPath = path.join(entity.path, '$jobName.db');
+        final File dbFile = File(dbPath);
 
-          if (await dbFile.exists()) {
-            // Valid job with database file
-            final DateTime lastModified = await dbFile.lastModified();
-            jobsWithDates.add({
-              'name': jobName,
-              'lastModified': lastModified,
-            });
+        if (await dbFile.exists()) {
+          // Valid job with database file
+          final DateTime lastModified = await dbFile.lastModified();
+          jobsWithDates.add({
+            'name': jobName,
+            'lastModified': lastModified,
+          });
             _logger?.debug(_logName, 'Found valid job: $jobName');
-          } else {
+        } else {
             _logger?.warning(
                 _logName, 'Found job folder without database file: $jobName');
           }
-        }
       }
+    }
 
-      // Sort the jobs by last modified date (most recent first)
-      jobsWithDates
-          .sort((a, b) => b['lastModified'].compareTo(a['lastModified']));
+    // Sort the jobs by last modified date (most recent first)
+    jobsWithDates
+        .sort((a, b) => b['lastModified'].compareTo(a['lastModified']));
 
-      // Extract just the job names in the sorted order
-      final List<String> jobs =
-          jobsWithDates.map((job) => job['name'] as String).toList();
+    // Extract just the job names in the sorted order
+    final List<String> jobs =
+        jobsWithDates.map((job) => job['name'] as String).toList();
 
       _logger?.info(
-          _logName, 'Found ${jobs.length} valid jobs: ${jobs.join(", ")}');
-      return {
-        'jobs': jobs,
-      };
+        _logName, 'Found ${jobs.length} valid jobs: ${jobs.join(", ")}');
+    return {
+      'jobs': jobs,
+    };
     } catch (e) {
       _logger?.error(_logName, 'Error getting all jobs: $e');
       return {'jobs': []};

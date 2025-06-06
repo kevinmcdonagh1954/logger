@@ -7,6 +7,7 @@ class Point {
   final double z; // Changed to non-nullable, will default to 0.0
   final String? descriptor; // Changed from category to descriptor
   final bool isDeleted; // Add isDeleted field
+  final bool isFixed; // Added to track if point is fixed
 
   const Point({
     this.id,
@@ -16,6 +17,7 @@ class Point {
     double? z, // Make parameter optional but type nullable
     this.descriptor, // Changed from category to descriptor
     this.isDeleted = false, // Default to false
+    this.isFixed = false, // Default to false
   }) : z = z ?? 0.0; // Default to 0.0 if z is null
 
   /// Create a Point from a map (used for database operations)
@@ -30,6 +32,7 @@ class Point {
       descriptor:
           map['descriptor'] as String?, // Changed from category to descriptor
       isDeleted: (map['isDeleted'] as int?) == 1, // Convert integer to boolean
+      isFixed: (map['isFixed'] as int?) == 1, // Convert integer to boolean
     );
   }
 
@@ -44,6 +47,7 @@ class Point {
       descriptor: record['descriptor']
           ?.toString(), // Changed from category to descriptor
       isDeleted: record['isDeleted'] as bool? ?? false,
+      isFixed: record['isFixed'] as bool? ?? false,
     );
   }
 
@@ -57,6 +61,7 @@ class Point {
       'z': z, // Always include z since it's non-nullable
       if (descriptor != null) 'descriptor': descriptor,
       'isDeleted': isDeleted ? 1 : 0, // Convert boolean to integer
+      'isFixed': isFixed ? 1 : 0, // Convert boolean to integer
     };
   }
 
@@ -69,6 +74,7 @@ class Point {
     double? z,
     String? descriptor, // Changed from category to descriptor
     bool? isDeleted,
+    bool? isFixed,
   }) {
     return Point(
       id: id ?? this.id,
@@ -79,11 +85,12 @@ class Point {
       descriptor:
           descriptor ?? this.descriptor, // Changed from category to descriptor
       isDeleted: isDeleted ?? this.isDeleted,
+      isFixed: isFixed ?? this.isFixed,
     );
   }
 
   @override
   String toString() {
-    return 'Point{id: $id, comment: $comment, y: $y, x: $x, z: $z, descriptor: $descriptor, isDeleted: $isDeleted}'; // Changed from category to descriptor
+    return 'Point{id: $id, comment: $comment, y: $y, x: $x, z: $z, descriptor: $descriptor, isDeleted: $isDeleted, isFixed: $isFixed}'; // Changed from category to descriptor
   }
 }

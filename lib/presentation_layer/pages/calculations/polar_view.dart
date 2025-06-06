@@ -16,6 +16,7 @@ import '../../../domain_layer/calculations/slope_calculator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../jobs/jobs_viewmodel.dart';
 import '../../core/vertical_angle.dart';
+import '../../../domain_layer/calculations/bearing_calculator.dart';
 
 class PolarView extends StatefulWidget {
   final String jobName;
@@ -41,6 +42,8 @@ class _PolarViewState extends State<PolarView> with RouteAware {
   final TextEditingController _verticalAngleController =
       TextEditingController(text: "0.0000");
   final TextEditingController _targetHeightController =
+      TextEditingController(text: "0.000");
+  final TextEditingController _instrumentHeightController =
       TextEditingController(text: "0.000");
   final TextEditingController _horizontalAngleController =
       TextEditingController(text: "0.0000");
@@ -84,6 +87,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
   final FocusNode _slopeDistanceFocus = FocusNode();
   final FocusNode _verticalAngleFocus = FocusNode();
   final FocusNode _targetHeightFocus = FocusNode();
+  final FocusNode _instrumentHeightFocus = FocusNode();
   final FocusNode _horizontalAngleFocus = FocusNode();
 
   // Add state variable for up arrow visibility
@@ -148,6 +152,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
     _slopeDistanceController.dispose();
     _verticalAngleController.dispose();
     _targetHeightController.dispose();
+    _instrumentHeightController.dispose();
     _horizontalAngleController.dispose();
     _firstPointYController.dispose();
     _firstPointXController.dispose();
@@ -163,6 +168,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
     _slopeDistanceFocus.dispose();
     _verticalAngleFocus.dispose();
     _targetHeightFocus.dispose();
+    _instrumentHeightFocus.dispose();
     _horizontalAngleFocus.dispose();
 
     super.dispose();
@@ -448,11 +454,16 @@ class _PolarViewState extends State<PolarView> with RouteAware {
 
     try {
       final slopeDistance = double.parse(_slopeDistanceController.text);
-      final verticalDecimal =
+      var verticalDecimal =
           AngleValidator.parseFromDMS(_verticalAngleController.text) ?? 0.0;
       final horizontalDecimal =
           AngleValidator.parseFromDMS(_horizontalAngleController.text) ?? 0.0;
       final targetHeight = double.parse(_targetHeightController.text);
+
+      // If vertical angle is 0, assume 90° (level)
+      if (verticalDecimal == 0) {
+        verticalDecimal = 90.0;
+      }
 
       // Constants
       const double earthRadius = 6370000.0; // Earth radius in meters
@@ -589,6 +600,17 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                     const SizedBox(height: 10),
                     _buildCoordinatesRow(true),
                     const SizedBox(height: 10),
+                    _buildInputRow(
+                      _selectedPrecision == 'Meters'
+                          ? l10n.instrumentHeightWithUnitMeters
+                          : l10n.instrumentHeightWithUnitFeet,
+                      _instrumentHeightController,
+                      false,
+                      allowNegative: false,
+                      l10n: l10n,
+                      hint: l10n.instrumentHeightHint,
+                    ),
+                    const Divider(height: 20),
                     _buildPointInputRow(false),
                     const SizedBox(height: 10),
                     _buildCoordinatesRow(false),
@@ -598,6 +620,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                       _slopeDistanceController,
                       false,
                       allowNegative: false,
+                      l10n: l10n,
                     ),
                     const SizedBox(height: 8),
                     _buildInputRow(
@@ -605,6 +628,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                       _verticalAngleController,
                       true,
                       allowNegative: false,
+                      l10n: l10n,
                     ),
                     const SizedBox(height: 8),
                     _buildInputRow(
@@ -612,6 +636,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                       _targetHeightController,
                       false,
                       allowNegative: true,
+                      l10n: l10n,
                     ),
                     const SizedBox(height: 8),
                     _buildInputRow(
@@ -619,6 +644,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                       _horizontalAngleController,
                       true,
                       allowNegative: false,
+                      l10n: l10n,
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -666,6 +692,8 @@ class _PolarViewState extends State<PolarView> with RouteAware {
     TextEditingController controller,
     bool isAngle, {
     bool allowNegative = false,
+    required AppLocalizations l10n,
+    String? hint,
   }) {
     // Determine which focus node to use
     final FocusNode focusNode = switch (label) {
@@ -676,30 +704,23 @@ class _PolarViewState extends State<PolarView> with RouteAware {
       _ => FocusNode(),
     };
 
-    // Get validation color
-    Color? getValidationColor() {
-      if (label == 'Target Height (m)' || label == 'Horizontal Angle') {
-        return null;
-      }
-
-      final value = double.tryParse(controller.text) ?? 0;
-      return value == 0 ? Colors.red[100] : null;
-    }
-
-    // Format label to include measurement units
     String displayLabel = label;
-    if (label == 'Slope Distance (m)' || label == 'Target Height (m)') {
-      displayLabel = label.replaceAll(
-          '(m)', '(${_selectedPrecision == 'Meters' ? 'm' : 'Ft'})');
+    if (label.contains('(m)') || label.contains('(Ft)')) {
+      displayLabel = label;
     }
+
+    final bool disabled = !_areBothPointsValid();
 
     return Row(
       children: [
         SizedBox(
           width: 140,
-          child: Text(
-            displayLabel,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+          child: Tooltip(
+            message: hint ?? '',
+            child: Text(
+              displayLabel,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ),
         const SizedBox(width: 0),
@@ -709,6 +730,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
           child: TextField(
             controller: controller,
             focusNode: focusNode,
+            enabled: !disabled,
             keyboardType: const TextInputType.numberWithOptions(
               decimal: true,
               signed: true,
@@ -720,13 +742,20 @@ class _PolarViewState extends State<PolarView> with RouteAware {
               );
             },
             onSubmitted: (_) {
+              if (controller.text.isEmpty) {
+                controller.text = "0.000";
+              }
               FocusScope.of(context).nextFocus();
-              _calculateSecondPoint();
+              if (label == l10n.horizontalAngle) {
+                setState(() {}); // Only update results for horizontal angle
+              }
             },
             onChanged: (value) {
               if (!mounted) return;
-              setState(() {}); // Trigger rebuild to update colors
-              if (label == 'Slope Distance (m)' && value.isNotEmpty) {
+              if (label == l10n.horizontalAngle) {
+                setState(() {}); // Only update results for horizontal angle
+              }
+              if (label == l10n.slopeDistanceWithUnit && value.isNotEmpty) {
                 final distance = double.tryParse(value);
                 if (distance == 0) {
                   final currentContext = context;
@@ -738,7 +767,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                     ),
                   );
                 }
-              } else if (label == 'Vertical Angle' && value.isNotEmpty) {
+              } else if (label == l10n.verticalAngle && value.isNotEmpty) {
                 final angle = double.tryParse(value);
                 if (angle == 0) {
                   final currentContext = context;
@@ -751,7 +780,6 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                   );
                 }
               }
-              _calculateSecondPoint();
             },
             inputFormatters: [
               if (isAngle)
@@ -759,20 +787,14 @@ class _PolarViewState extends State<PolarView> with RouteAware {
               else
                 TextInputFormatter.withFunction((oldValue, newValue) {
                   if (newValue.text.isEmpty) return newValue;
-
-                  // Handle negative sign
                   if (newValue.text == '-') {
                     return allowNegative ? newValue : oldValue;
                   }
-
-                  // Only allow one decimal point
                   if (newValue.text.contains('.') &&
                       newValue.text.indexOf('.') !=
                           newValue.text.lastIndexOf('.')) {
                     return oldValue;
                   }
-
-                  // Validate the number format
                   try {
                     final number = double.parse(newValue.text);
                     if (!allowNegative && number < 0) return oldValue;
@@ -782,14 +804,15 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                   }
                 }),
             ],
-            style: const TextStyle(fontSize: 14),
+            style: TextStyle(
+                fontSize: 14, color: disabled ? Colors.red : Colors.black),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               isDense: true,
               filled: true,
-              fillColor: getValidationColor(),
+              fillColor: disabled ? Colors.red.withAlpha(26) : Colors.white,
             ),
           ),
         ),
@@ -1170,5 +1193,9 @@ class _PolarViewState extends State<PolarView> with RouteAware {
         ),
       );
     }
+  }
+
+  bool _areBothPointsValid() {
+    return _isInputValid() && _hasValidCoordinates();
   }
 }

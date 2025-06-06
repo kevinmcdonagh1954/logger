@@ -89,205 +89,595 @@
   "deletePoint": "Excluir Ponto",
   "@deletePoint": {"description": "Dialog title for deleting a point"},
   "deletePointWithComment": "Excluir Ponto: {comment}",
-  "@deletePointWithComment": {"description": "Dialog title for deleting a point with comment","placeholders":{"comment":{"type":"String","example":"A1"}}},
+  "@deletePointWithComment": {
+    "description": "Dialog title for deleting a point with comment",
+    "placeholders": {
+      "comment": {
+        "type": "String",
+        "example": "A1"
+      }
+    }
+  },
   "deletePointConfirmation": "Tem certeza de que deseja excluir este ponto?",
   "@deletePointConfirmation": {"description": "Confirmation message for deleting a point"},
   "pointDeletedSuccess": "Ponto excluído com sucesso",
   "@pointDeletedSuccess": {"description": "Success message when a point is deleted"},
   "sortById": "ID ({order})",
-  "@sortById": {"description": "Sort by ID with order placeholder","placeholders":{"order":{"type":"String","example":"Crescente"}}},
+  "@sortById": {
+    "description": "Sort by ID with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
   "sortByY": "Coordenada Y ({order})",
-  "@sortByY": {"description": "Sort by Y coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Crescente"}}},
+  "@sortByY": {
+    "description": "Sort by Y coordinate with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
   "sortByX": "Coordenada X ({order})",
-  "@sortByX": {"description": "Sort by X coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Crescente"}}},
+  "@sortByX": {
+    "description": "Sort by X coordinate with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
   "sortByZ": "Coordenada Z ({order})",
-  "@sortByZ": {"description": "Sort by Z coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Crescente"}}},
+  "@sortByZ": {
+    "description": "Sort by Z coordinate with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
   "ascending": "Crescente",
   "@ascending": {"description": "Ascending order label"},
   "descending": "Decrescente",
   "@descending": {"description": "Descending order label"},
   "coordinatesWithJob": "Coordenadas - {jobName}",
-  "@coordinatesWithJob": {"description": "Long title for coordinates view with job name","placeholders":{"jobName":{"type":"String","example":"Job1"}}},
-  "coordsWithJob": "Coords - {jobName}",
-  "@coordsWithJob": {"description": "Short title for coordinates view with job name","placeholders":{"jobName":{"type":"String","example":"Job1"}}},
-  "plotCoordinates": "Plotar Coordenadas",
-  "@plotCoordinates": {"description": "Option to plot coordinates from the popup menu"},
-  "currentJob": "Trabalho Atual: {jobName}",
-  "@currentJob": {"description": "Text shown with current job name", "placeholders": {"jobName": {"type": "String", "example": "Job1"}}},
-  "comingSoon": "Em breve",
-  "importPoints": "Importar Pontos",
-  "exportPoints": "Exportar Pontos",
-  "readyToImport": "Pronto para importar",
-  "importStatus": "Status da Importação:",
-  "slopeDistanceWithUnit": "Distância Inclinada (m)",
-  "targetHeight": "Altura Alvo (m)",
-  "horizontalAngle": "Ângulo Horizontal",
-  "setupAt": "Configurar em",
-  "pointName": "Nome do Ponto",
-  "search": "Pesquisar",
-  "add": "Adicionar",
-  "calculatedPosition": "Posição Calculada",
-  "distance": "Distância",
-  "direction": "Direção",
-  "cancel": "Cancelar",
-  "@cancel": {"description": "Rótulo para o botão cancelar"},
-  "save": "Salvar",
-  "delete": "Excluir",
-  "update": "Atualizar",
-  "error": "Erro: {message}",
-  "@error": {"description": "Mensagem de erro com detalhes", "placeholders": {"message": {"type": "String", "example": "Falha ao atualizar ponto"}}},
-  "success": "Sucesso",
-  "singleJoin": "União Simples",
-  "polar": "Polar",
-  "firstPoint": "1º Ponto",
-  "secondPoint": "Próximo Ponto",
-  "heightDiff": "Diferença de Altura",
-  "slopeDistanceLabel": "Distância Inclinada",
-  "gradeSlope": "Inclinação/Declive 1:",
-  "gradeSlopePercent": "Inclinação/Declive %",
-  "slopeAngle": "Ângulo de Inclinação",
-  "area": "Área",
-  "joins": "Uniões",
-  "searchPoint": "Pesquisar Ponto",
-  "addPoint": "Adicionar Ponto",
-  "targetHeightWithUnit": "Altura Alvo (m)",
-  "useCurvatureAndRefraction": "Usar Curvatura e Refração",
-  "firstPointHint": "Primeiro Ponto",
-  "nextPointHint": "Próximo Ponto",
-  "addPointTitle": "Adicionar Ponto",
-  "invalidComment": "Comentário Inválido",
-  "comment": "Comentário",
-  "descriptor": "Descritor",
-  "coords": "Coordenadas",
-  "sortBy": "Ordenar Por",
-  "sortByComment": "Comentário ({order})",
-  "@sortByComment": {"description": "Ordenar por comentário com marcador de ordem","placeholders":{"order":{"type":"String","example":"A-Z"}}},
-  "sortByCoordinate": "Ordenar por Coordenada",
-  "viewOnGoogleMaps": "Ver no Google Maps",
-  "addPointDialog": "Adicionar Ponto",
-  "characterCount": "{current}/{max}",
-  "@characterCount": {"description": "Exibição da contagem de caracteres", "placeholders": {"current": {"type": "int", "example": "0"}, "max": {"type": "int", "example": "20"}}},
-  "searchPoints": "Pesquisar Pontos",
-  "editPoint": "Editar Ponto",
-  "validComment": "Comentário Válido",
-  "pleaseEnterComment": "Por favor, insira um comentário",
-  "commentExists": "Comentário já existe",
-  "backup": "",
-  "searchJob": "Pesquisar Trabalho",
-  "sortJobsBy": "Ordenar Trabalhos Por",
-  "nameAtoZ": "Nome (A a Z)",
-  "nameZtoA": "Nome (Z a A)",
-  "dateModifiedNewest": "Data de Modificação (Mais Recente)",
-  "dateModifiedOldest": "Data de Modificação (Mais Antiga)",
-  "createNewJob": "Criar Novo Trabalho",
-  "info": "Informação",
-  "jobSettings": "Configurações do Trabalho",
-  "jobName": "Nome do Trabalho",
-  "jobInformation": "Informações do Trabalho",
-  "jobDescription": "Descrição do Trabalho",
-  "coordinateFormat": "Formato de Coordenada",
-  "instrument": "Instrumento",
-  "dualCapture": "Captura Dupla",
-  "measurementUnits": "Unidades de Medida",
-  "angularMeasurement": "Medição Angular",
-  "commsBaudRate": "Taxa de Baud de Comunicação",
-  "calculationSettings": "Configurações de Cálculo",
-  "scaleFactor": "Fator de Escala",
-  "heightAboveMSL": "Altura Acima do NMM",
-  "meanYValue": "Valor Médio de Y",
-  "verticalAngleIndexError": "Erro de Índice de Ângulo Vertical",
-  "toleranceSettings": "Configurações de Tolerância",
-  "spotShotTolerance": "Tolerância de Medição Pontual",
-  "horizontalAlignmentOffsetTolerance": "Tolerância de Deslocamento de Alinhamento Horizontal",
-  "maximumSearchDistanceFromCL": "Distância Máxima de Busca do CL",
-  "timingSettings": "Configurações de Tempo",
-  "numberOfRetries": "Número de Tentativas",
-  "timeout": "Tempo Limite",
-  "instrumentSettings": "Configurações do Instrumento",
-  "manualInstrument": "MANUAL",
-  "importExport": "Importar/Exportar",
-  "exportCoordinatesHint": "Exportar dados de coordenadas para arquivo",
-  "import": "Importar",
-  "export": "Exportar",
-  "horzAlignment": "Alinhamento Horizontal",
-  "dtmTot": "DTM (TOT)",
-  "roadDesign": "Projeto de Estrada",
-  "strings": "Strings",
-  "tacheRaw": "Taqueometria (Bruta)",
-  "tacheReduced": "Taqueometria (Reduzida)",
-  "fieldbook": "Livro de Campo",
-  "importCoordinatesHint": "Importar dados de coordenadas do arquivo. Formato delimitado por vírgula, espaço ou tabulação. Formato CYXZ ou CENZ. Restrito a 20 caracteres",
-  "importHorzAlignmentHint": "Importar dados de alinhamento horizontal de arquivos PID do Model e Road Maker",
-  "importDtmTotHint": "Ler arquivo TOT do Model Maker. Modelo TIN",
-  "importRoadDesignHint": "Importar dados e especificações de projeto de estrada do Road Maker. Arquivo PR3",
-  "importStringsHint": "Importar strings do Model Maker.",
-  "exportTacheRawHint": "Exportar dados brutos de taqueometria",
-  "exportTacheReducedHint": "Exportar dados processados de taqueometria Comentário YXZ/ENZ",
-  "exportFieldbookHint": "Exportar dados do livro de campo",
-  "exportRoadDesignHint": "Exportar dados de projeto de estrada",
-  "deletingYourJob": "Excluindo seu trabalho",
-  "deleteJobConfirmation": "Tem certeza de que deseja excluir '{jobName}' e todo o seu conteúdo?",
-  "@deleteJobConfirmation": {"description": "Mensagem de confirmação para exclusão de trabalho", "placeholders": {"jobName": {"type": "String", "example": "Projeto 1"}}},
-  "searchJobsHint": "Pesquisar trabalhos...",
-  "exit": "Sair",
-  "lastModified": "Última Modificação",
-  "created": "Criado",
-  "size": "Tamanho",
-  "jobInfoDialogTitle": "Informações do Trabalho - {jobName}",
-  "@jobInfoDialogTitle": {"description": "Título para o diálogo de informações do trabalho", "placeholders": {"jobName": {"type": "String", "example": "Stormwater"}}},
-  "usageTimer": "Temporizador de Uso",
-  "currentSession": "Sessão atual: {duration}",
-  "@currentSession": {"description": "Duração da sessão atual", "placeholders": {"duration": {"type": "String", "example": "01:23:45"}}},
-  "totalJobTime": "Tempo total para {jobName}: {duration}",
-  "@totalJobTime": {"description": "Tempo total para um trabalho", "placeholders": {"jobName": {"type": "String", "example": "Meu Trabalho"}, "duration": {"type": "String", "example": "01:23:45"}}},
-  "locationNotAvailable": "Localização não disponível",
-  "latitude": "Latitude: {latitude}",
-  "@latitude": {"description": "Coordenada de latitude", "placeholders": {"latitude": {"type": "String", "example": "-33.9249"}}},
-  "longitude": "Longitude: {longitude}",
-  "@longitude": {"description": "Coordenada de longitude", "placeholders": {"longitude": {"type": "String", "example": "18.4241"}}},
-  "plotCoordinatesTitle": "Plotar Coordenadas - {count}",
-  "@plotCoordinatesTitle": {"description": "Título para a visualização de plotar coordenadas com contagem de pontos", "placeholders": {"count": {"type": "int", "example": "10"}}},
-  "zDecimals": "Z Decimais: {count}",
-  "@zDecimals": {"description": "Rótulo para configuração de casas decimais de Z", "placeholders": {"count": {"type": "int", "example": "2"}}},
-  "pointUpdatedSuccess": "Ponto atualizado com sucesso",
-  "@pointUpdatedSuccess": {"description": "Mensagem de sucesso quando o ponto é atualizado"},
-  "pointMovedOutOfView": "Ponto movido para fora da visualização",
-  "@pointMovedOutOfView": {"description": "Mensagem quando o ponto é movido para fora da área visível"},
-  "aToZ": "A-Z",
-  "@aToZ": {"description": "Rótulo para ordem alfabética crescente"},
-  "zToA": "Z-A",
-  "@zToA": {"description": "Rótulo para ordem alfabética decrescente"},
-  "sortByDescriptor": "Descritor ({order})",
-  "@sortByDescriptor": {"description": "Ordenar por descritor com marcador de ordem","placeholders":{"order":{"type":"String","example":"A-Z"}}},
-  "quickDistance": "Distância Rápida",
-  "fromPoint": "Ponto de Origem",
-  "toPoint": "Ponto de Destino",
-  "close": "Fechar",
-  "selectFromPlot": "Selecionar do Gráfico",
-  "selectPointFromPlot": "Selecionar Ponto do Gráfico",
-  "joinModeSelectFirst": "Modo de Junção - Selecione o primeiro ponto",
-  "firstPointSelected": "Primeiro ponto selecionado: {pointName}",
-  "@firstPointSelected": {
-    "description": "Mensagem mostrada quando o primeiro ponto é selecionado no modo de junção",
+  "@coordinatesWithJob": {
+    "description": "Long title for coordinates view with job name",
     "placeholders": {
-      "pointName": {
+      "jobName": {
         "type": "String",
-        "example": "Ponto A1"
+        "example": "Job1"
       }
     }
   },
-  "selectFirstPoint": "Selecione o primeiro ponto",
-  "@selectFirstPoint": {
-    "description": "Mensagem mostrada quando o primeiro ponto precisa ser selecionado para medição"
+  "coordsWithJob": "Coords - {jobName}",
+  "@coordsWithJob": {
+    "description": "Short title for coordinates view with job name",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Job1"
+      }
+    }
   },
-  "selectSecondPoint": "Selecione o segundo ponto",
-  "@selectSecondPoint": {
-    "description": "Mensagem mostrada quando o segundo ponto precisa ser selecionado para medição"
+  "plotCoordinates": "Plotar Coordenadas",
+  "@plotCoordinates": {"description": "Option to plot coordinates from the popup menu"},
+  "currentJob": "Trabalho Atual: {jobName}",
+  "@currentJob": {
+    "description": "Text shown with current job name",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Job1"
+      }
+    }
   },
-  "searchFirstPoint": "Pesquisar primeiro ponto",
-  "@searchFirstPoint": {"description": "Título do diálogo para pesquisar o primeiro ponto"},
-  "searchByIdOrComment": "Pesquisar por ID ou comentário",
-  "@searchByIdOrComment": {"description": "Dica para pesquisar por ID ou comentário"},
+  "comingSoon": "Em breve",
+  "@comingSoon": {
+    "description": "Text shown for features in development"
+  },
+  "importPoints": "Importar Pontos",
+  "@importPoints": {
+    "description": "Label for import points action"
+  },
+  "exportPoints": "Exportar Pontos",
+  "@exportPoints": {
+    "description": "Label for export points action"
+  },
+  "readyToImport": "Pronto para importar",
+  "@readyToImport": {
+    "description": "Status message for import"
+  },
+  "importStatus": "Status da Importação:",
+  "@importStatus": {
+    "description": "Label for import status"
+  },
+  "slopeDistanceWithUnit": "Distância Inclinada (m)",
+  "@slopeDistanceWithUnit": {
+    "description": "Label for slope distance input with unit"
+  },
+  "targetHeight": "Altura Alvo (m)",
+  "@targetHeight": {
+    "description": "Label for target height input with unit"
+  },
+  "horizontalAngle": "Ângulo Horizontal",
+  "@horizontalAngle": {
+    "description": "Label for horizontal angle input"
+  },
+  "setupAt": "Configurar em",
+  "@setupAt": {
+    "description": "Label for setup point location"
+  },
+  "pointName": "Nome do Ponto",
+  "@pointName": {
+    "description": "Label for point name input"
+  },
+  "search": "Pesquisar",
+  "@search": {
+    "description": "Label for search action"
+  },
+  "add": "Adicionar",
+  "@add": {
+    "description": "Label for add button"
+  },
+  "calculatedPosition": "Posição Calculada",
+  "@calculatedPosition": {
+    "description": "Label for calculated position result"
+  },
+  "distance": "Distância",
+  "@distance": {
+    "description": "Label for distance measurement"
+  },
+  "direction": "Direção",
+  "@direction": {
+    "description": "Label for direction in the joins dialog and similar contexts"
+  },
+  "cancel": "Cancelar",
+  "@cancel": {"description": "Rótulo para o botão cancelar"},
+  "save": "Salvar",
+  "@save": {
+    "description": "Label for save button"
+  },
+  "delete": "Excluir",
+  "@delete": {
+    "description": "Label for delete action"
+  },
+  "update": "Atualizar",
+  "@update": {
+    "description": "Label for update action"
+  },
+  "error": "Erro: {message}",
+  "@error": {
+    "description": "Error message with details",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Failed to update point"
+      }
+    }
+  },
+  "success": "Sucesso",
+  "@success": {
+    "description": "Label for success message"
+  },
+  "singleJoin": "União Simples",
+  "@singleJoin": {
+    "description": "Label for single join calculation"
+  },
+  "polar": "Polar",
+  "@polar": {
+    "description": "Label for polar calculation"
+  },
+  "firstPoint": "1º Ponto",
+  "@firstPoint": {
+    "description": "Label for first point input"
+  },
+  "secondPoint": "Próximo Ponto",
+  "@secondPoint": {
+    "description": "Label for second point input"
+  },
+  "heightDiff": "Diferença de Altura",
+  "@heightDiff": {
+    "description": "Label for height difference"
+  },
+  "slopeDistanceLabel": "Distância Inclinada",
+  "@slopeDistanceLabel": {
+    "description": "Label for slope distance"
+  },
+  "gradeSlope": "Inclinação/Declive 1:",
+  "@gradeSlope": {
+    "description": "Label for grade/slope ratio"
+  },
+  "gradeSlopePercent": "Inclinação/Declive %",
+  "@gradeSlopePercent": {
+    "description": "Label for grade/slope percentage"
+  },
+  "slopeAngle": "Ângulo de Inclinação",
+  "@slopeAngle": {
+    "description": "Label for slope angle"
+  },
+  "area": "Área",
+  "@area": {
+    "description": "Label for area calculation view"
+  },
+  "joins": "Uniões",
+  "@joins": {
+    "description": "Title for joins view"
+  },
+  "searchPoint": "Pesquisar Ponto",
+  "@searchPoint": {
+    "description": "Label for search point action"
+  },
+  "addPoint": "Adicionar Ponto",
+  "@addPoint": {
+    "description": "Label for add point action"
+  },
+  "targetHeightWithUnit": "Altura Alvo (m)",
+  "@targetHeightWithUnit": {
+    "description": "Label for target height with unit"
+  },
+  "useCurvatureAndRefraction": "Usar Curvatura e Refração",
+  "@useCurvatureAndRefraction": {
+    "description": "Label for curvature and refraction checkbox"
+  },
+  "firstPointHint": "Primeiro Ponto",
+  "@firstPointHint": {
+    "description": "Hint text for first point input"
+  },
+  "nextPointHint": "Próximo Ponto",
+  "@nextPointHint": {
+    "description": "Hint text for next point input"
+  },
+  "addPointTitle": "Adicionar Ponto",
+  "@addPointTitle": {
+    "description": "Title for add point dialog"
+  },
+  "invalidComment": "Comentário Inválido",
+  "@invalidComment": {
+    "description": "Error message for invalid comment"
+  },
+  "comment": "Comentário",
+  "@comment": {
+    "description": "Label for comment field"
+  },
+  "descriptor": "Descritor",
+  "@descriptor": {
+    "description": "Label for descriptor field"
+  },
+  "coords": "Coordenadas",
+  "@coords": {
+    "description": "Label for coordinates section"
+  },
+  "sortBy": "Ordenar Por",
+  "@sortBy": {
+    "description": "Label for sort options"
+  },
+  "sortByCoordinate": "Ordenar por Coordenada",
+  "@sortByCoordinate": {
+    "description": "Sort option for coordinate"
+  },
+  "viewOnGoogleMaps": "Ver no Google Maps",
+  "@viewOnGoogleMaps": {
+    "description": "Option to view point on Google Maps"
+  },
+  "addPointDialog": "Adicionar Ponto",
+  "@addPointDialog": {
+    "description": "Title for the dialog to add a new point"
+  },
+  "searchPoints": "Pesquisar Pontos",
+  "@searchPoints": {
+    "description": "Label for search points action"
+  },
+  "editPoint": "Editar Ponto",
+  "@editPoint": {
+    "description": "Title for edit point dialog"
+  },
+  "validComment": "Comentário Válido",
+  "@validComment": {
+    "description": "Validation message for valid comment"
+  },
+  "pleaseEnterComment": "Por favor, insira um comentário",
+  "@pleaseEnterComment": {
+    "description": "Error message when comment is empty"
+  },
+  "commentExists": "Comentário já existe",
+  "@commentExists": {
+    "description": "Error message when comment already exists"
+  },
+  "backup": "Backup",
+  "@backup": {
+    "description": "Label for backup button"
+  },
+  "searchJob": "Pesquisar Trabalho",
+  "@searchJob": {
+    "description": "Label for search job button"
+  },
+  "sortJobsBy": "Ordenar Trabalhos Por",
+  "@sortJobsBy": {
+    "description": "Title for job sort dialog"
+  },
+  "nameAtoZ": "Nome (A a Z)",
+  "@nameAtoZ": {
+    "description": "Sort option for alphabetical order A to Z"
+  },
+  "nameZtoA": "Nome (Z a A)",
+  "@nameZtoA": {
+    "description": "Sort option for alphabetical order Z to A"
+  },
+  "dateModifiedNewest": "Data de Modificação (Mais Recente)",
+  "@dateModifiedNewest": {
+    "description": "Sort option for date modified newest first"
+  },
+  "dateModifiedOldest": "Data de Modificação (Mais Antiga)",
+  "@dateModifiedOldest": {
+    "description": "Sort option for date modified oldest first"
+  },
+  "createNewJob": "Criar Novo Trabalho",
+  "@createNewJob": {
+    "description": "Label for create new job button"
+  },
+  "info": "Informação",
+  "@info": {
+    "description": "Label for info button"
+  },
+  "jobSettings": "Configurações do Trabalho",
+  "@jobSettings": {
+    "description": "Title for job settings view"
+  },
+  "jobName": "Nome do Trabalho",
+  "@jobName": {
+    "description": "Label for job name field"
+  },
+  "jobInformation": "Informações do Trabalho",
+  "@jobInformation": {
+    "description": "Label for job information section"
+  },
+  "jobDescription": "Descrição do Trabalho",
+  "@jobDescription": {
+    "description": "Label for job description field"
+  },
+  "coordinateFormat": "Formato de Coordenada",
+  "@coordinateFormat": {
+    "description": "Label for coordinate format field"
+  },
+  "instrument": "Instrumento",
+  "@instrument": {
+    "description": "Label for instrument field"
+  },
+  "dualCapture": "Captura Dupla",
+  "@dualCapture": {
+    "description": "Label for dual capture field"
+  },
+  "measurementUnits": "Unidades de Medida",
+  "@measurementUnits": {
+    "description": "Label for measurement units field"
+  },
+  "angularMeasurement": "Medição Angular",
+  "@angularMeasurement": {
+    "description": "Label for angular measurement field"
+  },
+  "commsBaudRate": "Taxa de Baud de Comunicação",
+  "@commsBaudRate": {
+    "description": "Label for communications baud rate field"
+  },
+  "calculationSettings": "Configurações de Cálculo",
+  "@calculationSettings": {
+    "description": "Title for calculation settings section"
+  },
+  "scaleFactor": "Fator de Escala",
+  "@scaleFactor": {
+    "description": "Label for scale factor field"
+  },
+  "heightAboveMSL": "Altura Acima do NMM",
+  "@heightAboveMSL": {
+    "description": "Label for height above mean sea level field"
+  },
+  "meanYValue": "Valor Médio de Y",
+  "@meanYValue": {
+    "description": "Label for mean Y value field"
+  },
+  "verticalAngleIndexError": "Erro de Índice de Ângulo Vertical",
+  "@verticalAngleIndexError": {
+    "description": "Label for vertical angle index error field"
+  },
+  "toleranceSettings": "Configurações de Tolerância",
+  "@toleranceSettings": {
+    "description": "Title for tolerance settings section"
+  },
+  "spotShotTolerance": "Tolerância de Medição Pontual",
+  "@spotShotTolerance": {
+    "description": "Label for spot shot tolerance field"
+  },
+  "horizontalAlignmentOffsetTolerance": "Tolerância de Deslocamento de Alinhamento Horizontal",
+  "@horizontalAlignmentOffsetTolerance": {
+    "description": "Label for horizontal alignment offset tolerance field"
+  },
+  "maximumSearchDistanceFromCL": "Distância Máxima de Busca do CL",
+  "@maximumSearchDistanceFromCL": {
+    "description": "Label for maximum search distance from center line field"
+  },
+  "timingSettings": "Configurações de Tempo",
+  "@timingSettings": {
+    "description": "Title for timing settings section"
+  },
+  "numberOfRetries": "Número de Tentativas",
+  "@numberOfRetries": {
+    "description": "Label for number of retries field"
+  },
+  "timeout": "Tempo Limite",
+  "@timeout": {
+    "description": "Label for timeout field"
+  },
+  "instrumentSettings": "Configurações do Instrumento",
+  "@instrumentSettings": {
+    "description": "Label for instrument settings section"
+  },
+  "manualInstrument": "MANUAL",
+  "@manualInstrument": {
+    "description": "Label for manual instrument option"
+  },
+  "importExport": "Importar/Exportar",
+  "@importExport": {
+    "description": "Label for import/export section or button"
+  },
+  "exportCoordinatesHint": "Exportar dados de coordenadas para arquivo",
+  "@exportCoordinatesHint": {
+    "description": "Hint or tooltip for exporting coordinate data to a file"
+  },
+  "import": "Importar",
+  "@import": {
+    "description": "Label for import action"
+  },
+  "export": "Exportar",
+  "@export": {
+    "description": "Label for export action"
+  },
+  "horzAlignment": "Alinhamento Horizontal",
+  "@horzAlignment": {
+    "description": "Label for horizontal alignment section"
+  },
+  "dtmTot": "DTM (TOT)",
+  "@dtmTot": {
+    "description": "Label for DTM TOT section"
+  },
+  "roadDesign": "Projeto de Estrada",
+  "@roadDesign": {
+    "description": "Label for road design section"
+  },
+  "strings": "Strings",
+  "@strings": {
+    "description": "Label for strings section"
+  },
+  "tacheRaw": "Taqueometria (Bruta)",
+  "@tacheRaw": {
+    "description": "Label for raw tacheometry data"
+  },
+  "tacheReduced": "Taqueometria (Reduzida)",
+  "@tacheReduced": {
+    "description": "Label for reduced tacheometry data"
+  },
+  "fieldbook": "Livro de Campo",
+  "@fieldbook": {
+    "description": "Label for fieldbook section"
+  },
+  "importCoordinatesHint": "Importar dados de coordenadas do arquivo. Formato delimitado por vírgula, espaço ou tabulação. Formato CYXZ ou CENZ. Restrito a 20 caracteres",
+  "@importCoordinatesHint": {
+    "description": "Hint text for importing coordinate data"
+  },
+  "importHorzAlignmentHint": "Importar dados de alinhamento horizontal de arquivos PID do Model e Road Maker",
+  "@importHorzAlignmentHint": {
+    "description": "Hint text for importing horizontal alignment data"
+  },
+  "importDtmTotHint": "Ler arquivo TOT do Model Maker. Modelo TIN",
+  "@importDtmTotHint": {
+    "description": "Hint text for importing DTM TOT data"
+  },
+  "importRoadDesignHint": "Importar dados e especificações de projeto de estrada do Road Maker. Arquivo PR3",
+  "@importRoadDesignHint": {
+    "description": "Hint text for importing road design data"
+  },
+  "importStringsHint": "Importar strings do Model Maker.",
+  "@importStringsHint": {
+    "description": "Hint text for importing strings"
+  },
+  "exportTacheRawHint": "Exportar dados brutos de taqueometria",
+  "@exportTacheRawHint": {
+    "description": "Hint text for exporting raw tacheometry data"
+  },
+  "exportTacheReducedHint": "Exportar dados processados de taqueometria Comentário YXZ/ENZ",
+  "@exportTacheReducedHint": {
+    "description": "Hint text for exporting reduced tacheometry data"
+  },
+  "exportFieldbookHint": "Exportar dados do livro de campo",
+  "@exportFieldbookHint": {
+    "description": "Hint text for exporting fieldbook data"
+  },
+  "exportRoadDesignHint": "Exportar dados de projeto de estrada",
+  "@exportRoadDesignHint": {
+    "description": "Hint text for exporting road design data"
+  },
+  "deletingYourJob": "Excluindo seu trabalho",
+  "@deletingYourJob": {
+    "description": "Title for job deletion dialog"
+  },
+  "searchJobsHint": "Pesquisar trabalhos...",
+  "@searchJobsHint": {
+    "description": "Hint text for job search field"
+  },
+  "exit": "Sair",
+  "@exit": {
+    "description": "Label for exit action"
+  },
+  "lastModified": "Última Modificação",
+  "@lastModified": {
+    "description": "Label for last modified date"
+  },
+  "created": "Criado",
+  "@created": {
+    "description": "Label for creation date"
+  },
+  "size": "Tamanho",
+  "@size": {
+    "description": "Label for file size"
+  },
+  "usageTimer": "Temporizador de Uso",
+  "@usageTimer": {
+    "description": "Title of the usage timer dialog"
+  },
+  "locationNotAvailable": "Localização não disponível",
+  "@locationNotAvailable": {
+    "description": "Message shown when location is not available"
+  },
+  "quickDistance": "Distância Rápida",
+  "@quickDistance": {
+    "description": "Title for quick distance measurement dialog"
+  },
+  "fromPoint": "Ponto de Origem",
+  "@fromPoint": {
+    "description": "Label for the starting point in distance measurement"
+  },
+  "toPoint": "Ponto de Destino",
+  "@toPoint": {
+    "description": "Label for the ending point in distance measurement"
+  },
+  "close": "Fechar",
+  "@close": {
+    "description": "Label for close button"
+  },
+  "selectFromPlot": "Selecionar do Gráfico",
+  "@selectFromPlot": {
+    "description": "Label for selecting a point from the plot view"
+  },
+  "selectPointFromPlot": "Selecionar Ponto do Gráfico",
+  "@selectPointFromPlot": {
+    "description": "Title for the plot view when in selection mode"
+  },
+  "joinModeSelectFirst": "Modo de Junção - Selecione o primeiro ponto",
+  "@joinModeSelectFirst": {
+    "description": "Message shown when join mode is activated"
+  },
+  "computedDirection": "Direção calculada",
+  "@computedDirection": {
+    "description": "Label for the computed direction in fixes view"
+  },
+  "enteredDirection": "Direção inserida",
+  "@enteredDirection": {
+    "description": "Label for the entered direction in fixes view"
+  },
+  "difference": "Diferença",
+  "@difference": {
+    "description": "Label for the difference between computed and entered direction"
+  },
+  "fixResults": "Resultados de Fixação",
+  "@fixResults": {
+    "description": "Title for the fix results section"
+  },
   "setupAtSection": "Configurar em",
   "@setupAtSection": {
     "description": "Section header for the setup point input row in setout view"
@@ -322,10 +712,6 @@
   "@coordinatesSection": {
     "description": "Section header for the coordinates display in setout view"
   },
-  "computedDirection": "Direção calculada",
-  "enteredDirection": "Direção inserida",
-  "difference": "Diferença",
-  "fixResults": "Resultados de Fixação",
   "setupOptions": "Opções de Configuração",
   "@setupOptions": {
     "description": "Title for the setup options dialog"
@@ -346,12 +732,176 @@
   "@redefineSetupPoint": {
     "description": "Option to redefine the setup point"
   },
+  "instrumentHeightWithUnitMeters": "Alt Inst (m)",
+  "@instrumentHeightWithUnitMeters": {
+    "description": "Label for instrument height with meters unit"
+  },
+  "instrumentHeightWithUnitFeet": "Alt Inst (Ft)",
+  "@instrumentHeightWithUnitFeet": {
+    "description": "Label for instrument height with feet unit"
+  },
+  "instrumentHeightHint": "Altura do Instrumento",
+  "@instrumentHeightHint": {
+    "description": "Tooltip hint for instrument height field"
+  },
+  "sortByComment": "Comentário ({order})",
+  "@sortByComment": {
+    "description": "Sort by comment with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "A-Z"
+      }
+    }
+  },
+  "characterCount": "{current}/{max}",
+  "@characterCount": {
+    "description": "Character count display",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "0"
+      },
+      "max": {
+        "type": "int",
+        "example": "20"
+      }
+    }
+  },
+  "deleteJobConfirmation": "Tem certeza de que deseja excluir '{jobName}' e todo o seu conteúdo?",
+  "@deleteJobConfirmation": {
+    "description": "Mensagem de confirmação para exclusão de trabalho",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Projeto 1"
+      }
+    }
+  },
+  "jobInfoDialogTitle": "Informações do Trabalho - {jobName}",
+  "@jobInfoDialogTitle": {
+    "description": "Título para o diálogo de informações do trabalho",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Stormwater"
+      }
+    }
+  },
+  "currentSession": "Sessão atual: {duration}",
+  "@currentSession": {
+    "description": "Duração da sessão atual",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "01:23:45"
+      }
+    }
+  },
+  "totalJobTime": "Tempo total para {jobName}: {duration}",
+  "@totalJobTime": {
+    "description": "Tempo total para um trabalho",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Meu Trabalho"
+      },
+      "duration": {
+        "type": "String",
+        "example": "01:23:45"
+      }
+    }
+  },
+  "latitude": "Latitude: {latitude}",
+  "@latitude": {
+    "description": "Coordenada de latitude",
+    "placeholders": {
+      "latitude": {
+        "type": "String",
+        "example": "-33.9249"
+      }
+    }
+  },
+  "longitude": "Longitude: {longitude}",
+  "@longitude": {
+    "description": "Coordenada de longitude",
+    "placeholders": {
+      "longitude": {
+        "type": "String",
+        "example": "18.4241"
+      }
+    }
+  },
+  "plotCoordinatesTitle": "Plotar Coordenadas - {count}",
+  "@plotCoordinatesTitle": {
+    "description": "Título para a visualização de plotar coordenadas com contagem de pontos",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "10"
+      }
+    }
+  },
+  "zDecimals": "Z Decimais: {count}",
+  "@zDecimals": {
+    "description": "Rótulo para configuração de casas decimais de Z",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "pointUpdatedSuccess": "Ponto atualizado com sucesso",
+  "@pointUpdatedSuccess": {
+    "description": "Mensagem de sucesso quando o ponto é atualizado"
+  },
+  "pointMovedOutOfView": "Ponto movido para fora da visualização",
+  "@pointMovedOutOfView": {
+    "description": "Mensagem quando o ponto é movido para fora da área visível"
+  },
+  "aToZ": "A-Z",
+  "@aToZ": {
+    "description": "Rótulo para ordem alfabética crescente"
+  },
+  "zToA": "Z-A",
+  "@zToA": {
+    "description": "Rótulo para ordem alfabética decrescente"
+  },
+  "sortByDescriptor": "Descritor ({order})",
+  "@sortByDescriptor": {
+    "description": "Ordenar por descritor com marcador de ordem",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "A-Z"
+      }
+    }
+  },
+  "firstPointSelected": "Primeiro ponto selecionado: {pointName}",
+  "@firstPointSelected": {
+    "description": "Mensagem mostrada quando o primeiro ponto é selecionado no modo de junção",
+    "placeholders": {
+      "pointName": {
+        "type": "String",
+        "example": "Ponto A1"
+      }
+    }
+  },
+  "selectFirstPoint": "Selecione o primeiro ponto",
+  "@selectFirstPoint": {
+    "description": "Mensagem mostrada quando o primeiro ponto precisa ser selecionado para medição"
+  },
+  "selectSecondPoint": "Selecione o segundo ponto",
+  "@selectSecondPoint": {
+    "description": "Mensagem mostrada quando o segundo ponto precisa ser selecionado para medição"
+  },
   "searchFirstPoint": "Pesquisar Primeiro Ponto",
   "@searchFirstPoint": {
-    "description": "Title for the search first point dialog"
+    "description": "Label for searching the first point"
   },
-  "searchByIdOrComment": "Pesquisar por ID ou comentário",
+  "searchByIdOrComment": "Pesquisar por ID ou Comentário",
   "@searchByIdOrComment": {
-    "description": "Hint text for search input field"
+    "description": "Hint text for searching points by ID or comment"
   }
 } 

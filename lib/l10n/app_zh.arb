@@ -271,7 +271,7 @@
   },
   "searchFirstPoint": "搜索第一个点",
   "@searchFirstPoint": {
-    "description": "Title for searching the first point"
+    "description": "Label for searching the first point"
   },
   "firstPoint": "第一点",
   "@firstPoint": {
@@ -355,8 +355,14 @@
   },
   "sortByComment": "注释（{order}）",
   "@sortByComment": {
-    "description": "按注释排序，带顺序占位符","placeholders":{"order":{"type":"String","example":"A-Z"}}}
-  ,
+    "description": "Sort by comment with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "A-Z"
+      }
+    }
+  },
   "sortByCoordinate": "按坐标排序",
   "@sortByCoordinate": {
     "description": "Sort option for coordinate"
@@ -379,7 +385,7 @@
   },
   "addPointDialog": "添加点",
   "@addPointDialog": {
-    "description": "Title for add point dialog"
+    "description": "Title for the dialog to add a new point"
   },
   "characterCount": "{current}/{max}",
   "@characterCount": {
@@ -665,38 +671,118 @@
   "@ok": {"description": "确定按钮的标签"},
   "deletePoint": "删除点",
   "@deletePoint": {"description": "Dialog title for deleting a point"},
-  "deletePointWithComment": "删除点: {comment}",
-  "@deletePointWithComment": {"description": "Dialog title for deleting a point with comment","placeholders":{"comment":{"type":"String","example":"A1"}}},
+  "deletePointWithComment": "删除点：{comment}",
+  "@deletePointWithComment": {
+    "description": "Dialog title for deleting a point with comment",
+    "placeholders": {
+      "comment": {
+        "type": "String",
+        "example": "A1"
+      }
+    }
+  },
   "deletePointConfirmation": "您确定要删除此点吗？",
   "@deletePointConfirmation": {"description": "Confirmation message for deleting a point"},
   "pointDeletedSuccess": "点删除成功",
   "@pointDeletedSuccess": {"description": "Success message when a point is deleted"},
   "sortById": "ID（{order}）",
-  "@sortById": {"description": "Sort by ID with order placeholder","placeholders":{"order":{"type":"String","example":"升序"}}},
+  "@sortById": {
+    "description": "Sort by ID with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
   "sortByY": "Y坐标（{order}）",
-  "@sortByY": {"description": "Sort by Y coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"升序"}}},
+  "@sortByY": {
+    "description": "Sort by Y coordinate with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
   "sortByX": "X坐标（{order}）",
-  "@sortByX": {"description": "Sort by X coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"升序"}}},
+  "@sortByX": {
+    "description": "Sort by X coordinate with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
   "sortByZ": "Z坐标（{order}）",
-  "@sortByZ": {"description": "Sort by Z coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"升序"}}},
+  "@sortByZ": {
+    "description": "Sort by Z coordinate with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
   "ascending": "升序",
   "@ascending": {"description": "Ascending order label"},
   "descending": "降序",
   "@descending": {"description": "Descending order label"},
   "coordinatesWithJob": "坐标 - {jobName}",
-  "@coordinatesWithJob": {"description": "Long title for coordinates view with job name","placeholders":{"jobName":{"type":"String","example":"Job1"}}},
+  "@coordinatesWithJob": {
+    "description": "Long title for coordinates view with job name",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Job1"
+      }
+    }
+  },
   "coordsWithJob": "坐标 - {jobName}",
-  "@coordsWithJob": {"description": "Short title for coordinates view with job name","placeholders":{"jobName":{"type":"String","example":"Job1"}}},
+  "@coordsWithJob": {
+    "description": "Short title for coordinates view with job name",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Job1"
+      }
+    }
+  },
   "plotCoordinates": "绘图坐标",
   "@plotCoordinates": {"description": "Option to plot coordinates from the popup menu"},
   "area": "面积",
+  "@area": {
+    "description": "面积计算视图的标签"
+  },
   "dtmTot": "DTM (TOT)",
+  "@dtmTot": {
+    "description": "DTM TOT文件类型的标签"
+  },
   "tacheRaw": "全站仪原始数据",
+  "@tacheRaw": {
+    "description": "全站仪原始数据的标签"
+  },
   "tacheReduced": "全站仪处理数据",
+  "@tacheReduced": {
+    "description": "全站仪处理数据的标签"
+  },
   "importDtmTotHint": "读取 Model Maker TOT 文件。TIN 模型",
+  "@importDtmTotHint": {
+    "description": "导入DTM TOT文件的提示信息"
+  },
   "exportTacheRawHint": "导出全站仪原始数据",
+  "@exportTacheRawHint": {
+    "description": "导出全站仪原始数据的提示信息"
+  },
   "exportTacheReducedHint": "导出全站仪处理数据 注释 YXZ/ENZ",
+  "@exportTacheReducedHint": {
+    "description": "导出全站仪处理数据的提示信息"
+  },
   "exportRoadDesignHint": "导出道路设计数据",
+  "@exportRoadDesignHint": {
+    "description": "导出道路设计数据的提示信息"
+  },
   "plotCoordinatesTitle": "绘图坐标 - {count}",
   "@plotCoordinatesTitle": {"description": "绘图坐标视图的标题，带点数", "placeholders": {"count": {"type": "int", "example": "10"}}},
   "zDecimals": "Z 小数: {count}",
@@ -712,12 +798,33 @@
   "sortByDescriptor": "描述符（{order}）",
   "@sortByDescriptor": {"description": "按描述符排序，带顺序占位符","placeholders":{"order":{"type":"String","example":"A-Z"}}},
   "quickDistance": "快速距离",
+  "@quickDistance": {
+    "description": "快速距离测量对话框的标题"
+  },
   "fromPoint": "起点",
+  "@fromPoint": {
+    "description": "距离测量中起点的标签"
+  },
   "toPoint": "终点",
+  "@toPoint": {
+    "description": "距离测量中终点的标签"
+  },
   "close": "关闭",
+  "@close": {
+    "description": "关闭按钮的标签"
+  },
   "selectFromPlot": "从图中选择",
+  "@selectFromPlot": {
+    "description": "从图中选择点的标签"
+  },
   "selectPointFromPlot": "从图中选择点",
+  "@selectPointFromPlot": {
+    "description": "选择模式下图形视图的标题"
+  },
   "joinModeSelectFirst": "连接模式 - 选择第一个点",
+  "@joinModeSelectFirst": {
+    "description": "激活连接模式时显示的消息"
+  },
   "firstPointSelected": "已选择第一个点：{pointName}",
   "@firstPointSelected": {
     "description": "连接模式中选择第一个点时显示的消息",
@@ -775,31 +882,35 @@
     "description": "Section header for the coordinates display in setout view"
   },
   "computedDirection": "计算方向",
+  "@computedDirection": {
+    "description": "定向视图中计算方向的标签"
+  },
   "enteredDirection": "输入方向",
+  "@enteredDirection": {
+    "description": "定向视图中输入方向的标签"
+  },
   "difference": "差值",
+  "@difference": {
+    "description": "计算方向和输入方向之间差值的标签"
+  },
   "fixResults": "定向结果",
-  "setupOptions": "设置选项",
-  "@setupOptions": {
-    "description": "Title for the setup options dialog"
+  "@fixResults": {
+    "description": "定向结果部分的标题"
   },
-  "selectSetupMethod": "请选择您要继续的选项",
-  "@selectSetupMethod": {
-    "description": "Prompt to select a setup method"
+  "instrumentHeight": "仪器高",
+  "@instrumentHeight": {
+    "description": "仪器高度字段的标签"
   },
-  "acceptFixedPoint": "接受为固定点",
-  "@acceptFixedPoint": {
-    "description": "Option to accept the point as a fixed point"
+  "instrumentHeightHint": "仪器高度",
+  "@instrumentHeightHint": {
+    "description": "仪器高度字段的提示文本"
   },
-  "acceptProvisionalFix": "接受为临时固定点",
-  "@acceptProvisionalFix": {
-    "description": "Option to accept the point as a provisional fix"
+  "instrumentHeightWithUnitMeters": "仪器高 (m)",
+  "@instrumentHeightWithUnitMeters": {
+    "description": "带米单位的仪器高度字段标签"
   },
-  "redefineSetupPoint": "重新定义设置点",
-  "@redefineSetupPoint": {
-    "description": "Option to redefine the setup point"
-  },
-  "searchFirstPoint": "搜索第一个点",
-  "@searchFirstPoint": {
-    "description": "Title for searching the first point"
+  "instrumentHeightWithUnitFeet": "仪器高 (Ft)",
+  "@instrumentHeightWithUnitFeet": {
+    "description": "带英尺单位的仪器高度字段标签"
   }
 } 

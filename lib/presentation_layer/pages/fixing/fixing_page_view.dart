@@ -14,6 +14,8 @@ import '../../core/bearing_format.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../jobs/jobs_viewmodel.dart';
 import '../../../domain_layer/calculations/bearing_calculator.dart';
+import '../../../domain_layer/calculations/height_calculator.dart';
+import 'dart:math';
 
 class FixingPageView extends StatefulWidget {
   const FixingPageView({super.key});
@@ -35,6 +37,8 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   final TextEditingController _verticalAngleController =
       TextEditingController(text: "0.0000");
   final TextEditingController _targetHeightController =
+      TextEditingController(text: "0.000");
+  final TextEditingController _instrumentHeightController =
       TextEditingController(text: "0.000");
   final TextEditingController _horizontalAngleController =
       TextEditingController(text: "0.0000");
@@ -66,6 +70,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   final FocusNode _slopeDistanceFocus = FocusNode();
   final FocusNode _verticalAngleFocus = FocusNode();
   final FocusNode _targetHeightFocus = FocusNode();
+  final FocusNode _instrumentHeightFocus = FocusNode();
   final FocusNode _horizontalAngleFocus = FocusNode();
 
   bool _showUpArrow = false;
@@ -118,6 +123,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     _slopeDistanceController.dispose();
     _verticalAngleController.dispose();
     _targetHeightController.dispose();
+    _instrumentHeightController.dispose();
     _horizontalAngleController.dispose();
     _firstPointYController.dispose();
     _firstPointXController.dispose();
@@ -131,6 +137,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     _slopeDistanceFocus.dispose();
     _verticalAngleFocus.dispose();
     _targetHeightFocus.dispose();
+    _instrumentHeightFocus.dispose();
     _horizontalAngleFocus.dispose();
     super.dispose();
   }
@@ -178,6 +185,17 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                           const SizedBox(height: 10),
                           _buildCoordinatesRow(true),
                           const SizedBox(height: 10),
+                          _buildInputRow(
+                            _selectedPrecision == 'Meters'
+                                ? l10n.instrumentHeightWithUnitMeters
+                                : l10n.instrumentHeightWithUnitFeet,
+                            _instrumentHeightController,
+                            false,
+                            allowNegative: false,
+                            l10n: l10n,
+                            hint: l10n.instrumentHeightHint,
+                          ),
+                          const Divider(height: 20),
                           _buildPointInputRow(false),
                           const SizedBox(height: 10),
                           _buildCoordinatesRow(false),
@@ -692,6 +710,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     bool isAngle, {
     bool allowNegative = false,
     required AppLocalizations l10n,
+    String? hint,
   }) {
     FocusNode focusNode;
     if (label == l10n.slopeDistanceWithUnit) {
@@ -700,24 +719,32 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
       focusNode = _verticalAngleFocus;
     } else if (label == l10n.targetHeightWithUnit) {
       focusNode = _targetHeightFocus;
+    } else if (label == l10n.instrumentHeightWithUnitMeters ||
+        label == l10n.instrumentHeightWithUnitFeet) {
+      focusNode = _instrumentHeightFocus;
     } else if (label == l10n.horizontalAngle) {
       focusNode = _horizontalAngleFocus;
     } else {
       focusNode = FocusNode(); // fallback, but should not happen
     }
     String displayLabel = label;
-    if (label == 'Slope Distance (m)' || label == 'Target Height (m)') {
-      displayLabel = label.replaceAll(
-          '(m)', '(${_selectedPrecision == 'Meters' ? 'm' : 'Ft'})');
+    if (label.contains('(m)') || label.contains('(Ft)')) {
+      displayLabel = label;
     }
-    final bool disabled = !_areBothPointsValid();
+    // Only disable fields that require both points to be valid
+    final bool shouldBeDisabled = !_areBothPointsValid() &&
+        label != l10n.instrumentHeightWithUnitMeters &&
+        label != l10n.instrumentHeightWithUnitFeet;
     return Row(
       children: [
         SizedBox(
           width: 140,
-          child: Text(
-            displayLabel,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+          child: Tooltip(
+            message: hint ?? '',
+            child: Text(
+              displayLabel,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ),
         const SizedBox(width: 0),
@@ -727,7 +754,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
           child: TextField(
             controller: controller,
             focusNode: focusNode,
-            enabled: !disabled,
+            enabled: !shouldBeDisabled,
             keyboardType: const TextInputType.numberWithOptions(
               decimal: true,
               signed: true,
@@ -739,6 +766,9 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
               );
             },
             onSubmitted: (_) {
+              if (controller.text.isEmpty) {
+                controller.text = "0.000";
+              }
               FocusScope.of(context).nextFocus();
               if (label == l10n.horizontalAngle) {
                 setState(() {}); // Only update results for horizontal angle
@@ -791,6 +821,13 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                   }
                   try {
                     final number = double.parse(newValue.text);
+                    // Allow zero for instrument height
+                    if (label == l10n.instrumentHeightWithUnitMeters ||
+                        label == l10n.instrumentHeightWithUnitFeet) {
+                      if (!allowNegative && number < 0) return oldValue;
+                      return newValue;
+                    }
+                    // For other fields, maintain existing validation
                     if (!allowNegative && number < 0) return oldValue;
                     return newValue;
                   } catch (e) {
@@ -799,14 +836,16 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                 }),
             ],
             style: TextStyle(
-                fontSize: 14, color: disabled ? Colors.red : Colors.black),
+                fontSize: 14,
+                color: shouldBeDisabled ? Colors.red : Colors.black),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               isDense: true,
               filled: true,
-              fillColor: disabled ? Colors.red.withAlpha(26) : Colors.white,
+              fillColor:
+                  shouldBeDisabled ? Colors.red.withAlpha(26) : Colors.white,
             ),
           ),
         ),
@@ -866,6 +905,9 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   void _showSetupOptionsDialog(Point point) {
     if (!mounted) return;
 
+    // Update the setup point in the fixing service
+    _fixingService.setSetupPoint(point);
+
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -895,6 +937,14 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         TextButton(
           onPressed: () {
             _fixingService.setSetupPointStatus(SetupPointStatus.fixed);
+            setState(() {
+              // For fixed points, keep the original Z coordinate
+              _firstPointCoords = {
+                'Y': point.y,
+                'X': point.x,
+                'Z': point.z,
+              };
+            });
             Navigator.of(context).pop();
           },
           child: Text(l10n.acceptFixedPoint),
@@ -902,7 +952,11 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         TextButton(
           onPressed: () {
             setState(() {
-              _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+              _firstPointCoords = {
+                'Y': point.y,
+                'X': point.x,
+                'Z': point.z,
+              };
               _fixingService.setSetupPointStatus(SetupPointStatus.provisional);
             });
             Navigator.of(context).pop();
@@ -933,6 +987,54 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     final hasAngle =
         angleText.isNotEmpty && AngleValidator.parseFromDMS(angleText) != null;
     if (!hasPoints || !hasNext || !hasAngle) return const SizedBox.shrink();
+
+    // Calculate distance between points
+    double computedDistance = BearingCalculator.calculate(
+      _firstPointCoords['Y']!,
+      _firstPointCoords['X']!,
+      _secondPointCoords['Y']!,
+      _secondPointCoords['X']!,
+    );
+
+    // Get measured slope distance and vertical angle
+    final slopeDistance = double.tryParse(_slopeDistanceController.text) ?? 0.0;
+    var verticalAngle = double.tryParse(_verticalAngleController.text) ?? 0.0;
+    final targetHeight = double.tryParse(_targetHeightController.text) ?? 0.0;
+    final instrumentHeight =
+        double.tryParse(_instrumentHeightController.text) ?? 0.0;
+
+    // If vertical angle is 0, assume 90° (level)
+    if (verticalAngle == 0) {
+      verticalAngle = 90.0;
+    }
+
+    // Calculate horizontal distance from slope distance
+    double measuredDistance = 0.0;
+    if (slopeDistance > 0) {
+      // Convert vertical angle to radians and handle face left/right
+      double verticalRad = verticalAngle * pi / 180.0;
+      if (verticalAngle > 180 && verticalAngle < 360) {
+        verticalRad = (360 - verticalAngle) * pi / 180.0;
+      }
+      measuredDistance = slopeDistance * sin(verticalRad);
+    }
+
+    // Calculate distance difference
+    double distanceDiff = measuredDistance - computedDistance;
+
+    // Calculate height difference using HeightCalculator
+    double heightDiff = 0.0;
+    if (slopeDistance > 0) {
+      heightDiff = HeightCalculator.calculateHeightDifference(
+        slopeDistance: slopeDistance,
+        verticalAngle: verticalAngle,
+        targetHeight: targetHeight,
+        instrumentHeight: instrumentHeight,
+        z1: _firstPointCoords['Z']!,
+        z2: _secondPointCoords['Z']!,
+        useCurvatureAndRefraction: false,
+      );
+    }
 
     // Use the established join direction routine
     double computedAzimuth = BearingCalculator.calculate(
@@ -986,6 +1088,10 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
             Text('${l10n.computedDirection}:   $formattedAzimuth'),
             Text('${l10n.enteredDirection}:   $formattedEntered'),
             Text('${l10n.difference}:         $formattedDifference'),
+            Text(
+                'Distance:         ${distanceDiff.toStringAsFixed(3)} ${_selectedPrecision == 'Meters' ? 'm' : 'Ft'}'),
+            Text(
+                'Height Diff:      ${heightDiff.toStringAsFixed(3)} ${_selectedPrecision == 'Meters' ? 'm' : 'Ft'}'),
           ],
         ),
       ),

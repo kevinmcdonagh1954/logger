@@ -340,10 +340,6 @@
   "@invalidComment": {
     "description": "Error message for invalid comment"
   },
-  "comment": "Comment",
-  "@comment": {
-    "description": "Label for comment field"
-  },
   "descriptor": "Descriptor",
   "@descriptor": {
     "description": "Label for descriptor field"
@@ -366,10 +362,7 @@
   "@viewOnGoogleMaps": {
     "description": "Option to view point on Google Maps"
   },
-  "addPointDialog": "Add Point",
-  "@addPointDialog": {
-    "description": "Title for add point dialog"
-  },
+
   "characterCount": "{current}/{max}",
   "@characterCount": {
     "description": "Character count display",
@@ -828,14 +821,7 @@
   "@selectSecondPoint": {
     "description": "Message shown when second point needs to be selected for measurement"
   },
-  "searchFirstPoint": "Search First Point",
-  "@searchFirstPoint": {
-    "description": "Title for the search first point dialog"
-  },
-  "searchByIdOrComment": "Search by ID or comment",
-  "@searchByIdOrComment": {
-    "description": "Hint text for search input field"
-  },
+
   "setupAtSection": "Setup At",
   "@setupAtSection": {
     "description": "Section header for the setup point input row in setout view"
@@ -871,9 +857,21 @@
     "description": "Section header for the coordinates display in setout view"
   },
   "computedDirection": "Computed Direction",
+  "@computedDirection": {
+    "description": "Label for the computed direction in fixes view"
+  },
   "enteredDirection": "Entered Direction",
+  "@enteredDirection": {
+    "description": "Label for the entered direction in fixes view"
+  },
   "difference": "Difference",
+  "@difference": {
+    "description": "Label for the difference between computed and entered direction"
+  },
   "fixResults": "Fix Results",
+  "@fixResults": {
+    "description": "Title for the fix results section"
+  },
   "setupOptions": "Setup Options",
   "@setupOptions": {
     "description": "Title for the setup options dialog"
@@ -894,16 +892,36 @@
   "@redefineSetupPoint": {
     "description": "Option to redefine the setup point"
   },
-  "searchFirstPoint": "Search First Point",
-  "@searchFirstPoint": {
-    "description": "Title for the search first point dialog"
+  "instrumentHeight": "Instrument Height",
+  "@instrumentHeight": {
+    "description": "Label for instrument height field"
   },
-  "searchByIdOrComment": "Search by ID or comment",
-  "@searchByIdOrComment": {
-    "description": "Hint text for search input field"
+  "instrumentHeightHint": "Instrument Height",
+  "@instrumentHeightHint": {
+    "description": "Hint text for instrument height field"
+  },
+  "instrumentHeightWithUnitMeters": "Inst Ht (m)",
+  "@instrumentHeightWithUnitMeters": {
+    "description": "Label for instrument height field with meters unit"
+  },
+  "instrumentHeightWithUnitFeet": "Inst Ht (Ft)",
+  "@instrumentHeightWithUnitFeet": {
+    "description": "Label for instrument height field with feet unit"
+  },
+  "addPointDialog": "Add Point",
+  "@addPointDialog": {
+    "description": "Title for the dialog to add a new point"
   },
   "comment": "Comment",
   "@comment": {
     "description": "Label for comment field"
+  },
+  "searchFirstPoint": "Search First Point",
+  "@searchFirstPoint": {
+    "description": "Label for searching the first point"
+  },
+  "searchByIdOrComment": "Search by ID or Comment",
+  "@searchByIdOrComment": {
+    "description": "Hint text for searching points by ID or comment"
   }
 } 
