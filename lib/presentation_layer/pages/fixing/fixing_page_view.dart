@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:math';
 import '../../../application_layer/core/service_locator.dart';
 import '../../core/coordinate_formatter.dart';
 import '../startup/home_page_view.dart';
 import '../../../application_layer/jobs/job_service.dart';
+import '../../../application_layer/fixing/fixing_service.dart';
 import '../../../domain_layer/coordinates/point.dart';
 import '../../core/angle_validator.dart';
 import '../../core/dialogs/point_dialog.dart';
 import '../../core/dropdowns/comment_dropdown.dart';
 import '../../core/bearing_formatter.dart';
 import '../../core/bearing_format.dart';
-import '../../../domain_layer/calculations/slope_calculator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../jobs/jobs_viewmodel.dart';
-import '../../core/vertical_angle.dart';
 import '../../../domain_layer/calculations/bearing_calculator.dart';
 
 class FixingPageView extends StatefulWidget {
@@ -26,9 +24,9 @@ class FixingPageView extends StatefulWidget {
 
 class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   late final JobService _jobService;
+  late final FixingService _fixingService;
   String _coordinateFormat = 'YXZ';
   String _selectedPrecision = 'Meters';
-  double _scaleFactor = 1.0;
 
   final TextEditingController _firstPointController = TextEditingController();
   final TextEditingController _nextPointController = TextEditingController();
@@ -71,7 +69,6 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   final FocusNode _horizontalAngleFocus = FocusNode();
 
   bool _showUpArrow = false;
-  final BearingFormat _selectedAngleFormat = BearingFormat.dmsSymbols;
   String angle = "0° 00' 00\"";
   BearingFormat _selectedBearingFormat = BearingFormat.dmsSymbols;
 
@@ -81,6 +78,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   void initState() {
     super.initState();
     _jobService = locator<JobService>();
+    _fixingService = locator<FixingService>();
     _loadJobDefaultsFor(locator<JobsViewModel>().currentJobName.value ?? '');
     _secondPointYController.text = "";
     _secondPointXController.text = "";
@@ -104,7 +102,6 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
       setState(() {
         _coordinateFormat = defaults?.coordinateFormat ?? 'YXZ';
         _selectedPrecision = defaults?.precision ?? 'Meters';
-        _scaleFactor = double.tryParse(defaults?.scaleFactor ?? '1') ?? 1.0;
       });
     } catch (e) {
       debugPrint('Error loading job defaults: $e');
@@ -255,7 +252,10 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         onSelected: (point) {
           _firstPointController.text = point.comment;
           _updatePointCoordinates(point, true);
-          setState(() {});
+          _firstPointDropdown.hideDropdown();
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
         },
         isSelectable: true,
       );
@@ -268,7 +268,10 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         onSelected: (point) {
           _nextPointController.text = point.comment;
           _updatePointCoordinates(point, false);
-          setState(() {});
+          _nextPointDropdown.hideDropdown();
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
         },
         isSelectable: true,
       );
@@ -280,14 +283,17 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     _searchController.clear();
     _filteredPoints = _jobService.points.value;
     if (!mounted) return;
+
     await showDialog(
       context: context,
-      builder: (BuildContext context) {
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
         return StatefulBuilder(
           builder: (context, setState) {
             final l10n = AppLocalizations.of(context)!;
             return AlertDialog(
-              title: Text(l10n.searchFirstPoint),
+              title:
+                  Text(isStartPoint ? l10n.searchFirstPoint : l10n.searchPoint),
               content: SizedBox(
                 width: double.maxFinite,
                 child: Column(
@@ -297,7 +303,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                       controller: _searchController,
                       decoration: InputDecoration(
                         hintText: l10n.searchByIdOrComment,
-                        prefixIcon: Icon(Icons.search),
+                        prefixIcon: const Icon(Icons.search),
                       ),
                       onChanged: (value) {
                         setState(() {
@@ -324,19 +330,45 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                           itemCount: _filteredPoints.length,
                           itemBuilder: (context, index) {
                             final point = _filteredPoints[index];
+                            bool isDuplicate = false;
+                            if (isStartPoint) {
+                              isDuplicate = point.comment.toLowerCase() ==
+                                  _nextPointController.text.toLowerCase();
+                            } else {
+                              isDuplicate = point.comment.toLowerCase() ==
+                                  _firstPointController.text.toLowerCase();
+                            }
                             return ListTile(
                               title: Text('Point ${point.id}'),
                               subtitle: Text(point.comment),
-                              onTap: () {
-                                if (isStartPoint) {
-                                  _firstPointController.text = point.comment;
-                                  _updatePointCoordinates(point, true);
-                                } else {
-                                  _nextPointController.text = point.comment;
-                                  _updatePointCoordinates(point, false);
-                                }
-                                Navigator.pop(context);
-                              },
+                              enabled: !isDuplicate,
+                              tileColor: isDuplicate ? Colors.grey[200] : null,
+                              onTap: isDuplicate
+                                  ? null
+                                  : () async {
+                                      final selectedPoint = point;
+                                      Navigator.of(context).pop();
+
+                                      if (isStartPoint) {
+                                        _firstPointController.text =
+                                            selectedPoint.comment;
+                                        if (selectedPoint.y != 0 ||
+                                            selectedPoint.x != 0 ||
+                                            selectedPoint.z != 0) {
+                                          await Future.delayed(const Duration(
+                                              milliseconds: 100));
+                                          if (mounted) {
+                                            _updatePointCoordinates(
+                                                selectedPoint, true);
+                                          }
+                                        }
+                                      } else {
+                                        _nextPointController.text =
+                                            selectedPoint.comment;
+                                        _updatePointCoordinates(
+                                            selectedPoint, false);
+                                      }
+                                    },
                             );
                           },
                         ),
@@ -347,7 +379,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => Navigator.of(context).pop(),
                   child: Text(l10n.cancel),
                 ),
               ],
@@ -363,6 +395,9 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     _hideSearchResults();
     final existingText =
         isFirstPoint ? _firstPointController.text : _nextPointController.text;
+    final otherPointText =
+        isFirstPoint ? _nextPointController.text : _firstPointController.text;
+
     try {
       final point = await PointDialog.showAddEditPointDialog(
         context: context,
@@ -376,7 +411,20 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
           }
         },
       );
+
       if (point != null && mounted) {
+        // Check for duplicate point selection
+        if (point.comment.toLowerCase() == otherPointText.toLowerCase()) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'Cannot use the same point for both Setup At and Next Point'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
         setState(() {
           if (isFirstPoint) {
             _firstPointController.text = point.comment;
@@ -397,12 +445,6 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     }
   }
 
-  bool _isInputValid() {
-    final slopeDistance = double.tryParse(_slopeDistanceController.text) ?? 0;
-    final verticalAngle = double.tryParse(_verticalAngleController.text) ?? 0;
-    return slopeDistance > 0 && verticalAngle > 0;
-  }
-
   bool _hasValidCoordinates() {
     return _secondPointCoords['Y'] != 0 || _secondPointCoords['X'] != 0;
   }
@@ -410,66 +452,6 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   bool _hasValidPointName() {
     return _nextPointController.text.isNotEmpty &&
         _nextPointController.text.toLowerCase() != 'next point';
-  }
-
-  Future<void> _calculateSecondPoint() async {
-    if (!mounted) return;
-    if (!_isInputValid()) return;
-    try {
-      final slopeDistance = double.parse(_slopeDistanceController.text);
-      final verticalDecimal =
-          AngleValidator.parseFromDMS(_verticalAngleController.text) ?? 0.0;
-      final horizontalDecimal =
-          AngleValidator.parseFromDMS(_horizontalAngleController.text) ?? 0.0;
-      final targetHeight = double.parse(_targetHeightController.text);
-      final correctedVerticalAngle =
-          VerticalAngle.calculateVerticalAngle(verticalDecimal);
-      final verticalRad = correctedVerticalAngle * (pi / 180);
-      final planDistance =
-          (slopeDistance * cos(verticalRad)).abs() * _scaleFactor;
-      final heightDifference = (slopeDistance * cos(verticalRad)).abs();
-      final heightDiff = heightDifference * tan(verticalRad) + 0 - targetHeight;
-      final horizontalRad = horizontalDecimal * (pi / 180);
-      final y2 = _firstPointCoords['Y']! + sin(horizontalRad) * planDistance;
-      final x2 = _firstPointCoords['X']! + cos(horizontalRad) * planDistance;
-      if (!mounted) return;
-      setState(() {
-        _secondPointCoords = {
-          'Y': y2,
-          'X': x2,
-          'Z': _firstPointCoords['Z']! + heightDiff,
-        };
-        _showUpArrow = _hasValidCoordinates() && _hasValidPointName();
-        if (planDistance != 0) {
-          final slopeResults = SlopeCalculator.calculate(
-            distance: planDistance,
-            z1: _firstPointCoords['Z']!,
-            z2: _secondPointCoords['Z']!,
-          );
-          gradeI = double.parse(slopeResults['grade']!);
-          gradePercent = double.parse(slopeResults['gradePercent']!);
-          slopeAngle = double.parse(slopeResults['angle']!);
-          angle =
-              BearingFormatter.format(slopeAngle.abs(), _selectedAngleFormat);
-        } else {
-          final defaultValues = SlopeCalculator.getDefaultValues();
-          slopeAngle = double.parse(defaultValues['angle']!);
-          gradeI = double.parse(defaultValues['grade']!);
-          gradePercent = double.parse(defaultValues['gradePercent']!);
-          angle = BearingFormatter.format(0, _selectedAngleFormat);
-        }
-      });
-    } catch (e) {
-      debugPrint('Error calculating second point: $e');
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error in calculations'),
-          backgroundColor: Colors.red,
-          duration: Duration(milliseconds: 1000),
-        ),
-      );
-    }
   }
 
   Widget _buildPointInputRow(bool isFirstPoint) {
@@ -480,17 +462,17 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     final layerLink = isFirstPoint ? _firstPointLayerLink : _nextPointLayerLink;
     final label = isFirstPoint ? l10n.setupAt : l10n.secondPoint;
     final hintText = isFirstPoint ? l10n.setupAt : l10n.nextPointHint;
+    final otherController =
+        isFirstPoint ? _nextPointController : _firstPointController;
 
     // Validation logic
     bool isValid = false;
-    if (isFirstPoint) {
-      isValid = controller.text.isNotEmpty;
-      _jobService.points.value
-          .any((p) => p.comment.toLowerCase() == controller.text.toLowerCase());
-    } else {
+    if (controller.text.isNotEmpty) {
       final exists = _jobService.points.value
           .any((p) => p.comment.toLowerCase() == controller.text.toLowerCase());
-      isValid = controller.text.isNotEmpty && exists;
+      final isDuplicate =
+          controller.text.toLowerCase() == otherController.text.toLowerCase();
+      isValid = exists && !isDuplicate;
     }
 
     return Row(
@@ -547,7 +529,6 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                     _updatePointCoordinates(point, true);
                     setState(() {});
                   } else {
-                    // Unique name, set YXZ to 0,0,0 and set flag
                     _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
                     setState(() {});
                   }
@@ -864,6 +845,11 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
           'Z': point.z,
         };
         _showUpArrow = false;
+
+        // Show setup options if point has coordinates
+        if (point.y != 0 || point.x != 0 || point.z != 0) {
+          _showSetupOptionsDialog(point);
+        }
       } else {
         // Allow Next Point to be updated anytime
         _secondPointCoords = {
@@ -874,6 +860,67 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         _showUpArrow = _hasValidCoordinates() && _hasValidPointName();
       }
     });
+  }
+
+  /// Show dialog with setup options when a point with coordinates is selected
+  void _showSetupOptionsDialog(Point point) {
+    if (!mounted) return;
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => _buildSetupOptionsDialog(point),
+    );
+  }
+
+  Widget _buildSetupOptionsDialog(Point point) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return AlertDialog(
+      title: Text(l10n.setupOptions),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${l10n.comment}: ${point.comment}'),
+          const SizedBox(height: 8),
+          Text('Y: ${point.y.toStringAsFixed(3)}'),
+          Text('X: ${point.x.toStringAsFixed(3)}'),
+          Text('Z: ${point.z.toStringAsFixed(3)}'),
+          const SizedBox(height: 16),
+          Text(l10n.selectSetupMethod),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            _fixingService.setSetupPointStatus(SetupPointStatus.fixed);
+            Navigator.of(context).pop();
+          },
+          child: Text(l10n.acceptFixedPoint),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+              _fixingService.setSetupPointStatus(SetupPointStatus.provisional);
+            });
+            Navigator.of(context).pop();
+          },
+          child: Text(l10n.acceptProvisionalFix),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+              _fixingService.setSetupPointStatus(SetupPointStatus.redefine);
+            });
+            Navigator.of(context).pop();
+          },
+          child: Text(l10n.redefineSetupPoint),
+        ),
+      ],
+    );
   }
 
   Widget _buildFixesResults(AppLocalizations l10n) {
@@ -927,8 +974,9 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                 DropdownButton<BearingFormat>(
                   value: _selectedBearingFormat,
                   onChanged: (format) {
-                    if (format != null)
+                    if (format != null) {
                       setState(() => _selectedBearingFormat = format);
+                    }
                   },
                   items: _buildBearingFormatItemsForFix(computedAzimuth),
                 ),

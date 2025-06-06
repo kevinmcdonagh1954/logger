@@ -248,6 +248,30 @@
   "@success": {
     "description": "Success message"
   },
+  "setupOptions": "Opciones de configuración",
+  "@setupOptions": {
+    "description": "Title for the setup options dialog"
+  },
+  "selectSetupMethod": "Elija la opción con la que desea continuar",
+  "@selectSetupMethod": {
+    "description": "Prompt to select a setup method"
+  },
+  "acceptFixedPoint": "Aceptar como punto fijo",
+  "@acceptFixedPoint": {
+    "description": "Option to accept the point as a fixed point"
+  },
+  "acceptProvisionalFix": "Aceptar como fijación provisional",
+  "@acceptProvisionalFix": {
+    "description": "Option to accept the point as a provisional fix"
+  },
+  "redefineSetupPoint": "Redefinir punto de configuración",
+  "@redefineSetupPoint": {
+    "description": "Option to redefine the setup point"
+  },
+  "searchFirstPoint": "Buscar primer punto",
+  "@searchFirstPoint": {
+    "description": "Title for searching the first point"
+  },
   "singleJoin": "Unión simple",
   "@singleJoin": {
     "description": "Label for single join"

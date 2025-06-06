@@ -54,8 +54,6 @@ class AngleValidator extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     // Debug logging
-    print(
-        'AngleValidator: oldValue="${oldValue.text}", newValue="${newValue.text}"');
 
     // Allow empty value
     if (newValue.text.isEmpty) {
@@ -64,22 +62,18 @@ class AngleValidator extends TextInputFormatter {
 
     // Replace commas with dots
     final replaced = newValue.text.replaceAll(',', '.');
-    print('AngleValidator: replaced="$replaced"');
     final newValueWithDot = newValue.copyWith(text: replaced);
 
     // Only allow digits and one decimal point
     if (!RegExp(r'^\d*\.?\d*$').hasMatch(newValueWithDot.text)) {
-      print('AngleValidator: rejected by regex');
       return oldValue;
     }
 
     // Validate the angle
     if (!isValidDMSAngle(newValueWithDot.text)) {
-      print('AngleValidator: rejected by isValidDMSAngle');
       return oldValue;
     }
 
-    print('AngleValidator: accepted');
     return newValueWithDot;
   }
 

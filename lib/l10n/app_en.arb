@@ -829,9 +829,13 @@
     "description": "Message shown when second point needs to be selected for measurement"
   },
   "searchFirstPoint": "Search First Point",
-  "@searchFirstPoint": {"description": "Dialog title for searching the first point"},
+  "@searchFirstPoint": {
+    "description": "Title for the search first point dialog"
+  },
   "searchByIdOrComment": "Search by ID or comment",
-  "@searchByIdOrComment": {"description": "Hint for searching by ID or comment"},
+  "@searchByIdOrComment": {
+    "description": "Hint text for search input field"
+  },
   "setupAtSection": "Setup At",
   "@setupAtSection": {
     "description": "Section header for the setup point input row in setout view"
@@ -869,5 +873,37 @@
   "computedDirection": "Computed Direction",
   "enteredDirection": "Entered Direction",
   "difference": "Difference",
-  "fixResults": "Fix Results"
+  "fixResults": "Fix Results",
+  "setupOptions": "Setup Options",
+  "@setupOptions": {
+    "description": "Title for the setup options dialog"
+  },
+  "selectSetupMethod": "Choose which option you would like proceed with",
+  "@selectSetupMethod": {
+    "description": "Prompt to select a setup method"
+  },
+  "acceptFixedPoint": "Accept the point as a Fixed Point",
+  "@acceptFixedPoint": {
+    "description": "Option to accept the point as a fixed point"
+  },
+  "acceptProvisionalFix": "Accept the point as a provisional Fix",
+  "@acceptProvisionalFix": {
+    "description": "Option to accept the point as a provisional fix"
+  },
+  "redefineSetupPoint": "Redefine the Setup Point",
+  "@redefineSetupPoint": {
+    "description": "Option to redefine the setup point"
+  },
+  "searchFirstPoint": "Search First Point",
+  "@searchFirstPoint": {
+    "description": "Title for the search first point dialog"
+  },
+  "searchByIdOrComment": "Search by ID or comment",
+  "@searchByIdOrComment": {
+    "description": "Hint text for search input field"
+  },
+  "comment": "Comment",
+  "@comment": {
+    "description": "Label for comment field"
+  }
 } 

@@ -325,5 +325,33 @@
   "computedDirection": "Direção calculada",
   "enteredDirection": "Direção inserida",
   "difference": "Diferença",
-  "fixResults": "Resultados de Fixação"
+  "fixResults": "Resultados de Fixação",
+  "setupOptions": "Opções de Configuração",
+  "@setupOptions": {
+    "description": "Title for the setup options dialog"
+  },
+  "selectSetupMethod": "Escolha qual opção você gostaria de prosseguir",
+  "@selectSetupMethod": {
+    "description": "Prompt to select a setup method"
+  },
+  "acceptFixedPoint": "Aceitar o ponto como Ponto Fixo",
+  "@acceptFixedPoint": {
+    "description": "Option to accept the point as a fixed point"
+  },
+  "acceptProvisionalFix": "Aceitar o ponto como Correção Provisória",
+  "@acceptProvisionalFix": {
+    "description": "Option to accept the point as a provisional fix"
+  },
+  "redefineSetupPoint": "Redefinir o Ponto de Configuração",
+  "@redefineSetupPoint": {
+    "description": "Option to redefine the setup point"
+  },
+  "searchFirstPoint": "Pesquisar Primeiro Ponto",
+  "@searchFirstPoint": {
+    "description": "Title for the search first point dialog"
+  },
+  "searchByIdOrComment": "Pesquisar por ID ou comentário",
+  "@searchByIdOrComment": {
+    "description": "Hint text for search input field"
+  }
 } 

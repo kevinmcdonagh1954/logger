@@ -39,12 +39,6 @@ class DatabaseService {
 
   // Initialize the database service
   Future<void> init() async {
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      // Initialize FFI for desktop platforms
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
-    }
-
     _logger?.info(_logName, 'Database service initialized');
   }
 
@@ -266,73 +260,70 @@ class DatabaseService {
 
   // Get all jobs
   Future<Map<String, dynamic>> getAllJobs() async {
-    _logger?.info(_logName, 'Getting all jobs');
-    final String loggerPath = await loggerDirectoryPath;
-    final Directory loggerDir = Directory(loggerPath);
+    try {
+      _logger?.info(_logName, 'Getting all jobs');
+      final String loggerPath = await loggerDirectoryPath;
+      final Directory loggerDir = Directory(loggerPath);
 
-    if (!await loggerDir.exists()) {
-      _logger?.warning(_logName,
-          'Logger directory does not exist, returning empty job list');
-      return {'jobs': []};
-    }
+      _logger?.debug(_logName, 'Checking directory: $loggerPath');
 
-    final List<FileSystemEntity> entities = await loggerDir.list().toList();
-    final List<Map<String, dynamic>> jobsWithDates = [];
+      if (!await loggerDir.exists()) {
+        _logger?.warning(_logName,
+            'Logger directory does not exist, returning empty job list');
+        return {'jobs': []};
+      }
 
-    for (var entity in entities) {
-      if (entity is Directory) {
-        final String jobName = path.basename(entity.path);
+      final List<FileSystemEntity> entities = await loggerDir.list().toList();
+      final List<Map<String, dynamic>> jobsWithDates = [];
 
-        // Skip folders that contain DELETED or BACKUPS in their name (case insensitive)
-        if (jobName.toUpperCase().contains('DELETED') ||
-            jobName.toUpperCase().contains('BACKUPS')) {
-          _logger?.debug(_logName, 'Skipping special folder: ${entity.path}');
-          continue;
-        }
+      for (var entity in entities) {
+        if (entity is Directory) {
+          final String jobName = path.basename(entity.path);
+          _logger?.debug(_logName, 'Found directory: $jobName');
 
-        // Check if the folder is empty
-        final List<FileSystemEntity> folderContents =
-            await entity.list().toList();
-        if (folderContents.isEmpty) {
-          _logger?.info(
-              _logName, 'Found empty folder: ${entity.path}, deleting it');
-          await entity.delete(recursive: true);
-          continue;
-        }
+          // Skip folders that contain DELETED or BACKUPS in their name (case insensitive)
+          if (jobName.toUpperCase().contains('DELETED') ||
+              jobName.toUpperCase().contains('BACKUPS')) {
+            _logger?.debug(_logName, 'Skipping special folder: ${entity.path}');
+            continue;
+          }
 
-        // Check for corresponding .db file
-        final String dbPath = path.join(entity.path, '$jobName.db');
-        final File dbFile = File(dbPath);
+          // Check for corresponding .db file
+          final String dbPath = path.join(entity.path, '$jobName.db');
+          final File dbFile = File(dbPath);
 
-        if (await dbFile.exists()) {
-          // Valid job with database file
-          final DateTime lastModified = await dbFile.lastModified();
-          jobsWithDates.add({
-            'name': jobName,
-            'lastModified': lastModified,
-          });
-        } else {
-          // This is a job folder without a database file - we'll delete it
-          _logger?.warning(_logName,
-              'Found job folder without database file: $jobName. Deleting invalid job folder.');
-          await entity.delete(recursive: true);
+          if (await dbFile.exists()) {
+            // Valid job with database file
+            final DateTime lastModified = await dbFile.lastModified();
+            jobsWithDates.add({
+              'name': jobName,
+              'lastModified': lastModified,
+            });
+            _logger?.debug(_logName, 'Found valid job: $jobName');
+          } else {
+            _logger?.warning(
+                _logName, 'Found job folder without database file: $jobName');
+          }
         }
       }
+
+      // Sort the jobs by last modified date (most recent first)
+      jobsWithDates
+          .sort((a, b) => b['lastModified'].compareTo(a['lastModified']));
+
+      // Extract just the job names in the sorted order
+      final List<String> jobs =
+          jobsWithDates.map((job) => job['name'] as String).toList();
+
+      _logger?.info(
+          _logName, 'Found ${jobs.length} valid jobs: ${jobs.join(", ")}');
+      return {
+        'jobs': jobs,
+      };
+    } catch (e) {
+      _logger?.error(_logName, 'Error getting all jobs: $e');
+      return {'jobs': []};
     }
-
-    // Sort the jobs by last modified date (most recent first)
-    jobsWithDates
-        .sort((a, b) => b['lastModified'].compareTo(a['lastModified']));
-
-    // Extract just the job names in the sorted order
-    final List<String> jobs =
-        jobsWithDates.map((job) => job['name'] as String).toList();
-
-    _logger?.debug(
-        _logName, 'Found ${jobs.length} valid jobs: ${jobs.join(", ")}');
-    return {
-      'jobs': jobs,
-    };
   }
 
   // Import points from CSV

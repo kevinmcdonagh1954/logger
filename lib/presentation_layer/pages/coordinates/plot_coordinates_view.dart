@@ -1923,7 +1923,7 @@ class _MeasurementLinePainter extends CustomPainter {
     final perpDy = dx2 / length * 20;
 
     // Draw labels with background and rotation
-    final drawLabel = (TextPainter painter, Offset offset, bool isAbove) {
+    drawLabel(TextPainter painter, Offset offset, bool isAbove) {
       canvas.save();
       canvas.translate(offset.dx, offset.dy);
       canvas.rotate(lineAngle);
@@ -1939,7 +1939,7 @@ class _MeasurementLinePainter extends CustomPainter {
       canvas.drawRect(rect, bgPaint);
       painter.paint(canvas, Offset(-painter.width / 2, -painter.height / 2));
       canvas.restore();
-    };
+    }
 
     drawLabel(distancePainter, midPoint + Offset(perpDx, perpDy), true);
     drawLabel(directionPainter, midPoint - Offset(perpDx, perpDy), false);

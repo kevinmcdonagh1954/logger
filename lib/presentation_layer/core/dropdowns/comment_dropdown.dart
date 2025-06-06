@@ -75,8 +75,8 @@ class CommentDropdown {
                     ),
                     onTap: isSelectable
                         ? () {
-                            onSelected(point);
                             hideDropdown();
+                            onSelected(point);
                           }
                         : null,
                     enabled: isSelectable,

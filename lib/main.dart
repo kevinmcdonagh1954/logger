@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'dart:io';
 import 'application_layer/core/service_locator.dart';
 import 'presentation_layer/pages/startup/home_page_view.dart';
 import 'application_layer/jobs/job_service.dart';
@@ -12,6 +14,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
+
+    // Initialize SQLite FFI for Windows
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      // Initialize FFI
+      sqfliteFfiInit();
+      // Change the default factory for desktop
+      databaseFactory = databaseFactoryFfi;
+    }
 
     // Initialize service locator first, before any service usage
     await setupLocator();

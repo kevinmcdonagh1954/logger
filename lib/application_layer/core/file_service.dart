@@ -17,62 +17,44 @@ class FileService {
 
   /// Get the application directory that leverages OneDrive for backup when available
   Future<Directory> getApplicationDirectory() async {
-    Directory appDir;
+    try {
+      if (Platform.isWindows) {
+        // Use C:\Logger\Logger_Jobs for Windows
+        const String defaultPath = r'C:\Logger\Logger_Jobs';
+        final Directory defaultDir = Directory(defaultPath);
 
-    if (Platform.isWindows) {
-      try {
-        // On Windows, use Documents\Logger Jobs folder
+        if (!await defaultDir.exists()) {
+          await defaultDir.create(recursive: true);
+          _logger.info(_logName, 'Created Logger_Jobs folder: $defaultPath');
+        }
+
+        _logger.info(_logName, 'Using default location: $defaultPath');
+        return defaultDir;
+      } else if (Platform.isAndroid || Platform.isIOS) {
+        // For mobile, use app documents directory with Logger Jobs subfolder
         final docsDir = await getApplicationDocumentsDirectory();
-        appDir = Directory(path.join(docsDir.path, 'Logger_Jobs'));
-
-        // Create Logger Jobs folder if it doesn't exist
+        final Directory appDir =
+            Directory(path.join(docsDir.path, 'Logger_Jobs'));
         if (!await appDir.exists()) {
           await appDir.create(recursive: true);
           _logger.info(_logName, 'Created Logger_Jobs folder: ${appDir.path}');
         }
-
-        // Check if we're in OneDrive for logging purposes
-        final isOnOneDrive = appDir.path.toLowerCase().contains('onedrive');
-        if (isOnOneDrive) {
-          _logger.info(
-              _logName, 'Using OneDrive location for app data: ${appDir.path}');
-        }
-      } catch (e) {
-        // Log the error
-        _logger.error(_logName, 'Error creating Logger_Jobs folder', e);
-
-        // Try a fallback location - using local app data instead
-        final appDataDir = await getApplicationSupportDirectory();
-        appDir = Directory(path.join(appDataDir.path, 'Logger_Jobs'));
-
+        return appDir;
+      } else {
+        // Linux, macOS - also use Logger Jobs subfolder
+        final docsDir = await getApplicationDocumentsDirectory();
+        final Directory appDir =
+            Directory(path.join(docsDir.path, 'Logger_Jobs'));
         if (!await appDir.exists()) {
           await appDir.create(recursive: true);
-          _logger.info(
-              _logName, 'Created fallback Logger_Jobs folder: ${appDir.path}');
+          _logger.info(_logName, 'Created Logger_Jobs folder: ${appDir.path}');
         }
+        return appDir;
       }
-    } else if (Platform.isAndroid || Platform.isIOS) {
-      // For mobile, use app documents directory with Logger Jobs subfolder
-      final docsDir = await getApplicationDocumentsDirectory();
-      appDir = Directory(path.join(docsDir.path, 'Logger_Jobs'));
-      if (!await appDir.exists()) {
-        await appDir.create(recursive: true);
-      }
-    } else {
-      // Linux, macOS - also use Logger Jobs subfolder
-      final docsDir = await getApplicationDocumentsDirectory();
-      appDir = Directory(path.join(docsDir.path, 'Logger_Jobs'));
-      if (!await appDir.exists()) {
-        await appDir.create(recursive: true);
-      }
+    } catch (e) {
+      _logger.error(_logName, 'Error getting application directory: $e');
+      throw Exception('Failed to access or create Logger_Jobs directory: $e');
     }
-
-    // Ensure the directory exists
-    if (!await appDir.exists()) {
-      await appDir.create(recursive: true);
-    }
-
-    return appDir;
   }
 
   /// Safely delete a directory with retry logic and proper error handling for OneDrive

@@ -31,6 +31,7 @@ dependencies:
   provider: ^6.1.1
   cupertino_icons: ^1.0.2
   stacked: ^3.0.0  # For MVVM architecture
+  ml_linalg: ^13.12.6
 
 dev_dependencies:
   flutter_test:

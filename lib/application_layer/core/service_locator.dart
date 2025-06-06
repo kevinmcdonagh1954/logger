@@ -8,6 +8,7 @@ import '../../presentation_layer/viewmodels/usage_viewmodel.dart';
 import 'database_service.dart';
 import '../import_export/csv_service.dart';
 import '../jobs/job_service.dart';
+import '../fixing/fixing_service.dart';
 import 'file_service.dart';
 import 'logging_service.dart';
 
@@ -22,6 +23,7 @@ Future<void> setupLocator() async {
   locator.registerSingleton<DatabaseService>(DatabaseService());
   locator.registerSingleton<CSVService>(CSVService());
   locator.registerSingleton<JobService>(JobService());
+  locator.registerSingleton<FixingService>(FixingService());
 
   // Register ViewModels as factories (new instance each time)
   locator.registerFactory<JobsViewModel>(

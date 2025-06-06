@@ -249,6 +249,30 @@
   "@polar": {
     "description": "Label for polar calculation"
   },
+  "setupOptions": "设置选项",
+  "@setupOptions": {
+    "description": "Title for the setup options dialog"
+  },
+  "selectSetupMethod": "请选择您要继续的选项",
+  "@selectSetupMethod": {
+    "description": "Prompt to select a setup method"
+  },
+  "acceptFixedPoint": "接受为固定点",
+  "@acceptFixedPoint": {
+    "description": "Option to accept the point as a fixed point"
+  },
+  "acceptProvisionalFix": "接受为临时固定点",
+  "@acceptProvisionalFix": {
+    "description": "Option to accept the point as a provisional fix"
+  },
+  "redefineSetupPoint": "重新定义设置点",
+  "@redefineSetupPoint": {
+    "description": "Option to redefine the setup point"
+  },
+  "searchFirstPoint": "搜索第一个点",
+  "@searchFirstPoint": {
+    "description": "Title for searching the first point"
+  },
   "firstPoint": "第一点",
   "@firstPoint": {
     "description": "Label for first point input"
@@ -753,5 +777,29 @@
   "computedDirection": "计算方向",
   "enteredDirection": "输入方向",
   "difference": "差值",
-  "fixResults": "定向结果"
+  "fixResults": "定向结果",
+  "setupOptions": "设置选项",
+  "@setupOptions": {
+    "description": "Title for the setup options dialog"
+  },
+  "selectSetupMethod": "请选择您要继续的选项",
+  "@selectSetupMethod": {
+    "description": "Prompt to select a setup method"
+  },
+  "acceptFixedPoint": "接受为固定点",
+  "@acceptFixedPoint": {
+    "description": "Option to accept the point as a fixed point"
+  },
+  "acceptProvisionalFix": "接受为临时固定点",
+  "@acceptProvisionalFix": {
+    "description": "Option to accept the point as a provisional fix"
+  },
+  "redefineSetupPoint": "重新定义设置点",
+  "@redefineSetupPoint": {
+    "description": "Option to redefine the setup point"
+  },
+  "searchFirstPoint": "搜索第一个点",
+  "@searchFirstPoint": {
+    "description": "Title for searching the first point"
+  }
 } 

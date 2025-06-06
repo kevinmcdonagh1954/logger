@@ -3,8 +3,9 @@ import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../domain_layer/coordinates/point.dart';
-import '../../application_layer/core/logging_service.dart';
+import 'package:logger/application_layer/core/logging_service.dart';
 import 'package:get_it/get_it.dart';
+import '../core/file_service.dart';
 
 /// Service for handling CSV file operations
 class CSVService {
@@ -176,39 +177,22 @@ class CSVService {
 
   /// Get the proper Logger_Jobs directory path
   Future<String> _getLoggerJobsPath() async {
-    if (Platform.isWindows) {
-      // Use the specified OneDrive path for Windows
-      const String winPath = r'C:\Users\Kevin\OneDrive\Documents\Logger_Jobs';
+    try {
+      // Use FileService to get the application directory consistently
+      final FileService fileService = GetIt.instance<FileService>();
+      final Directory appDir = await fileService.getApplicationDirectory();
 
       // Create directory if it doesn't exist
-      final Directory loggerDir = Directory(winPath);
-      if (!await loggerDir.exists()) {
-        try {
-          await loggerDir.create(recursive: true);
-          _logger?.info(
-              _logName, 'Created Logger_Jobs directory at: ${loggerDir.path}');
-        } catch (e) {
-          _logger?.error(
-              _logName, 'Failed to create Logger_Jobs directory: $e');
-        }
+      if (!await appDir.exists()) {
+        await appDir.create(recursive: true);
+        _logger?.info(
+            _logName, 'Created Logger_Jobs directory at: ${appDir.path}');
       }
-      return winPath;
-    } else {
-      // For other platforms, try to get a relative path
-      final Directory appDir = await getApplicationDocumentsDirectory();
-      // Create the Logger_Jobs directory if it doesn't exist
-      final Directory loggerDir = Directory('${appDir.path}/Logger_Jobs');
-      if (!await loggerDir.exists()) {
-        try {
-          await loggerDir.create(recursive: true);
-          _logger?.info(
-              _logName, 'Created Logger_Jobs directory at: ${loggerDir.path}');
-        } catch (e) {
-          _logger?.error(
-              _logName, 'Failed to create Logger_Jobs directory: $e');
-        }
-      }
-      return loggerDir.path;
+
+      return appDir.path;
+    } catch (e) {
+      _logger?.error(_logName, 'Failed to get Logger_Jobs directory: $e');
+      rethrow;
     }
   }
 

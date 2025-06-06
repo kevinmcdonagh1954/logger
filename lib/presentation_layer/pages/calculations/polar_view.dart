@@ -824,16 +824,18 @@ class _PolarViewState extends State<PolarView> with RouteAware {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(l10n.slopeAngle,
                   style: const TextStyle(fontWeight: FontWeight.bold)),
               // Only show format dropdown if not in Grads mode
               if (AngleConverter.gradsFactor == 1.0) ...[
-                const SizedBox(width: 24),
+                const SizedBox(height: 4),
                 SizedBox(
-                  height: 30,
+                  width: 120, // Fixed narrow width
                   child: Container(
+                    height: 30,
                     decoration: BoxDecoration(
                       color: const Color.fromRGBO(254, 247, 255, 1.0),
                       border: Border(
@@ -844,22 +846,20 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                     child: DropdownButton<BearingFormat>(
                       value: _selectedAngleFormat,
                       isDense: true,
+                      isExpanded: true,
                       style: const TextStyle(fontSize: 12, color: Colors.black),
-                      dropdownColor: const Color.fromRGBO(254, 247, 255, 1.0),
-                      underline: Container(),
+                      underline: const SizedBox(),
                       icon: const Icon(Icons.arrow_drop_down,
                           color: Colors.black54),
-                      elevation: 1,
+                      items: _buildAngleFormatItems(),
                       onChanged: (BearingFormat? newFormat) {
                         if (newFormat != null) {
-                          if (!mounted) return;
                           setState(() {
                             _selectedAngleFormat = newFormat;
                             _updateAngleFormat();
                           });
                         }
                       },
-                      items: _buildAngleFormatItems(),
                     ),
                   ),
                 ),
