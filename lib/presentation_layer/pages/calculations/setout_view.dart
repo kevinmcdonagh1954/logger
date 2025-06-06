@@ -959,8 +959,8 @@ class _SetoutViewState extends State<SetoutView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: true,
-      onPopInvoked: (didPop) {
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
         if (!didPop) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const HomePage()),

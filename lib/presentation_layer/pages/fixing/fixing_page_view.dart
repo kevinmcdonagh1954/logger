@@ -146,8 +146,8 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return PopScope(
-      canPop: true,
-      onPopInvoked: (didPop) {
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
         if (!didPop) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const HomePage()),
@@ -417,8 +417,9 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         isFirstPoint ? _nextPointController.text : _firstPointController.text;
 
     try {
+      final currentContext = context;
       final point = await PointDialog.showAddEditPointDialog(
-        context: context,
+        context: currentContext,
         jobService: _jobService,
         coordinateFormat: _coordinateFormat,
         allowUseWithoutSaving: true,
@@ -430,10 +431,10 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         },
       );
 
-      if (point != null && mounted) {
+      if (point != null && mounted && currentContext.mounted) {
         // Check for duplicate point selection
         if (point.comment.toLowerCase() == otherPointText.toLowerCase()) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(currentContext).showSnackBar(
             SnackBar(
               content: Text(
                   'Cannot use the same point for both Setup At and Next Point'),
@@ -454,7 +455,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         });
       }
     } catch (e) {
-      if (mounted) {
+      if (mounted && context.mounted) {
         final currentContext = context;
         ScaffoldMessenger.of(currentContext).showSnackBar(
           SnackBar(content: Text('Error: ${e.toString()}')),

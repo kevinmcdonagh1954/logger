@@ -939,5 +939,57 @@
   "searchByIdOrComment": "Buscar por ID o Comentario",
   "@searchByIdOrComment": {
     "description": "Hint text for searching points by ID or comment"
+  },
+  "firstPointSelected": "Primer punto seleccionado: {pointName}",
+  "@firstPointSelected": {
+    "description": "Message shown when first point is selected in join mode",
+    "placeholders": {
+      "pointName": {
+        "type": "String",
+        "example": "Point A1"
+      }
+    }
+  },
+  "selectFirstPoint": "Seleccionar primer punto",
+  "@selectFirstPoint": {
+    "description": "Message shown when first point needs to be selected for measurement"
+  },
+  "selectSecondPoint": "Seleccionar segundo punto",
+  "@selectSecondPoint": {
+    "description": "Message shown when second point needs to be selected for measurement"
+  },
+  "setupAtSection": "Configurar en",
+  "@setupAtSection": {
+    "description": "Section header for the setup point input row in setout view"
+  },
+  "setoutPtSection": "Punto de replanteo",
+  "@setoutPtSection": {
+    "description": "Label for the setout point input field."
+  },
+  "calculatedPositionSection": "Posición calculada",
+  "@calculatedPositionSection": {
+    "description": "Section header for the calculated position results in setout view"
+  },
+  "resultsSection": "Resultados",
+  "@resultsSection": {
+    "description": "Section header for the results section in setout view"
+  },
+  "valuesMenu": "Valores {format}",
+  "@valuesMenu": {
+    "description": "Popup menu item for showing YXZ or ENZ values. {format} is either YXZ or ENZ.",
+    "placeholders": {
+      "format": {
+        "type": "String",
+        "example": "YXZ"
+      }
+    }
+  },
+  "optionsTooltip": "Opciones",
+  "@optionsTooltip": {
+    "description": "Tooltip for the three-dot menu in setout view"
+  },
+  "coordinatesSection": "Coordenadas",
+  "@coordinatesSection": {
+    "description": "Section header for the coordinates display in setout view"
   }
 } 

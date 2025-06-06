@@ -1,5 +1,4 @@
 import 'fix_constants.dart';
-import 'dart:math' as math;
 
 /// Class to handle matrix operations for the fixing routine
 class MatrixOperations {

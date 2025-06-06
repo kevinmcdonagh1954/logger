@@ -757,31 +757,31 @@
   },
   "dtmTot": "DTM (TOT)",
   "@dtmTot": {
-    "description": "DTM TOT文件类型的标签"
+    "description": "Label for DTM TOT section"
   },
   "tacheRaw": "全站仪原始数据",
   "@tacheRaw": {
-    "description": "全站仪原始数据的标签"
+    "description": "Label for raw tacheometry data"
   },
   "tacheReduced": "全站仪处理数据",
   "@tacheReduced": {
-    "description": "全站仪处理数据的标签"
+    "description": "Label for reduced tacheometry data"
   },
   "importDtmTotHint": "读取 Model Maker TOT 文件。TIN 模型",
   "@importDtmTotHint": {
-    "description": "导入DTM TOT文件的提示信息"
+    "description": "Hint text for importing DTM TOT data"
   },
   "exportTacheRawHint": "导出全站仪原始数据",
   "@exportTacheRawHint": {
-    "description": "导出全站仪原始数据的提示信息"
+    "description": "Hint text for exporting raw tacheometry data"
   },
   "exportTacheReducedHint": "导出全站仪处理数据 注释 YXZ/ENZ",
   "@exportTacheReducedHint": {
-    "description": "导出全站仪处理数据的提示信息"
+    "description": "Hint text for exporting reduced tacheometry data"
   },
   "exportRoadDesignHint": "导出道路设计数据",
   "@exportRoadDesignHint": {
-    "description": "导出道路设计数据的提示信息"
+    "description": "Hint text for exporting road design data"
   },
   "plotCoordinatesTitle": "绘图坐标 - {count}",
   "@plotCoordinatesTitle": {"description": "绘图坐标视图的标题，带点数", "placeholders": {"count": {"type": "int", "example": "10"}}},
@@ -799,31 +799,31 @@
   "@sortByDescriptor": {"description": "按描述符排序，带顺序占位符","placeholders":{"order":{"type":"String","example":"A-Z"}}},
   "quickDistance": "快速距离",
   "@quickDistance": {
-    "description": "快速距离测量对话框的标题"
+    "description": "Title for quick distance measurement dialog"
   },
   "fromPoint": "起点",
   "@fromPoint": {
-    "description": "距离测量中起点的标签"
+    "description": "Label for the starting point in distance measurement"
   },
   "toPoint": "终点",
   "@toPoint": {
-    "description": "距离测量中终点的标签"
+    "description": "Label for the ending point in distance measurement"
   },
   "close": "关闭",
   "@close": {
-    "description": "关闭按钮的标签"
+    "description": "Label for close button"
   },
   "selectFromPlot": "从图中选择",
   "@selectFromPlot": {
-    "description": "从图中选择点的标签"
+    "description": "Label for selecting a point from the plot view"
   },
   "selectPointFromPlot": "从图中选择点",
   "@selectPointFromPlot": {
-    "description": "选择模式下图形视图的标题"
+    "description": "Title for the plot view when in selection mode"
   },
   "joinModeSelectFirst": "连接模式 - 选择第一个点",
   "@joinModeSelectFirst": {
-    "description": "激活连接模式时显示的消息"
+    "description": "Message shown when join mode is activated"
   },
   "firstPointSelected": "已选择第一个点：{pointName}",
   "@firstPointSelected": {
@@ -883,34 +883,34 @@
   },
   "computedDirection": "计算方向",
   "@computedDirection": {
-    "description": "定向视图中计算方向的标签"
+    "description": "Label for the computed direction in fixes view"
   },
   "enteredDirection": "输入方向",
   "@enteredDirection": {
-    "description": "定向视图中输入方向的标签"
+    "description": "Label for the entered direction in fixes view"
   },
   "difference": "差值",
   "@difference": {
-    "description": "计算方向和输入方向之间差值的标签"
+    "description": "Label for the difference between computed and entered direction"
   },
   "fixResults": "定向结果",
   "@fixResults": {
-    "description": "定向结果部分的标题"
+    "description": "Title for the fix results section"
   },
   "instrumentHeight": "仪器高",
   "@instrumentHeight": {
-    "description": "仪器高度字段的标签"
+    "description": "Label for instrument height field"
   },
   "instrumentHeightHint": "仪器高度",
   "@instrumentHeightHint": {
-    "description": "仪器高度字段的提示文本"
+    "description": "Hint text for instrument height field"
   },
   "instrumentHeightWithUnitMeters": "仪器高 (m)",
   "@instrumentHeightWithUnitMeters": {
-    "description": "带米单位的仪器高度字段标签"
+    "description": "Label for instrument height field with meters unit"
   },
   "instrumentHeightWithUnitFeet": "仪器高 (Ft)",
   "@instrumentHeightWithUnitFeet": {
-    "description": "带英尺单位的仪器高度字段标签"
+    "description": "Label for instrument height field with feet unit"
   }
 } 

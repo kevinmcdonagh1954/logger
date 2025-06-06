@@ -439,8 +439,8 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return PopScope(
-      canPop: true,
-      onPopInvoked: (didPop) {
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
         if (!didPop) {
           if (widget.fromPlotScreen) {
             Navigator.of(context).pop();
@@ -878,8 +878,9 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
         isFirstPoint ? _firstPointController.text : _nextPointController.text;
 
     try {
+      final currentContext = dialogContext;
       final point = await PointDialog.showAddEditPointDialog(
-        context: dialogContext,
+        context: currentContext,
         jobService: _jobService,
         coordinateFormat: _coordinateFormat,
         allowUseWithoutSaving: true,
@@ -903,7 +904,7 @@ class _SingleJoinViewState extends State<SingleJoinView> with RouteAware {
         });
       }
     } catch (e) {
-      if (mounted) {
+      if (mounted && dialogContext.mounted) {
         ScaffoldMessenger.of(dialogContext).showSnackBar(
           SnackBar(content: Text('Error: ${e.toString()}')),
         );

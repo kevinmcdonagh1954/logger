@@ -546,7 +546,7 @@
   "@dtmTot": {
     "description": "Label for DTM TOT section"
   },
-  "roadDesign": "Projeto de Estrada",
+  "roadDesign": "Design da Estrada",
   "@roadDesign": {
     "description": "Label for road design section"
   },
@@ -554,51 +554,51 @@
   "@strings": {
     "description": "Label for strings section"
   },
-  "tacheRaw": "Taqueometria (Bruta)",
+  "tacheRaw": "Tache (Bruto)",
   "@tacheRaw": {
     "description": "Label for raw tacheometry data"
   },
-  "tacheReduced": "Taqueometria (Reduzida)",
+  "tacheReduced": "Tache (Reduzido)",
   "@tacheReduced": {
     "description": "Label for reduced tacheometry data"
   },
-  "fieldbook": "Livro de Campo",
+  "fieldbook": "Caderneta de Campo",
   "@fieldbook": {
     "description": "Label for fieldbook section"
   },
-  "importCoordinatesHint": "Importar dados de coordenadas do arquivo. Formato delimitado por vírgula, espaço ou tabulação. Formato CYXZ ou CENZ. Restrito a 20 caracteres",
+  "importCoordinatesHint": "Importar dados de coordenadas do arquivo. Formato delimitado por vírgula, espaço ou tabulação.",
   "@importCoordinatesHint": {
     "description": "Hint text for importing coordinate data"
   },
-  "importHorzAlignmentHint": "Importar dados de alinhamento horizontal de arquivos PID do Model e Road Maker",
+  "importHorzAlignmentHint": "Importar dados de alinhamento horizontal dos arquivos PID do Model e Road Maker",
   "@importHorzAlignmentHint": {
     "description": "Hint text for importing horizontal alignment data"
   },
-  "importDtmTotHint": "Ler arquivo TOT do Model Maker. Modelo TIN",
+  "importDtmTotHint": "Ler arquivo Model Maker TOT. Modelo TIN",
   "@importDtmTotHint": {
     "description": "Hint text for importing DTM TOT data"
   },
-  "importRoadDesignHint": "Importar dados e especificações de projeto de estrada do Road Maker. Arquivo PR3",
+  "importRoadDesignHint": "Importar dados e especificações de design de estrada do Road Maker. Arquivo PR3",
   "@importRoadDesignHint": {
     "description": "Hint text for importing road design data"
   },
-  "importStringsHint": "Importar strings do Model Maker.",
+  "importStringsHint": "Importar strings do Model Maker",
   "@importStringsHint": {
     "description": "Hint text for importing strings"
   },
-  "exportTacheRawHint": "Exportar dados brutos de taqueometria",
+  "exportTacheRawHint": "Exportar dados brutos de tacheometria",
   "@exportTacheRawHint": {
     "description": "Hint text for exporting raw tacheometry data"
   },
-  "exportTacheReducedHint": "Exportar dados processados de taqueometria Comentário YXZ/ENZ",
+  "exportTacheReducedHint": "Exportar dados processados de tacheometria Comentário YXZ/ENZ",
   "@exportTacheReducedHint": {
     "description": "Hint text for exporting reduced tacheometry data"
   },
-  "exportFieldbookHint": "Exportar dados do livro de campo",
+  "exportFieldbookHint": "Exportar dados da caderneta de campo",
   "@exportFieldbookHint": {
     "description": "Hint text for exporting fieldbook data"
   },
-  "exportRoadDesignHint": "Exportar dados de projeto de estrada",
+  "exportRoadDesignHint": "Exportar dados de design da estrada",
   "@exportRoadDesignHint": {
     "description": "Hint text for exporting road design data"
   },
@@ -614,7 +614,7 @@
   "@exit": {
     "description": "Label for exit action"
   },
-  "lastModified": "Última Modificação",
+  "lastModified": "Última modificação",
   "@lastModified": {
     "description": "Label for last modified date"
   },
@@ -626,23 +626,23 @@
   "@size": {
     "description": "Label for file size"
   },
-  "usageTimer": "Temporizador de Uso",
+  "usageTimer": "Temporizador de uso",
   "@usageTimer": {
     "description": "Title of the usage timer dialog"
   },
   "locationNotAvailable": "Localização não disponível",
   "@locationNotAvailable": {
-    "description": "Message shown when location is not available"
+    "description": "Message when location is not available"
   },
   "quickDistance": "Distância Rápida",
   "@quickDistance": {
     "description": "Title for quick distance measurement dialog"
   },
-  "fromPoint": "Ponto de Origem",
+  "fromPoint": "Do Ponto",
   "@fromPoint": {
     "description": "Label for the starting point in distance measurement"
   },
-  "toPoint": "Ponto de Destino",
+  "toPoint": "Ao Ponto",
   "@toPoint": {
     "description": "Label for the ending point in distance measurement"
   },
@@ -658,15 +658,15 @@
   "@selectPointFromPlot": {
     "description": "Title for the plot view when in selection mode"
   },
-  "joinModeSelectFirst": "Modo de Junção - Selecione o primeiro ponto",
+  "joinModeSelectFirst": "Modo União - Selecionar primeiro ponto",
   "@joinModeSelectFirst": {
     "description": "Message shown when join mode is activated"
   },
-  "computedDirection": "Direção calculada",
+  "computedDirection": "Direção Calculada",
   "@computedDirection": {
     "description": "Label for the computed direction in fixes view"
   },
-  "enteredDirection": "Direção inserida",
+  "enteredDirection": "Direção Inserida",
   "@enteredDirection": {
     "description": "Label for the entered direction in fixes view"
   },
@@ -674,7 +674,7 @@
   "@difference": {
     "description": "Label for the difference between computed and entered direction"
   },
-  "fixResults": "Resultados de Fixação",
+  "fixResults": "Resultados da Fixação",
   "@fixResults": {
     "description": "Title for the fix results section"
   },
@@ -903,5 +903,9 @@
   "searchByIdOrComment": "Pesquisar por ID ou Comentário",
   "@searchByIdOrComment": {
     "description": "Hint text for searching points by ID or comment"
+  },
+  "instrumentHeight": "Altura do Instrumento",
+  "@instrumentHeight": {
+    "description": "Label for instrument height field"
   }
 } 

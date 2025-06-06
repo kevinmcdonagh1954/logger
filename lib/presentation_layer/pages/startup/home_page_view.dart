@@ -611,11 +611,12 @@ class _HomePageState extends State<HomePage> with RouteAware {
                   if (_isCalculationsExpanded) ...[
                     _buildDrawerItem(
                       l10n.singleJoin,
-                      onTap: () {
-                        if (!mounted) return;
-                        Navigator.pop(context); // Close the drawer
+                      onTap: () async {
+                        final currentContext = context;
+                        if (!mounted || !currentContext.mounted) return;
+                        Navigator.pop(currentContext); // Close the drawer
                         Navigator.pushReplacement(
-                          context,
+                          currentContext,
                           MaterialPageRoute(
                             builder: (context) => SingleJoinView(
                               jobName: currentJobName!,
@@ -626,11 +627,12 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     ),
                     _buildDrawerItem(
                       l10n.polar,
-                      onTap: () {
-                        if (!mounted) return;
-                        Navigator.pop(context); // Close the drawer
+                      onTap: () async {
+                        final currentContext = context;
+                        if (!mounted || !currentContext.mounted) return;
+                        Navigator.pop(currentContext); // Close the drawer
                         Navigator.pushReplacement(
-                          context,
+                          currentContext,
                           MaterialPageRoute(
                             builder: (context) => PolarView(
                               jobName: currentJobName!,
@@ -648,7 +650,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
             return _buildDrawerItem(
               item.label,
               subtitle: item.subtitle,
-              onTap: () {
+              onTap: () async {
                 // Special handling for Quit menu item
                 if (item.label == AppLocalizations.of(context)!.quit) {
                   _showUsageTimerDialog();
@@ -658,19 +660,22 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 // If it's not the home page, navigate to the view
                 if (index > 0) {
                   final Widget view = item.viewBuilder(item.placeholderLabel);
-                  if (!mounted) return;
-                  Navigator.pop(context); // Close the drawer
+                  final currentContext = context;
+                  if (!mounted || !currentContext.mounted) return;
+                  Navigator.pop(currentContext); // Close the drawer
 
                   // Navigate to the selected view using pushReplacement
                   Navigator.pushReplacement(
-                    context,
+                    currentContext,
                     MaterialPageRoute(
                       builder: (context) => view,
                     ),
                   );
                 } else {
-                  if (!mounted) return;
-                  Navigator.pop(context); // Just close the drawer for home
+                  final currentContext = context;
+                  if (!mounted || !currentContext.mounted) return;
+                  Navigator.pop(
+                      currentContext); // Just close the drawer for home
                 }
               },
             );
@@ -765,6 +770,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
     final currentDuration = _usageViewModel.currentDuration;
     final formattedDuration = _usageViewModel.formatDuration(currentDuration);
     final l10n = AppLocalizations.of(context)!;
+    final currentContext = context;
 
     if (currentJobName != null) {
       final totalJobDuration =
@@ -772,11 +778,11 @@ class _HomePageState extends State<HomePage> with RouteAware {
       final formattedTotalDuration =
           _usageViewModel.formatDuration(totalJobDuration);
 
-      if (!mounted) return;
+      if (!mounted || !currentContext.mounted) return;
 
       showDialog(
-        context: context,
-        builder: (BuildContext context) {
+        context: currentContext,
+        builder: (BuildContext dialogContext) {
           return AlertDialog(
             title: Text(l10n.usageTimer),
             content: Column(
@@ -814,7 +820,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
               TextButton(
                 onPressed: () {
                   if (!mounted) return;
-                  Navigator.of(context).pop();
+                  Navigator.of(dialogContext).pop();
                 },
                 child: Text(l10n.cancel),
               ),
@@ -822,7 +828,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 onPressed: () async {
                   await _usageViewModel.stopTracking();
                   if (!mounted) return;
-                  Navigator.of(context).pop();
+                  Navigator.of(dialogContext).pop();
                   SystemNavigator.pop();
                 },
                 child: Text(l10n.exit),
@@ -833,8 +839,8 @@ class _HomePageState extends State<HomePage> with RouteAware {
       );
     } else {
       showDialog(
-        context: context,
-        builder: (BuildContext context) {
+        context: currentContext,
+        builder: (BuildContext dialogContext) {
           return AlertDialog(
             title: Text(l10n.usageTimer),
             content: Column(
@@ -869,7 +875,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
               TextButton(
                 onPressed: () {
                   if (!mounted) return;
-                  Navigator.of(context).pop();
+                  Navigator.of(dialogContext).pop();
                 },
                 child: Text(l10n.cancel),
               ),
@@ -877,7 +883,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 onPressed: () async {
                   await _usageViewModel.stopTracking();
                   if (!mounted) return;
-                  Navigator.of(context).pop();
+                  Navigator.of(dialogContext).pop();
                   SystemNavigator.pop();
                 },
                 child: Text(l10n.exit),

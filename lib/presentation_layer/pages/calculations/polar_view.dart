@@ -16,7 +16,6 @@ import '../../../domain_layer/calculations/slope_calculator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../jobs/jobs_viewmodel.dart';
 import '../../core/vertical_angle.dart';
-import '../../../domain_layer/calculations/bearing_calculator.dart';
 
 class PolarView extends StatefulWidget {
   final String jobName;
@@ -565,8 +564,8 @@ class _PolarViewState extends State<PolarView> with RouteAware {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return PopScope(
-      canPop: true,
-      onPopInvoked: (didPop) {
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
         if (!didPop) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const HomePage()),

@@ -1,13 +1,9 @@
 import '../../models/observation.dart';
-import 'matrix_operations.dart';
 import 'dart:math' as math;
 import '../calculations/bearing_calculator.dart';
-import '../calculations/distance_calculator.dart';
 
 /// Class to handle fixing-specific operations
 class FixingOperations {
-  final MatrixOperations _matrix = MatrixOperations();
-
   /// Look up horizontal angle
   /// Equivalent to proc lookHcl in the Psion code
   /// Returns the index of the next observation with a non-zero horizontal angle,
@@ -71,7 +67,6 @@ class FixingOperations {
 
     // Back polar calculation
     final obs1 = observations[shortestIndex];
-    final obs2 = observations[directionIndex];
 
     // Calculate bearing from first point to station
     final bearing1 = obs1.horizontalAngle!;
@@ -173,8 +168,12 @@ class FixingOperations {
       double correction = obs.horizontalAngle! - calculatedBearing;
 
       // Normalize correction to -180 to +180
-      while (correction > 180) correction -= 360;
-      while (correction < -180) correction += 360;
+      while (correction > 180) {
+        correction -= 360;
+      }
+      while (correction < -180) {
+        correction += 360;
+      }
 
       totalCorrection += correction;
       count++;
@@ -190,8 +189,12 @@ class FixingOperations {
           double correctedAngle = obs.horizontalAngle! - averageCorrection;
 
           // Normalize angle to 0-360
-          while (correctedAngle >= 360) correctedAngle -= 360;
-          while (correctedAngle < 0) correctedAngle += 360;
+          while (correctedAngle >= 360) {
+            correctedAngle -= 360;
+          }
+          while (correctedAngle < 0) {
+            correctedAngle += 360;
+          }
 
           obs.horizontalAngle = correctedAngle;
         }

@@ -193,8 +193,8 @@ class _CoordinatesViewState extends State<CoordinatesView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return PopScope(
-      canPop: true,
-      onPopInvoked: (didPop) {
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
         if (!didPop) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const HomePage()),
