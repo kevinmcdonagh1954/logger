@@ -144,6 +144,10 @@
   "@quit": {
     "description": "Label for quit option"
   },
+  "restart": "重新开始",
+  "@restart": {
+    "description": "Label for restart option"
+  },
   "noCurrentJob": "无当前工作",
   "@noCurrentJob": {
     "description": "Text shown when no job is selected"

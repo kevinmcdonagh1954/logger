@@ -144,6 +144,10 @@
   "@quit": {
     "description": "Label for quit option"
   },
+  "restart": "Restart",
+  "@restart": {
+    "description": "Label for restart option"
+  },
   "noCurrentJob": "No Current Job",
   "@noCurrentJob": {
     "description": "Text shown when no job is selected"

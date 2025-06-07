@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
@@ -699,14 +701,6 @@ class _PolarViewState extends State<PolarView> with RouteAware {
     };
 
     // Get validation color
-    Color? getValidationColor() {
-      if (label == 'Target Height (m)' || label == 'Horizontal Angle') {
-        return null;
-      }
-
-      final value = double.tryParse(controller.text) ?? 0;
-      return value == 0 ? Colors.red[100] : null;
-    }
 
     // Format label to include measurement units
     String displayLabel = label;
@@ -816,7 +810,7 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               isDense: true,
               filled: true,
-              fillColor: getValidationColor(),
+              fillColor: Colors.red[50],
             ),
           ),
         ),
@@ -986,18 +980,6 @@ class _PolarViewState extends State<PolarView> with RouteAware {
     final hintText = isFirstPoint ? l10n.firstPointHint : l10n.nextPointHint;
 
     // Add validation color for second point
-    Color? getBorderColor() {
-      if (isFirstPoint) return null;
-
-      // Empty input or "Next Point" is invalid
-      if (!_hasValidPointName()) return Colors.red[100];
-
-      // Check if point name exists in points list
-      bool isDuplicate = _jobService.points.value.any((point) =>
-          point.comment.toLowerCase() == controller.text.toLowerCase());
-
-      return isDuplicate ? Colors.red[100] : Colors.green[100];
-    }
 
     return Row(
       children: [
@@ -1020,8 +1002,8 @@ class _PolarViewState extends State<PolarView> with RouteAware {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                filled: !isFirstPoint,
-                fillColor: getBorderColor(),
+                filled: true,
+                fillColor: Colors.red[50],
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               ),

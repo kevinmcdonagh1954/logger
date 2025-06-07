@@ -144,6 +144,10 @@
   "@quit": {
     "description": "Label for quit button"
   },
+  "restart": "Reiniciar",
+  "@restart": {
+    "description": "Label for restart option"
+  },
   "noCurrentJob": "Sin trabajo actual",
   "@noCurrentJob": {
     "description": "Message when no job is selected"
@@ -338,7 +342,7 @@
   },
   "nextPointHint": "Siguiente punto",
   "@nextPointHint": {
-    "description": "Hint for next point"
+    "description": "Hint text for next point field"
   },
   "addPointTitle": "Agregar punto",
   "@addPointTitle": {
@@ -862,7 +866,7 @@
   },
   "plotCoordinates": "Graficar coordenadas",
   "@plotCoordinates": {
-    "description": "Option to plot coordinates from the popup menu"
+    "description": "Label for plotting coordinates"
   },
   "aToZ": "A-Z",
   "@aToZ": {"description": "Etiqueta para orden alfabético ascendente"},
@@ -926,9 +930,9 @@
   "@instrumentHeight": {
     "description": "Label for instrument height field"
   },
-  "instHtWithUnit": "Inst Ht (m)",
+  "instHtWithUnit": "Alt Inst (m)",
   "@instHtWithUnit": {
-    "description": "Label for instrument height with unit"
+    "description": "Label for instrument height field with meters unit"
   },
   "instHtHint": "Altura del instrumento",
   "@instHtHint": {

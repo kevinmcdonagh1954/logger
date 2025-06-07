@@ -72,6 +72,11 @@
   "@roads": {"description": "Label for roads section"},
   "quit": "Sair",
   "@quit": {"description": "Label for quit option"},
+  
+  "restart": "Reiniciar",
+  "@restart": {
+    "description": "Label for restart option"
+  },
   "noCurrentJob": "Nenhum trabalho atual",
   "@noCurrentJob": {"description": "Text shown when no job is selected"},
   "showComments": "Mostrar comentários",

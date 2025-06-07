@@ -76,6 +76,8 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
   bool _showUpArrow = false;
   String angle = "0° 00' 00\"";
   BearingFormat _selectedBearingFormat = BearingFormat.dmsSymbols;
+  bool _isSetupPointValid = false;
+  bool _isNextPointValid = false;
 
   // Add flags for input validity
 
@@ -237,12 +239,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildNavButton(l10n.quit),
-                    ],
-                  ),
+                  _buildNavButton(l10n.quit),
                 ],
               ),
             ),
@@ -269,25 +266,26 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
           _firstPointController.text = point.comment;
           _updatePointCoordinates(point, true);
           _firstPointDropdown.hideDropdown();
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          }
         },
         isSelectable: true,
       );
     } else {
       _firstPointDropdown.hideDropdown();
+      // Filter out the Setup At point from the points list
+      final filteredPoints = _jobService.points.value
+          .where((point) =>
+              point.comment.toLowerCase() !=
+              _firstPointController.text.toLowerCase())
+          .toList();
+
       _nextPointDropdown.showDropdown(
         context: context,
         query: query,
-        points: _jobService.points.value,
+        points: filteredPoints,
         onSelected: (point) {
           _nextPointController.text = point.comment;
           _updatePointCoordinates(point, false);
           _nextPointDropdown.hideDropdown();
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          }
         },
         isSelectable: true,
       );
@@ -471,6 +469,31 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
         _nextPointController.text.toLowerCase() != 'next point';
   }
 
+  void _resetAllFields() {
+    setState(() {
+      _firstPointController.clear();
+      _nextPointController.clear();
+      _slopeDistanceController.text = "0.000";
+      _verticalAngleController.text = "0.0000";
+      _targetHeightController.text = "0.000";
+      _instrumentHeightController.text = "0.000";
+      _horizontalAngleController.text = "0.0000";
+      _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+      _secondPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+      _showUpArrow = false;
+      _isSetupPointValid = false;
+      _isNextPointValid = false;
+      _fixingService.setSetupPointStatus(SetupPointStatus.redefine);
+
+      // Set focus to Setup At field
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (mounted) {
+          _firstPointFocus.requestFocus();
+        }
+      });
+    });
+  }
+
   Widget _buildPointInputRow(bool isFirstPoint) {
     final l10n = AppLocalizations.of(context)!;
     final controller =
@@ -479,23 +502,39 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     final layerLink = isFirstPoint ? _firstPointLayerLink : _nextPointLayerLink;
     final label = isFirstPoint ? l10n.setupAt : l10n.secondPoint;
     final hintText = isFirstPoint ? l10n.setupAt : l10n.nextPointHint;
-    final otherController =
-        isFirstPoint ? _nextPointController : _firstPointController;
 
-    // Validation logic
-    bool isValid = false;
-    if (controller.text.isNotEmpty) {
-      final exists = _jobService.points.value
-          .any((p) => p.comment.toLowerCase() == controller.text.toLowerCase());
-      final isDuplicate =
-          controller.text.toLowerCase() == otherController.text.toLowerCase();
-      isValid = exists && !isDuplicate;
-    }
+    // For Setup At: never disable
+    // For Next Point: only disable if measurements are entered (_isNextPointValid)
+    final bool hasSetupPoint = _firstPointController.text.isNotEmpty;
+    final bool shouldDisableNextPoint =
+        !isFirstPoint && (!hasSetupPoint || _isNextPointValid);
+    final bool shouldBeDisabled = shouldDisableNextPoint;
+
+    // Check if Next Point has valid coordinates (for background color)
+    final bool hasValidNextPointCoords = !isFirstPoint &&
+        (_secondPointCoords['Y'] != 0 || _secondPointCoords['X'] != 0);
+
+    // Check point status (for Setup At only)
+    final bool isUnknownPoint = isFirstPoint &&
+        _firstPointController
+            .text.isNotEmpty && // Only show Unknown if we have a point name
+        (_firstPointCoords['Y'] == 0 &&
+            _firstPointCoords['X'] == 0 &&
+            _firstPointCoords['Z'] == 0);
+    final setupStatus = _fixingService.getSetupPointStatus();
+    final bool isFixedPoint = setupStatus == SetupPointStatus.fixed;
+    final bool isProvisionalPoint =
+        setupStatus == SetupPointStatus.provisional && !isUnknownPoint;
+    final bool isRedefinePoint = setupStatus == SetupPointStatus.redefine;
+
+    // Show controls for redefine or non-first points
+    final bool showControls =
+        !isFirstPoint || isRedefinePoint || !isUnknownPoint;
 
     return Row(
       children: [
         SizedBox(
-          width: 80,
+          width: 120,
           child:
               Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
         ),
@@ -507,137 +546,379 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
             child: TextField(
               controller: controller,
               focusNode: focusNode,
-              style: const TextStyle(
+              enabled: !shouldBeDisabled,
+              style: TextStyle(
                 fontSize: 14,
-                color: Colors.black,
+                color: shouldBeDisabled ? Colors.grey : Colors.black,
               ),
               decoration: InputDecoration(
                 hintText: hintText,
+                hintStyle: TextStyle(
+                    color: shouldBeDisabled ? Colors.grey : Colors.black54),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 filled: true,
-                fillColor: isValid
-                    ? Colors.green.withValues(alpha: 38)
-                    : Colors.red.withValues(alpha: 38),
+                fillColor: isFirstPoint
+                    ? (isUnknownPoint
+                        ? Colors.red[50]
+                        : (_isSetupPointValid
+                            ? Colors.green[50]
+                            : Colors.red[50]))
+                    : (hasValidNextPointCoords
+                        ? Colors.green[50]
+                        : Colors.red[50]),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: isValid ? Colors.green : Colors.red,
-                  ),
+                      color: shouldBeDisabled ? Colors.grey : Colors.black),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: isValid ? Colors.green : Colors.red,
-                  ),
+                      color: shouldBeDisabled ? Colors.grey : Colors.black),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
               onChanged: (value) {
                 if (isFirstPoint) {
+                  // Check if the point exists in database
                   final point = _jobService.points.value.firstWhere(
                     (p) => p.comment.toLowerCase() == value.toLowerCase(),
                     orElse: () =>
-                        const Point(id: 0, comment: '', y: 0, x: 0, z: 0),
+                        Point(id: -1, comment: value, y: 0, x: 0, z: 0),
                   );
-                  if (point.id != 0) {
-                    _updatePointCoordinates(point, true);
-                    setState(() {});
-                  } else {
-                    _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
-                    setState(() {});
-                  }
-                } else {
-                  final point = _jobService.points.value.firstWhere(
-                    (p) => p.comment.toLowerCase() == value.toLowerCase(),
-                    orElse: () =>
-                        const Point(id: 0, comment: '', y: 0, x: 0, z: 0),
-                  );
-                  if (point.id != 0) {
-                    _updatePointCoordinates(point, false);
-                    setState(() {});
-                  } else {
+
+                  // If point not found or name changed, zero coordinates
+                  if (point.id == -1 && value.isNotEmpty) {
                     setState(() {
-                      _secondPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+                      _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+                      _isSetupPointValid = true; // Still valid but as unknown
+                      _fixingService
+                          .setSetupPointStatus(SetupPointStatus.provisional);
                     });
                   }
+
+                  if (!shouldBeDisabled) {
+                    _showSearchResults(value, isFirstPoint, context);
+                  }
+                } else {
+                  // For Next Point: validate name changes
+                  final point = _jobService.points.value.firstWhere(
+                    (p) => p.comment.toLowerCase() == value.toLowerCase(),
+                    orElse: () =>
+                        Point(id: -1, comment: value, y: 0, x: 0, z: 0),
+                  );
+
+                  // If point not found or name changed, zero coordinates and disable fields
+                  if (point.id == -1 && value.isNotEmpty) {
+                    setState(() {
+                      _secondPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+                      // Reset measurement fields
+                      _slopeDistanceController.text = "0.000";
+                      _verticalAngleController.text = "0.0000";
+                      _targetHeightController.text = "0.000";
+                      _horizontalAngleController.text = "0.0000";
+                    });
+                  } else if (point.id != -1) {
+                    // Valid point found, update coordinates
+                    setState(() {
+                      _secondPointCoords = {
+                        'Y': point.y,
+                        'X': point.x,
+                        'Z': point.z,
+                      };
+                    });
+                  }
+
+                  // Show search results while typing
+                  if (!shouldBeDisabled && value.isNotEmpty) {
+                    _showSearchResults(value, isFirstPoint, context);
+                  }
                 }
-                setState(() {});
-                _showSearchResults(value, isFirstPoint, context);
               },
               onTap: () {
-                if (controller.text.isNotEmpty) {
+                if (!shouldBeDisabled && controller.text.isNotEmpty) {
                   _showSearchResults(controller.text, isFirstPoint, context);
                 }
               },
               onSubmitted: (_) {
                 _hideSearchResults();
+                if (isFirstPoint && controller.text.isNotEmpty) {
+                  // Check if point exists in database
+                  final point = _jobService.points.value.firstWhere(
+                    (p) =>
+                        p.comment.toLowerCase() ==
+                        controller.text.toLowerCase(),
+                    orElse: () => Point(
+                        id: -1, comment: controller.text, y: 0, x: 0, z: 0),
+                  );
+
+                  if (point.id == -1) {
+                    // Unknown point
+                    setState(() {
+                      _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+                      _isSetupPointValid = true;
+                      _fixingService
+                          .setSetupPointStatus(SetupPointStatus.provisional);
+                    });
+                  } else {
+                    _updatePointCoordinates(point, true);
+                  }
+                } else if (!isFirstPoint &&
+                    !_isNextPointValid &&
+                    controller.text.isNotEmpty) {
+                  final point = Point(
+                    id: -1,
+                    comment: controller.text,
+                    y: 0,
+                    x: 0,
+                    z: 0,
+                  );
+                  _updatePointCoordinates(point, false);
+                }
                 FocusScope.of(context).nextFocus();
               },
             ),
           ),
         ),
-        IconButton(
-          icon: const Icon(Icons.close, color: Colors.red),
-          iconSize: 20,
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-          onPressed: () {
-            controller.clear();
-            if (!mounted) return;
-            setState(() {
-              if (isFirstPoint) {
-                _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
-                _showUpArrow = false;
-              } else {
-                _secondPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+        if (isFirstPoint && isUnknownPoint)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              'Unknown',
+              style: TextStyle(
+                color: Colors.red[700],
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        else if (isFirstPoint &&
+            (isFixedPoint || isProvisionalPoint) &&
+            !isRedefinePoint)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              isFixedPoint ? 'Fixed' : 'Provisional',
+              style: TextStyle(
+                color: Colors.green[700],
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        else ...[
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.red),
+            iconSize: 20,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            onPressed: shouldBeDisabled
+                ? null
+                : () {
+                    controller.clear();
+                    if (!mounted) return;
+                    setState(() {
+                      if (isFirstPoint) {
+                        _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
+                        _isSetupPointValid = false;
+                        _fixingService
+                            .setSetupPointStatus(SetupPointStatus.redefine);
+                      }
+                    });
+                    _hideSearchResults();
+                  },
+          ),
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert,
+                size: 20, color: shouldBeDisabled ? Colors.grey : null),
+            padding: EdgeInsets.zero,
+            enabled: !shouldBeDisabled,
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'search',
+                child: Row(
+                  children: [
+                    Icon(Icons.search, size: 20),
+                    SizedBox(width: 8),
+                    Text(l10n.searchPoint),
+                  ],
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'add',
+                child: Row(
+                  children: [
+                    Icon(Icons.add_circle_outline, size: 20),
+                    SizedBox(width: 8),
+                    Text(l10n.addPoint),
+                  ],
+                ),
+              ),
+            ],
+            onSelected: (String value) {
+              switch (value) {
+                case 'search':
+                  _showSearchDialog(isFirstPoint);
+                  break;
+                case 'add':
+                  _showAddPointDialog(context, isFirstPoint);
+                  break;
               }
-            });
-            _hideSearchResults();
-          },
-        ),
-        PopupMenuButton<String>(
-          icon: const Icon(Icons.more_vert, size: 20),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-            PopupMenuItem<String>(
-              value: 'search',
-              child: Row(
-                children: [
-                  Icon(Icons.search, size: 20),
-                  SizedBox(width: 8),
-                  Text(l10n.searchPoint),
-                ],
-              ),
-            ),
-            PopupMenuItem<String>(
-              value: 'add',
-              child: Row(
-                children: [
-                  Icon(Icons.add_circle_outline, size: 20),
-                  SizedBox(width: 8),
-                  Text(l10n.addPoint),
-                ],
-              ),
-            ),
-          ],
-          onSelected: (String value) {
-            switch (value) {
-              case 'search':
-                _showSearchDialog(isFirstPoint);
-                break;
-              case 'add':
-                _showAddPointDialog(context, isFirstPoint);
-                break;
-            }
-          },
-        ),
-        if (!isFirstPoint && _showUpArrow) ...[
-          // (No widgets here)
+            },
+          ),
         ],
+      ],
+    );
+  }
+
+  // New method to validate Next Point
+  void _validateNextPoint(String pointName) {
+    if (pointName.isEmpty) return;
+
+    // Look for point in database
+    final point = _jobService.points.value.firstWhere(
+      (p) => p.comment.toLowerCase() == pointName.toLowerCase(),
+      orElse: () => Point(id: -1, comment: pointName, y: 0, x: 0, z: 0),
+    );
+
+    // Always accept Next Point and update coordinates
+    setState(() {
+      _secondPointCoords = {
+        'Y': point.y,
+        'X': point.x,
+        'Z': point.z,
+      };
+      _isNextPointValid = true;
+
+      // Move focus to Slope Distance
+      _slopeDistanceFocus.requestFocus();
+    });
+  }
+
+  void _updatePointCoordinates(Point point, bool isFirstPoint) {
+    if (!mounted) return;
+    setState(() {
+      if (isFirstPoint) {
+        // For Setup At
+        if (point.y != 0 || point.x != 0 || point.z != 0) {
+          // Known point with coordinates - show dialog
+          _firstPointCoords = {
+            'Y': point.y,
+            'X': point.x,
+            'Z': point.z,
+          };
+          _showSetupOptionsDialog(point);
+        } else {
+          // Unknown point - accept it with zero values
+          _isSetupPointValid = true;
+          _fixingService.setSetupPointStatus(SetupPointStatus.provisional);
+          _firstPointCoords = {
+            'Y': 0, // Keep zero for unknown
+            'X': 0, // Keep zero for unknown
+            'Z': 0, // Keep zero for unknown
+          };
+          // Move focus to Instrument Height
+          _instrumentHeightFocus.requestFocus();
+        }
+      } else {
+        // For Next Point: just update coordinates, don't validate yet
+        _secondPointCoords = {
+          'Y': point.y,
+          'X': point.x,
+          'Z': point.z,
+        };
+        // Don't set _isNextPointValid here - wait for measurements
+        _slopeDistanceFocus.requestFocus(); // Move to next input
+      }
+    });
+  }
+
+  /// Show dialog with setup options when a point with coordinates is selected
+  void _showSetupOptionsDialog(Point point) {
+    if (!mounted) return;
+
+    // Update the setup point in the fixing service
+    _fixingService.setSetupPoint(point);
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => _buildSetupOptionsDialog(point),
+    );
+  }
+
+  Widget _buildSetupOptionsDialog(Point point) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return AlertDialog(
+      title: Text(l10n.setupOptions),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${l10n.comment}: ${point.comment}'),
+          const SizedBox(height: 8),
+          Text('Y: ${point.y.toStringAsFixed(3)}'),
+          Text('X: ${point.x.toStringAsFixed(3)}'),
+          Text('Z: ${point.z.toStringAsFixed(3)}'),
+          const SizedBox(height: 16),
+          Text(l10n.selectSetupMethod),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            _fixingService.setSetupPointStatus(SetupPointStatus.fixed);
+            setState(() {
+              _firstPointCoords = {
+                'Y': point.y,
+                'X': point.x,
+                'Z': point.z,
+              };
+              _isSetupPointValid = true;
+            });
+            Navigator.of(context).pop();
+            _instrumentHeightFocus.requestFocus();
+          },
+          child: Text(l10n.acceptFixedPoint),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _firstPointCoords = {
+                'Y': point.y,
+                'X': point.x,
+                'Z': point.z,
+              };
+              _isSetupPointValid = true;
+              _fixingService.setSetupPointStatus(SetupPointStatus.provisional);
+            });
+            Navigator.of(context).pop();
+            _instrumentHeightFocus.requestFocus();
+          },
+          child: Text(l10n.acceptProvisionalFix),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              // For redefine: keep original coordinates but show controls
+              _firstPointCoords = {
+                'Y': point.y,
+                'X': point.x,
+                'Z': point.z,
+              };
+              _isSetupPointValid = true;
+              _fixingService.setSetupPointStatus(SetupPointStatus.redefine);
+            });
+            Navigator.of(context).pop();
+            _instrumentHeightFocus.requestFocus();
+          },
+          child: Text(l10n.redefineSetupPoint),
+        ),
       ],
     );
   }
@@ -723,15 +1004,25 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     } else if (label == l10n.horizontalAngle) {
       focusNode = _horizontalAngleFocus;
     } else {
-      focusNode = FocusNode(); // fallback, but should not happen
+      focusNode = FocusNode();
     }
-    String displayLabel = label;
-    if (label.contains('(m)') || label.contains('(Ft)')) {
-      displayLabel = label;
-    }
-    // Only disable fields that require both points to be valid
-    final bool shouldBeDisabled =
-        !_areBothPointsValid() && label != l10n.instHtWithUnit;
+
+    // Instrument Height is always enabled
+    final bool isInstHt = label == l10n.instHtWithUnit;
+
+    // Enable measurement fields only if Next Point has coordinates
+    final bool isMeasurementField = !isInstHt;
+    final bool hasNextPointCoords =
+        _secondPointCoords['Y'] != 0 || _secondPointCoords['X'] != 0;
+    final bool shouldEnableMeasurement =
+        isMeasurementField && hasNextPointCoords;
+
+    // Determine if field should be disabled
+    final bool shouldBeDisabled = isInstHt ? false : !shouldEnableMeasurement;
+
+    // Special styling for Inst Ht field
+    final Color fieldColor = isInstHt ? Colors.yellow[50]! : Colors.red[50]!;
+
     return Row(
       children: [
         SizedBox(
@@ -739,7 +1030,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
           child: Tooltip(
             message: hint ?? '',
             child: Text(
-              displayLabel,
+              label,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -757,25 +1048,59 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
               signed: true,
             ),
             onTap: () {
-              controller.selection = TextSelection(
-                baseOffset: 0,
-                extentOffset: controller.text.length,
-              );
+              if (label == l10n.instHtWithUnit ||
+                  label == l10n.slopeDistanceWithUnit ||
+                  label == l10n.verticalAngle ||
+                  label == l10n.targetHeightWithUnit ||
+                  label == l10n.horizontalAngle) {
+                controller.clear();
+              }
             },
             onSubmitted: (_) {
               if (controller.text.isEmpty) {
-                controller.text = "0.000";
+                controller.text = label == l10n.instHtWithUnit
+                    ? "0.000"
+                    : label == l10n.slopeDistanceWithUnit
+                        ? "0.000"
+                        : label == l10n.verticalAngle
+                            ? "0.0000"
+                            : label == l10n.targetHeightWithUnit
+                                ? "0.000"
+                                : label == l10n.horizontalAngle
+                                    ? "0.0000"
+                                    : "0.000";
+              }
+              // If Inst Ht is entered and Setup At is empty, mark it as unknown
+              if (isInstHt && _firstPointController.text.isEmpty) {
+                _firstPointController.text = "UNKNOWN";
+                _isSetupPointValid = true;
+                _fixingService
+                    .setSetupPointStatus(SetupPointStatus.provisional);
+                setState(() {});
               }
               FocusScope.of(context).nextFocus();
-              if (label == l10n.horizontalAngle) {
-                setState(() {}); // Only update results for horizontal angle
-              }
+              setState(() {});
             },
             onChanged: (value) {
               if (!mounted) return;
-              if (label == l10n.horizontalAngle) {
-                setState(() {}); // Only update results for horizontal angle
+              // If Inst Ht is changed and Setup At is empty, mark it as unknown
+              if (isInstHt &&
+                  value.isNotEmpty &&
+                  _firstPointController.text.isEmpty) {
+                _firstPointController.text = "UNKNOWN";
+                _isSetupPointValid = true;
+                _fixingService
+                    .setSetupPointStatus(SetupPointStatus.provisional);
               }
+
+              // Lock Next Point when any measurement data is entered
+              if (!isInstHt && value.isNotEmpty && hasNextPointCoords) {
+                setState(() {
+                  _isNextPointValid = true;
+                });
+              }
+
+              setState(() {});
               if (label == l10n.slopeDistanceWithUnit && value.isNotEmpty) {
                 final distance = double.tryParse(value);
                 if (distance == 0) {
@@ -831,17 +1156,24 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                   }
                 }),
             ],
-            style: TextStyle(
-                fontSize: 14,
-                color: shouldBeDisabled ? Colors.red : Colors.black),
+            style: const TextStyle(fontSize: 14, color: Colors.black),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               isDense: true,
               filled: true,
-              fillColor:
-                  shouldBeDisabled ? Colors.red.withAlpha(26) : Colors.white,
+              fillColor: fieldColor,
+              hintStyle: const TextStyle(color: Colors.black54),
+              enabledBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: isInstHt ? Colors.orange : Colors.black),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: isInstHt ? Colors.orange : Colors.black,
+                    width: isInstHt ? 2 : 1),
+              ),
             ),
           ),
         ),
@@ -851,123 +1183,38 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
 
   Widget _buildNavButton(String label) {
     final l10n = AppLocalizations.of(context)!;
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF0D47A1),
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-      onPressed: () {
-        if (label == l10n.quit) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const HomePage()),
-          );
-        }
-      },
-      child: Text(label),
-    );
-  }
-
-  void _updatePointCoordinates(Point point, bool isFirstPoint) {
-    if (!mounted) return;
-    setState(() {
-      if (isFirstPoint) {
-        _firstPointCoords = {
-          'Y': point.y,
-          'X': point.x,
-          'Z': point.z,
-        };
-        _showUpArrow = false;
-
-        // Show setup options if point has coordinates
-        if (point.y != 0 || point.x != 0 || point.z != 0) {
-          _showSetupOptionsDialog(point);
-        }
-      } else {
-        // Allow Next Point to be updated anytime
-        _secondPointCoords = {
-          'Y': point.y,
-          'X': point.x,
-          'Z': point.z,
-        };
-        _showUpArrow = _hasValidCoordinates() && _hasValidPointName();
-      }
-    });
-  }
-
-  /// Show dialog with setup options when a point with coordinates is selected
-  void _showSetupOptionsDialog(Point point) {
-    if (!mounted) return;
-
-    // Update the setup point in the fixing service
-    _fixingService.setSetupPoint(point);
-
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) => _buildSetupOptionsDialog(point),
-    );
-  }
-
-  Widget _buildSetupOptionsDialog(Point point) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return AlertDialog(
-      title: Text(l10n.setupOptions),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('${l10n.comment}: ${point.comment}'),
-          const SizedBox(height: 8),
-          Text('Y: ${point.y.toStringAsFixed(3)}'),
-          Text('X: ${point.x.toStringAsFixed(3)}'),
-          Text('Z: ${point.z.toStringAsFixed(3)}'),
-          const SizedBox(height: 16),
-          Text(l10n.selectSetupMethod),
-        ],
-      ),
-      actions: [
-        TextButton(
+    // Restart button is always active
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF0D47A1),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
           onPressed: () {
-            _fixingService.setSetupPointStatus(SetupPointStatus.fixed);
-            setState(() {
-              // For fixed points, keep the original Z coordinate
-              _firstPointCoords = {
-                'Y': point.y,
-                'X': point.x,
-                'Z': point.z,
-              };
-            });
-            Navigator.of(context).pop();
+            if (label == l10n.quit) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+            }
           },
-          child: Text(l10n.acceptFixedPoint),
+          child: Text(label),
         ),
-        TextButton(
-          onPressed: () {
-            setState(() {
-              _firstPointCoords = {
-                'Y': point.y,
-                'X': point.x,
-                'Z': point.z,
-              };
-              _fixingService.setSetupPointStatus(SetupPointStatus.provisional);
-            });
-            Navigator.of(context).pop();
-          },
-          child: Text(l10n.acceptProvisionalFix),
-        ),
-        TextButton(
-          onPressed: () {
-            setState(() {
-              _firstPointCoords = {'Y': 0, 'X': 0, 'Z': 0};
-              _fixingService.setSetupPointStatus(SetupPointStatus.redefine);
-            });
-            Navigator.of(context).pop();
-          },
-          child: Text(l10n.redefineSetupPoint),
+        const SizedBox(width: 16),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF0D47A1),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+          onPressed: _resetAllFields,
+          child: Text(l10n.restart),
         ),
       ],
     );
@@ -982,7 +1229,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     final angleText = _horizontalAngleController.text;
     final hasAngle =
         angleText.isNotEmpty && AngleValidator.parseFromDMS(angleText) != null;
-    if (!hasPoints || !hasNext || !hasAngle) return const SizedBox.shrink();
+    if (!hasPoints || !hasNext) return const SizedBox.shrink();
 
     // Calculate distance between points
     double computedDistance = BearingCalculator.calculate(
@@ -1015,8 +1262,8 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
       measuredDistance = slopeDistance * sin(verticalRad);
     }
 
-    // Calculate distance difference
-    double distanceDiff = measuredDistance - computedDistance;
+    // Calculate distance difference (using absolute values)
+    double distanceDiff = (measuredDistance - computedDistance).abs();
 
     // Calculate height difference using HeightCalculator
     double heightDiff = 0.0;
@@ -1042,18 +1289,23 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
     String formattedAzimuth =
         BearingFormatter.format(computedAzimuth, _selectedBearingFormat);
 
-    // Parse entered direction as D.MMSS (DMS)
-    final enteredDirection = AngleValidator.parseFromDMS(angleText) ?? 0.0;
-    String formattedEntered =
-        BearingFormatter.format(enteredDirection, _selectedBearingFormat);
+    // Only show entered direction if it exists
+    String formattedEntered = '';
+    String formattedDifference = '';
+    if (hasAngle) {
+      // Parse entered direction as D.MMSS (DMS)
+      final enteredDirection = AngleValidator.parseFromDMS(angleText) ?? 0.0;
+      formattedEntered =
+          BearingFormatter.format(enteredDirection, _selectedBearingFormat);
 
-    // Difference (correction)
-    double difference = enteredDirection - computedAzimuth;
-    // Normalize to [-180, 180]
-    if (difference > 180) difference -= 360;
-    if (difference < -180) difference += 360;
-    String formattedDifference =
-        BearingFormatter.format(difference, _selectedBearingFormat);
+      // Difference (correction)
+      double difference = enteredDirection - computedAzimuth;
+      // Normalize to [-180, 180]
+      if (difference > 180) difference -= 360;
+      if (difference < -180) difference += 360;
+      formattedDifference =
+          BearingFormatter.format(difference, _selectedBearingFormat);
+    }
 
     return Card(
       color: Colors.blue[50],
@@ -1066,8 +1318,8 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
             Row(
               children: [
                 Text(l10n.resultsSection,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16)),
                 const SizedBox(width: 16),
                 DropdownButton<BearingFormat>(
                   value: _selectedBearingFormat,
@@ -1082,8 +1334,10 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
             ),
             const SizedBox(height: 8),
             Text('${l10n.computedDirection}:   $formattedAzimuth'),
-            Text('${l10n.enteredDirection}:   $formattedEntered'),
-            Text('${l10n.difference}:         $formattedDifference'),
+            if (hasAngle) ...[
+              Text('${l10n.enteredDirection}:   $formattedEntered'),
+              Text('${l10n.difference}:         $formattedDifference'),
+            ],
             Text(
                 'Distance:         ${distanceDiff.toStringAsFixed(3)} ${_selectedPrecision == 'Meters' ? 'm' : 'Ft'}'),
             Text(
