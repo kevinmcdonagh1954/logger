@@ -186,14 +186,12 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                           _buildCoordinatesRow(true),
                           const SizedBox(height: 10),
                           _buildInputRow(
-                            _selectedPrecision == 'Meters'
-                                ? l10n.instrumentHeightWithUnitMeters
-                                : l10n.instrumentHeightWithUnitFeet,
+                            l10n.instHtWithUnit,
                             _instrumentHeightController,
                             false,
                             allowNegative: false,
                             l10n: l10n,
-                            hint: l10n.instrumentHeightHint,
+                            hint: l10n.instHtHint,
                           ),
                           const Divider(height: 20),
                           _buildPointInputRow(false),
@@ -720,8 +718,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
       focusNode = _verticalAngleFocus;
     } else if (label == l10n.targetHeightWithUnit) {
       focusNode = _targetHeightFocus;
-    } else if (label == l10n.instrumentHeightWithUnitMeters ||
-        label == l10n.instrumentHeightWithUnitFeet) {
+    } else if (label == l10n.instHtWithUnit) {
       focusNode = _instrumentHeightFocus;
     } else if (label == l10n.horizontalAngle) {
       focusNode = _horizontalAngleFocus;
@@ -733,9 +730,8 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
       displayLabel = label;
     }
     // Only disable fields that require both points to be valid
-    final bool shouldBeDisabled = !_areBothPointsValid() &&
-        label != l10n.instrumentHeightWithUnitMeters &&
-        label != l10n.instrumentHeightWithUnitFeet;
+    final bool shouldBeDisabled =
+        !_areBothPointsValid() && label != l10n.instHtWithUnit;
     return Row(
       children: [
         SizedBox(
@@ -823,8 +819,7 @@ class _FixingPageViewState extends State<FixingPageView> with RouteAware {
                   try {
                     final number = double.parse(newValue.text);
                     // Allow zero for instrument height
-                    if (label == l10n.instrumentHeightWithUnitMeters ||
-                        label == l10n.instrumentHeightWithUnitFeet) {
+                    if (label == l10n.instHtWithUnit) {
                       if (!allowNegative && number < 0) return oldValue;
                       return newValue;
                     }

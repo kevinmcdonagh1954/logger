@@ -651,8 +651,9 @@ class _HomePageState extends State<HomePage> with RouteAware {
               item.label,
               subtitle: item.subtitle,
               onTap: () async {
+                final currentContext = context;
                 // Special handling for Quit menu item
-                if (item.label == AppLocalizations.of(context)!.quit) {
+                if (item.label == AppLocalizations.of(currentContext)!.quit) {
                   _showUsageTimerDialog();
                   return;
                 }
@@ -660,7 +661,6 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 // If it's not the home page, navigate to the view
                 if (index > 0) {
                   final Widget view = item.viewBuilder(item.placeholderLabel);
-                  final currentContext = context;
                   if (!mounted || !currentContext.mounted) return;
                   Navigator.pop(currentContext); // Close the drawer
 
@@ -672,7 +672,6 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     ),
                   );
                 } else {
-                  final currentContext = context;
                   if (!mounted || !currentContext.mounted) return;
                   Navigator.pop(
                       currentContext); // Just close the drawer for home
@@ -769,8 +768,8 @@ class _HomePageState extends State<HomePage> with RouteAware {
   void _showUsageTimerDialog() async {
     final currentDuration = _usageViewModel.currentDuration;
     final formattedDuration = _usageViewModel.formatDuration(currentDuration);
-    final l10n = AppLocalizations.of(context)!;
     final currentContext = context;
+    final l10n = AppLocalizations.of(currentContext)!;
 
     if (currentJobName != null) {
       final totalJobDuration =
@@ -838,6 +837,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
         },
       );
     } else {
+      if (!mounted || !currentContext.mounted) return;
       showDialog(
         context: currentContext,
         builder: (BuildContext dialogContext) {

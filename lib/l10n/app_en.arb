@@ -896,7 +896,7 @@
   "@instrumentHeight": {
     "description": "Label for instrument height field"
   },
-  "instrumentHeightHint": "Instrument Height",
+  "instrumentHeightHint": "Inst Ht",
   "@instrumentHeightHint": {
     "description": "Hint text for instrument height field"
   },
@@ -923,5 +923,21 @@
   "searchByIdOrComment": "Search by ID or Comment",
   "@searchByIdOrComment": {
     "description": "Hint text for searching points by ID or comment"
+  },
+  "distanceColon": "Distance:",
+  "@distanceColon": {
+    "description": "Label for distance with colon"
+  },
+  "heightDiffColon": "Height Diff:",
+  "@heightDiffColon": {
+    "description": "Label for height difference with colon"
+  },
+  "instHtWithUnit": "Inst Ht (m)",
+  "@instHtWithUnit": {
+    "description": "Label for instrument height with unit"
+  },
+  "instHtHint": "Instrument Height",
+  "@instHtHint": {
+    "description": "Hint text for instrument height field"
   }
 } 

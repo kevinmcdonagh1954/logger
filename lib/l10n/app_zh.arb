@@ -211,6 +211,10 @@
   "@distance": {
     "description": "Label for distance measurement"
   },
+  "distanceColon": "距离：",
+  "@distanceColon": {
+    "description": "Label for distance with colon"
+  },
   "direction": "方向",
   "@direction": {
     "description": "在连接对话框和类似场景中用于方向的标签。"
@@ -268,10 +272,7 @@
   "redefineSetupPoint": "重新定义设置点",
   "@redefineSetupPoint": {
     "description": "Option to redefine the setup point"
-  },
-  "searchFirstPoint": "搜索第一个点",
-  "@searchFirstPoint": {
-    "description": "Label for searching the first point"
+  
   },
   "firstPoint": "第一点",
   "@firstPoint": {
@@ -284,6 +285,10 @@
   "heightDiff": "高度差",
   "@heightDiff": {
     "description": "Label for height difference"
+  },
+  "heightDiffColon": "高度差：",
+  "@heightDiffColon": {
+    "description": "Label for height difference with colon"
   },
   "slopeDistanceLabel": "斜距",
   "@slopeDistanceLabel": {
@@ -912,5 +917,13 @@
   "instrumentHeightWithUnitFeet": "仪器高 (Ft)",
   "@instrumentHeightWithUnitFeet": {
     "description": "Label for instrument height field with feet unit"
+  },
+  "instHtWithUnit": "仪器高 (m)",
+  "@instHtWithUnit": {
+    "description": "Label for instrument height with unit"
+  },
+  "instHtHint": "仪器高度",
+  "@instHtHint": {
+    "description": "Hint text for instrument height field"
   }
 } 

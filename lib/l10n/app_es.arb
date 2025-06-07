@@ -860,8 +860,10 @@
       }
     }
   },
-  "plotCoordinates": "Coordenadas de la trama",
-  "@plotCoordinates": {"description": "Opción para graficar coordenadas desde el menú emergente"},
+  "plotCoordinates": "Graficar coordenadas",
+  "@plotCoordinates": {
+    "description": "Option to plot coordinates from the popup menu"
+  },
   "aToZ": "A-Z",
   "@aToZ": {"description": "Etiqueta para orden alfabético ascendente"},
   "zToA": "Z-A",
@@ -924,17 +926,13 @@
   "@instrumentHeight": {
     "description": "Label for instrument height field"
   },
-  "instrumentHeightHint": "Altura del Instrumento",
-  "@instrumentHeightHint": {
+  "instHtWithUnit": "Inst Ht (m)",
+  "@instHtWithUnit": {
+    "description": "Label for instrument height with unit"
+  },
+  "instHtHint": "Altura del instrumento",
+  "@instHtHint": {
     "description": "Hint text for instrument height field"
-  },
-  "instrumentHeightWithUnitMeters": "Alt Inst (m)",
-  "@instrumentHeightWithUnitMeters": {
-    "description": "Label for instrument height field with meters unit"
-  },
-  "instrumentHeightWithUnitFeet": "Alt Inst (Ft)",
-  "@instrumentHeightWithUnitFeet": {
-    "description": "Label for instrument height field with feet unit"
   },
   "searchByIdOrComment": "Buscar por ID o Comentario",
   "@searchByIdOrComment": {
@@ -991,5 +989,13 @@
   "coordinatesSection": "Coordenadas",
   "@coordinatesSection": {
     "description": "Section header for the coordinates display in setout view"
+  },
+  "distanceColon": "Distancia:",
+  "@distanceColon": {
+    "description": "Label for distance with colon"
+  },
+  "heightDiffColon": "Diferencia de altura:",
+  "@heightDiffColon": {
+    "description": "Label for height difference with colon"
   }
 } 

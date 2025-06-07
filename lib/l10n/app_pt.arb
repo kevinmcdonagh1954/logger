@@ -907,5 +907,21 @@
   "instrumentHeight": "Altura do Instrumento",
   "@instrumentHeight": {
     "description": "Label for instrument height field"
+  },
+  "distanceColon": "Distância:",
+  "@distanceColon": {
+    "description": "Label for distance with colon"
+  },
+  "heightDiffColon": "Diferença de altura:",
+  "@heightDiffColon": {
+    "description": "Label for height difference with colon"
+  },
+  "instHtWithUnit": "Inst Ht (m)",
+  "@instHtWithUnit": {
+    "description": "Label for instrument height with unit"
+  },
+  "instHtHint": "Altura do instrumento",
+  "@instHtHint": {
+    "description": "Hint text for instrument height field"
   }
 } 
