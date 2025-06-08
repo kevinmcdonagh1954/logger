@@ -1,0 +1,933 @@
+{
+  "@@locale": "zh",
+  "appTitle": "测量软件",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "softwareName": "测量软件",
+  "@softwareName": {
+    "description": "Name of the software"
+  },
+  "developmentDate": "开发日期",
+  "@developmentDate": {
+    "description": "Label for development date"
+  },
+  "version": "版本",
+  "@version": {
+    "description": "Label for version"
+  },
+  "contact": "联系方式",
+  "@contact": {
+    "description": "Label for contact section"
+  },
+  "phone": "电话",
+  "@phone": {
+    "description": "Label for phone"
+  },
+  "whatsapp": "WhatsApp",
+  "@whatsapp": {
+    "description": "Label for WhatsApp"
+  },
+  "email": "电子邮件",
+  "@email": {
+    "description": "Label for email"
+  },
+  "location": "位置",
+  "@location": {
+    "description": "Label for location"
+  },
+  "slopeDistance": "斜距",
+  "@slopeDistance": {
+    "description": "Label for slope distance input"
+  },
+  "verticalAngle": "垂直角",
+  "@verticalAngle": {
+    "description": "Label for vertical angle input"
+  },
+  "invalidSlopeDistance": "无效的斜距",
+  "@invalidSlopeDistance": {
+    "description": "Error message for invalid slope distance"
+  },
+  "invalidVerticalAngle": "无效的垂直角",
+  "@invalidVerticalAngle": {
+    "description": "Error message for invalid vertical angle"
+  },
+  "calculationError": "计算错误",
+  "@calculationError": {
+    "description": "Error message for calculation failure"
+  },
+  "swapPoints": "交换点",
+  "@swapPoints": {
+    "description": "Label for swap points button"
+  },
+  "settings": "设置",
+  "@settings": {
+    "description": "Label for settings"
+  },
+  "setout": "放样",
+  "@setout": {
+    "description": "Label for setout"
+  },
+  "moveForward": "向前移动",
+  "@moveForward": {
+    "description": "Direction instruction"
+  },
+  "moveBack": "向后移动",
+  "@moveBack": {
+    "description": "Direction instruction"
+  },
+  "moveLeft": "向左移动",
+  "@moveLeft": {
+    "description": "Direction instruction"
+  },
+  "moveRight": "向右移动",
+  "@moveRight": {
+    "description": "Direction instruction"
+  },
+  "moveUp": "向上移动",
+  "@moveUp": {
+    "description": "Direction instruction"
+  },
+  "moveDown": "向下移动",
+  "@moveDown": {
+    "description": "Direction instruction"
+  },
+  "onLine": "在线上",
+  "@onLine": {
+    "description": "Position indicator"
+  },
+  "language": "语言",
+  "@language": {
+    "description": "Label for language selection"
+  },
+  "selectLanguage": "选择语言",
+  "@selectLanguage": {
+    "description": "Title for language selection dialog"
+  },
+  "homePage": "主页",
+  "@homePage": {
+    "description": "Label for home page"
+  },
+  "jobs": "工作",
+  "@jobs": {
+    "description": "Label for jobs section"
+  },
+  "jobsHint": "选择、创建或管理",
+  "@jobsHint": {
+    "description": "Hint text for jobs section in navigator drawer"
+  },
+  "coordinates": "坐标",
+  "@coordinates": {
+    "description": "Label for coordinates section"
+  },
+  "coordinatesHint": "查看、添加、编辑、删除",
+  "@coordinatesHint": {
+    "description": "Hint text for coordinates section in navigator drawer"
+  },
+  "calculations": "计算",
+  "@calculations": {
+    "description": "Label for calculations section"
+  },
+  "calculationsHint": "连接、极坐标",
+  "@calculationsHint": {
+    "description": "Hint text for calculations section in navigator drawer"
+  },
+  "fixes": "固定点",
+  "@fixes": {
+    "description": "Label for fixes section"
+  },
+  "roads": "道路",
+  "@roads": {
+    "description": "Label for roads section"
+  },
+  "quit": "退出",
+  "@quit": {
+    "description": "Label for quit option"
+  },
+  "restart": "重新开始",
+  "@restart": {
+    "description": "Label for restart option"
+  },
+  "noCurrentJob": "无当前工作",
+  "@noCurrentJob": {
+    "description": "Text shown when no job is selected"
+  },
+  "currentJob": "当前工作：{jobName}",
+  "@currentJob": {
+    "description": "Text shown with current job name",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Job1"
+      }
+    }
+  },
+  "comingSoon": "即将推出",
+  "@comingSoon": {
+    "description": "Text shown for features in development"
+  },
+  "importPoints": "导入点",
+  "@importPoints": {
+    "description": "Label for import points action"
+  },
+  "exportPoints": "导出点",
+  "@exportPoints": {
+    "description": "Label for export points action"
+  },
+  "readyToImport": "准备导入",
+  "@readyToImport": {
+    "description": "Status message for import"
+  },
+  "importStatus": "导入状态：",
+  "@importStatus": {
+    "description": "Label for import status"
+  },
+  "slopeDistanceWithUnit": "斜距 (m)",
+  "@slopeDistanceWithUnit": {
+    "description": "Label for slope distance input with unit"
+  },
+  "targetHeight": "目标高度 (m)",
+  "@targetHeight": {
+    "description": "Label for target height input with unit"
+  },
+  "horizontalAngle": "水平角",
+  "@horizontalAngle": {
+    "description": "Label for horizontal angle input"
+  },
+  "setupAt": "设置于",
+  "@setupAt": {
+    "description": "Label for setup point location"
+  },
+  "pointName": "点名",
+  "@pointName": {
+    "description": "Label for point name input"
+  },
+  "search": "搜索",
+  "@search": {
+    "description": "Label for search action"
+  },
+
+  "calculatedPosition": "计算位置",
+  "@calculatedPosition": {
+    "description": "Label for calculated position result"
+  },
+  "distance": "距离",
+  "@distance": {
+    "description": "Label for distance measurement"
+  },
+  "distanceColon": "距离：",
+  "@distanceColon": {
+    "description": "Label for distance with colon"
+  },
+  "direction": "方向",
+  "@direction": {
+    "description": "在连接对话框和类似场景中用于方向的标签。"
+  },
+  "save": "保存",
+  "@save": {
+    "description": "Label for save action"
+  },
+  "delete": "删除",
+  "@delete": {
+    "description": "Label for delete action"
+  },
+  "update": "更新",
+  "@update": {
+    "description": "Label for update action"
+  },
+  "error": "错误：{message}",
+  "@error": {
+    "description": "Error message with details",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Failed to update point"
+      }
+    }
+  },
+  "success": "成功",
+  "@success": {
+    "description": "Label for success message"
+  },
+  "singleJoin": "单点连接",
+  "@singleJoin": {
+    "description": "Label for single join calculation"
+  },
+  "polar": "极坐标",
+  "@polar": {
+    "description": "Label for polar calculation"
+  },
+  "setupOptions": "设置选项",
+  "@setupOptions": {
+    "description": "Title for the setup options dialog"
+  },
+  "selectSetupMethod": "请选择您要继续的选项",
+  "@selectSetupMethod": {
+    "description": "Prompt to select a setup method"
+  },
+  "acceptFixedPoint": "接受为固定点",
+  "@acceptFixedPoint": {
+    "description": "Option to accept the point as a fixed point"
+  },
+  "acceptProvisionalFix": "接受为临时固定点",
+  "@acceptProvisionalFix": {
+    "description": "Option to accept the point as a provisional fix"
+  },
+  "redefineSetupPoint": "重新定义设置点",
+  "@redefineSetupPoint": {
+    "description": "Option to redefine the setup point"
+  
+  },
+  "firstPoint": "第一点",
+  "@firstPoint": {
+    "description": "Label for first point input"
+  },
+  "secondPoint": "下一个点",
+  "@secondPoint": {
+    "description": "Label for second point input"
+  },
+  "heightDiff": "高度差",
+  "@heightDiff": {
+    "description": "Label for height difference"
+  },
+  "heightDiffColon": "高度差：",
+  "@heightDiffColon": {
+    "description": "Label for height difference with colon"
+  },
+  "slopeDistanceLabel": "斜距",
+  "@slopeDistanceLabel": {
+    "description": "Label for slope distance"
+  },
+  "gradeSlope": "坡度 1:",
+  "@gradeSlope": {
+    "description": "Label for grade/slope ratio"
+  },
+  "gradeSlopePercent": "坡度百分比",
+  "@gradeSlopePercent": {
+    "description": "Label for grade/slope percentage"
+  },
+  "slopeAngle": "坡度角",
+  "@slopeAngle": {
+    "description": "Label for slope angle"
+  },
+  "firstPointHint": "第一点",
+  "@firstPointHint": {
+    "description": "Hint text for first point input"
+  },
+  "nextPointHint": "下一点",
+  "@nextPointHint": {
+    "description": "Hint text for next point input"
+  },
+  "joins": "连接",
+  "@joins": {
+    "description": "Title for joins view"
+  },
+  "searchPoint": "搜索点",
+  "@searchPoint": {
+    "description": "Label for search point action"
+  },
+  "addPoint": "添加点",
+  "@addPoint": {
+    "description": "Label for add point action"
+  },
+  "targetHeightWithUnit": "目标高度 (m)",
+  "@targetHeightWithUnit": {
+    "description": "Label for target height with unit"
+  },
+  "useCurvatureAndRefraction": "使用曲率和折射",
+  "@useCurvatureAndRefraction": {
+    "description": "Label for curvature and refraction checkbox"
+  },
+  "addPointTitle": "添加点",
+  "@addPointTitle": {
+    "description": "Title for add point dialog"
+  },
+  "invalidComment": "无效注释",
+  "@invalidComment": {
+    "description": "Error message for invalid comment"
+  },
+  "comment": "注释",
+  "@comment": {
+    "description": "Label for comment field"
+  },
+  "descriptor": "描述符",
+  "@descriptor": {
+    "description": "Label for descriptor field"
+  },
+  "coords": "坐标",
+  "@coords": {
+    "description": "Label for coordinates section"
+  },
+  "sortBy": "排序方式",
+  "@sortBy": {
+    "description": "Label for sort options"
+  },
+  "sortByComment": "注释（{order}）",
+  "@sortByComment": {
+    "description": "Sort by comment with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "A-Z"
+      }
+    }
+  },
+  "sortByCoordinate": "按坐标排序",
+  "@sortByCoordinate": {
+    "description": "Sort option for coordinate"
+  },
+  "viewOnGoogleMaps": "在谷歌地图中查看",
+  "@viewOnGoogleMaps": {
+    "description": "Option to view point on Google Maps"
+  },
+  "cancel": "取消",
+  "@cancel": {
+    "description": "Label for cancel button"
+  },
+  "add": "添加",
+  "@add": {
+    "description": "Label for add button"
+  },
+  "searchPoints": "搜索点",
+  "@searchPoints": {
+    "description": "Label for search points action"
+  },
+  "addPointDialog": "添加点",
+  "@addPointDialog": {
+    "description": "Title for the dialog to add a new point"
+  },
+  "characterCount": "{current}/{max}",
+  "@characterCount": {
+    "description": "Character count display",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "0"
+      },
+      "max": {
+        "type": "int",
+        "example": "20"
+      }
+    }
+  },
+  "editPoint": "编辑点",
+  "@editPoint": {
+    "description": "Title for edit point dialog"
+  },
+  "validComment": "有效注释",
+  "@validComment": {
+    "description": "Validation message for valid comment"
+  },
+  "pleaseEnterComment": "请输入注释",
+  "@pleaseEnterComment": {
+    "description": "Error message when comment is empty"
+  },
+  "commentExists": "注释已存在",
+  "@commentExists": {
+    "description": "Error message when comment already exists"
+  },
+  "backup": "备份",
+  "@backup": {
+    "description": "Label for backup button"
+  },
+  "searchJob": "搜索工作",
+  "@searchJob": {
+    "description": "Label for search job button"
+  },
+  "sortJobsBy": "工作排序方式",
+  "@sortJobsBy": {
+    "description": "Title for job sort dialog"
+  },
+  "nameAtoZ": "名称 (A 到 Z)",
+  "@nameAtoZ": {
+    "description": "Sort option for alphabetical order A to Z"
+  },
+  "nameZtoA": "名称 (Z 到 A)",
+  "@nameZtoA": {
+    "description": "Sort option for alphabetical order Z to A"
+  },
+  "dateModifiedNewest": "修改日期 (最新)",
+  "@dateModifiedNewest": {
+    "description": "Sort option for date modified newest first"
+  },
+  "dateModifiedOldest": "修改日期 (最早)",
+  "@dateModifiedOldest": {
+    "description": "Sort option for date modified oldest first"
+  },
+  "createNewJob": "创建新工作",
+  "@createNewJob": {
+    "description": "Label for create new job button"
+  },
+  "info": "信息",
+  "@info": {
+    "description": "Label for info button"
+  },
+  "jobSettings": "工作设置",
+  "@jobSettings": {
+    "description": "Title for job settings dialog"
+  },
+  "jobName": "工作名称",
+  "@jobName": {
+    "description": "Label for job name field"
+  },
+  "jobDescription": "工作描述",
+  "@jobDescription": {
+    "description": "作业信息对话框中的工作描述标签"
+  },
+  "instrumentSettings": "仪器设置",
+  "@instrumentSettings": {
+    "description": "Label for instrument settings section"
+  },
+  "instrument": "仪器",
+  "@instrument": {
+    "description": "Label for instrument selection"
+  },
+  "dualCapture": "双重采集",
+  "@dualCapture": {
+    "description": "Label for dual capture option"
+  },
+  "measurementUnits": "测量单位",
+  "@measurementUnits": {
+    "description": "Label for measurement units selection"
+  },
+  "angularMeasurement": "角度测量",
+  "@angularMeasurement": {
+    "description": "Label for angular measurement selection"
+  },
+  "commsBaudRate": "通信波特率",
+  "@commsBaudRate": {
+    "description": "Label for communications baud rate"
+  },
+  "calculationSettings": "计算设置",
+  "@calculationSettings": {
+    "description": "Title for calculation settings section"
+  },
+  "scaleFactor": "比例因子",
+  "@scaleFactor": {
+    "description": "Label for scale factor input"
+  },
+  "heightAboveMSL": "平均海平面以上高度",
+  "@heightAboveMSL": {
+    "description": "Label for height above mean sea level"
+  },
+  "meanYValue": "Y值平均值",
+  "@meanYValue": {
+    "description": "Label for mean Y value input"
+  },
+  "verticalAngleIndexError": "垂直角指数误差",
+  "@verticalAngleIndexError": {
+    "description": "Label for vertical angle index error"
+  },
+  "toleranceSettings": "误差设置",
+  "@toleranceSettings": {
+    "description": "Title for tolerance settings section"
+  },
+  "spotShotTolerance": "点测量误差 (m)",
+  "@spotShotTolerance": {
+    "description": "Label for spot shot tolerance in meters"
+  },
+  "horizontalAlignmentOffsetTolerance": "水平对齐偏移误差 (m)",
+  "@horizontalAlignmentOffsetTolerance": {
+    "description": "Label for horizontal alignment offset tolerance in meters"
+  },
+  "maximumSearchDistanceFromCL": "中心线最大搜索距离 (m)",
+  "@maximumSearchDistanceFromCL": {
+    "description": "Label for maximum search distance from centerline in meters"
+  },
+  "timingSettings": "时间设置",
+  "@timingSettings": {
+    "description": "Title for timing settings section"
+  },
+  "numberOfRetries": "重试次数",
+  "@numberOfRetries": {
+    "description": "Label for number of retries input"
+  },
+  "timeout": "超时时间（秒）",
+  "@timeout": {
+    "description": "Label for timeout in seconds"
+  },
+  "jobInformation": "工作信息",
+  "@jobInformation": {
+    "description": "Label for job information section"
+  },
+  "manualInstrument": "手动",
+  "@manualInstrument": {
+    "description": "Label for manual instrument option"
+  },
+  "horzAlignment": "水平线形",
+  "@horzAlignment": {
+    "description": "Label for horizontal alignment section"
+  },
+  "roadDesign": "道路设计",
+  "@roadDesign": {
+    "description": "Label for road design section"
+  },
+  "strings": "线路",
+  "@strings": {
+    "description": "Label for strings section"
+  },
+  "fieldbook": "现场手册",
+  "@fieldbook": {
+    "description": "Label for fieldbook section"
+  },
+  "importHorzAlignmentHint": "从Model和Road Maker PID文件导入水平线形数据",
+  "@importHorzAlignmentHint": {
+    "description": "Hint text for importing horizontal alignment data"
+  },
+  "importRoadDesignHint": "从Road Maker导入道路设计数据和规范。PR3文件",
+  "@importRoadDesignHint": {
+    "description": "Hint text for importing road design data"
+  },
+  "importStringsHint": "从Model Maker导入线路",
+  "@importStringsHint": {
+    "description": "Hint text for importing strings"
+  },
+  "exportFieldbookHint": "导出现场手册数据",
+  "@exportFieldbookHint": {
+    "description": "Hint text for exporting fieldbook data"
+  },
+  "deletingYourJob": "删除您的工作",
+  "@deletingYourJob": {
+    "description": "Title for job deletion dialog"
+  },
+  "deleteJobConfirmation": "您确定要删除\"{jobName}\"及其所有内容吗？",
+  "@deleteJobConfirmation": {
+    "description": "Confirmation message for job deletion",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Project 1"
+      }
+    }
+  },
+  "searchJobsHint": "搜索工作...",
+  "@searchJobsHint": {
+    "description": "Hint text for job search field"
+  },
+  "exit": "退出",
+  "@exit": {
+    "description": "Label for exit action"
+  },
+  "coordinateFormat": "坐标格式",
+  "@coordinateFormat": {
+    "description": "Label for coordinate format field"
+  },
+  "lastModified": "最后修改时间",
+  "@lastModified": {
+    "description": "作业信息对话框中的最后修改时间标签"
+  },
+  "created": "创建时间",
+  "@created": {
+    "description": "作业信息对话框中的创建时间标签"
+  },
+  "size": "大小",
+  "@size": {
+    "description": "作业信息对话框中的文件大小标签"
+  },
+  "jobInfoDialogTitle": "作业信息 - {jobName}",
+  "@jobInfoDialogTitle": {
+    "description": "作业信息对话框的标题，包含作业名称",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Stormwater"
+      }
+    }
+  },
+  "importExport": "导入/导出",
+  "@importExport": {
+    "description": "导入/导出部分或按钮的标签。"
+  },
+  "exportCoordinatesHint": "导出坐标数据到文件",
+  "@exportCoordinatesHint": {
+    "description": "用于导出坐标数据到文件的提示或说明。"
+  },
+  "importCoordinatesHint": "从文件导入坐标数据。格式：逗号、空格、制表符分隔。格式：CYXZ 或 CENZ。限制 20 个字符",
+  "@importCoordinatesHint": {
+    "description": "用于导入坐标数据的提示文本。"
+  },
+  "import": "导入",
+  "@import": {
+    "description": "导入操作的标题或按钮。"
+  },
+  "export": "导出",
+  "@export": {
+    "description": "导出操作的标题或按钮。"
+  },
+  "usageTimer": "使用计时器",
+  "@usageTimer": {"description": "Title of the usage timer dialog"},
+  "currentSession": "本次会话：{duration}",
+  "@currentSession": {"description": "Current session duration text", "placeholders": {"duration": {"type": "String", "example": "01:23:45"}}},
+  "totalJobTime": "{jobName}总用时：{duration}",
+  "@totalJobTime": {"description": "Total time for a job", "placeholders": {"jobName": {"type": "String", "example": "My Job"}, "duration": {"type": "String", "example": "01:23:45"}}},
+  "locationNotAvailable": "位置不可用",
+  "@locationNotAvailable": {"description": "Message shown when location is not available"},
+  "latitude": "纬度：{latitude}",
+  "@latitude": {"description": "Latitude coordinate", "placeholders": {"latitude": {"type": "String", "example": "-33.9249"}}},
+  "longitude": "经度：{longitude}",
+  "@longitude": {"description": "Longitude coordinate", "placeholders": {"longitude": {"type": "String", "example": "18.4241"}}},
+  "showComments": "显示注释",
+  "@showComments": {"description": "切换在坐标图中显示注释的选项"},
+  "showDescriptors": "显示描述符",
+  "@showDescriptors": {"description": "切换在坐标图中显示描述符的选项"},
+  "showZValues": "显示Z值",
+  "@showZValues": {"description": "切换在坐标图中显示Z值的选项"},
+  "setGridInterval": "设置网格间隔",
+  "@setGridInterval": {"description": "设置网格间隔选项的标签"},
+  "gridSpacing": "网格间距（米）",
+  "@gridSpacing": {"description": "网格间距输入的标签"},
+  "ok": "确定",
+  "@ok": {"description": "确定按钮的标签"},
+  "deletePoint": "删除点",
+  "@deletePoint": {"description": "Dialog title for deleting a point"},
+  "deletePointWithComment": "删除点：{comment}",
+  "@deletePointWithComment": {
+    "description": "Dialog title for deleting a point with comment",
+    "placeholders": {
+      "comment": {
+        "type": "String",
+        "example": "A1"
+      }
+    }
+  },
+  "deletePointConfirmation": "您确定要删除此点吗？",
+  "@deletePointConfirmation": {"description": "Confirmation message for deleting a point"},
+  "pointDeletedSuccess": "点删除成功",
+  "@pointDeletedSuccess": {"description": "Success message when a point is deleted"},
+  "sortById": "ID（{order}）",
+  "@sortById": {
+    "description": "Sort by ID with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
+  "sortByY": "Y坐标（{order}）",
+  "@sortByY": {
+    "description": "Sort by Y coordinate with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
+  "sortByX": "X坐标（{order}）",
+  "@sortByX": {
+    "description": "Sort by X coordinate with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
+  "sortByZ": "Z坐标（{order}）",
+  "@sortByZ": {
+    "description": "Sort by Z coordinate with order placeholder",
+    "placeholders": {
+      "order": {
+        "type": "String",
+        "example": "Ascending"
+      }
+    }
+  },
+  "ascending": "升序",
+  "@ascending": {"description": "Ascending order label"},
+  "descending": "降序",
+  "@descending": {"description": "Descending order label"},
+  "coordinatesWithJob": "坐标 - {jobName}",
+  "@coordinatesWithJob": {
+    "description": "Long title for coordinates view with job name",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Job1"
+      }
+    }
+  },
+  "coordsWithJob": "坐标 - {jobName}",
+  "@coordsWithJob": {
+    "description": "Short title for coordinates view with job name",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Job1"
+      }
+    }
+  },
+  "plotCoordinates": "绘图坐标",
+  "@plotCoordinates": {"description": "Option to plot coordinates from the popup menu"},
+  "area": "面积",
+  "@area": {
+    "description": "面积计算视图的标签"
+  },
+  "dtmTot": "DTM (TOT)",
+  "@dtmTot": {
+    "description": "Label for DTM TOT section"
+  },
+  "tacheRaw": "全站仪原始数据",
+  "@tacheRaw": {
+    "description": "Label for raw tacheometry data"
+  },
+  "tacheReduced": "全站仪处理数据",
+  "@tacheReduced": {
+    "description": "Label for reduced tacheometry data"
+  },
+  "importDtmTotHint": "读取 Model Maker TOT 文件。TIN 模型",
+  "@importDtmTotHint": {
+    "description": "Hint text for importing DTM TOT data"
+  },
+  "exportTacheRawHint": "导出全站仪原始数据",
+  "@exportTacheRawHint": {
+    "description": "Hint text for exporting raw tacheometry data"
+  },
+  "exportTacheReducedHint": "导出全站仪处理数据 注释 YXZ/ENZ",
+  "@exportTacheReducedHint": {
+    "description": "Hint text for exporting reduced tacheometry data"
+  },
+  "exportRoadDesignHint": "导出道路设计数据",
+  "@exportRoadDesignHint": {
+    "description": "Hint text for exporting road design data"
+  },
+  "plotCoordinatesTitle": "绘图坐标 - {count}",
+  "@plotCoordinatesTitle": {"description": "绘图坐标视图的标题，带点数", "placeholders": {"count": {"type": "int", "example": "10"}}},
+  "zDecimals": "Z 小数: {count}",
+  "@zDecimals": {"description": "Z 小数位设置的标签", "placeholders": {"count": {"type": "int", "example": "2"}}},
+  "pointUpdatedSuccess": "点更新成功",
+  "@pointUpdatedSuccess": {"description": "点更新成功时的消息"},
+  "pointMovedOutOfView": "点移出视野",
+  "@pointMovedOutOfView": {"description": "点移出可见区域时的消息"},
+  "aToZ": "A-Z",
+  "@aToZ": {"description": "升序字母顺序标签"},
+  "zToA": "Z-A",
+  "@zToA": {"description": "降序字母顺序标签"},
+  "sortByDescriptor": "描述符（{order}）",
+  "@sortByDescriptor": {"description": "按描述符排序，带顺序占位符","placeholders":{"order":{"type":"String","example":"A-Z"}}},
+  "quickDistance": "快速距离",
+  "@quickDistance": {
+    "description": "Title for quick distance measurement dialog"
+  },
+  "fromPoint": "起点",
+  "@fromPoint": {
+    "description": "Label for the starting point in distance measurement"
+  },
+  "toPoint": "终点",
+  "@toPoint": {
+    "description": "Label for the ending point in distance measurement"
+  },
+  "close": "关闭",
+  "@close": {
+    "description": "Label for close button"
+  },
+  "selectFromPlot": "从图中选择",
+  "@selectFromPlot": {
+    "description": "Label for selecting a point from the plot view"
+  },
+  "selectPointFromPlot": "从图中选择点",
+  "@selectPointFromPlot": {
+    "description": "Title for the plot view when in selection mode"
+  },
+  "joinModeSelectFirst": "连接模式 - 选择第一个点",
+  "@joinModeSelectFirst": {
+    "description": "Message shown when join mode is activated"
+  },
+  "firstPointSelected": "已选择第一个点：{pointName}",
+  "@firstPointSelected": {
+    "description": "连接模式中选择第一个点时显示的消息",
+    "placeholders": {
+      "pointName": {
+        "type": "String",
+        "example": "点 A1"
+      }
+    }
+  },
+  "selectFirstPoint": "选择第一个点",
+  "@selectFirstPoint": {
+    "description": "需要选择第一个点进行测量时显示的消息"
+  },
+  "selectSecondPoint": "选择第二个点",
+  "@selectSecondPoint": {
+    "description": "需要选择第二个点进行测量时显示的消息"
+  },
+  "searchFirstPoint": "搜索第一个点",
+  "@searchFirstPoint": {"description": "搜索第一个点的对话框标题"},
+  "searchByIdOrComment": "按ID或注释搜索",
+  "@searchByIdOrComment": {"description": "按ID或注释搜索的提示"},
+  "setupAtSection": "设置于",
+  "@setupAtSection": {
+    "description": "Section header for the setup point input row in setout view"
+  },
+  "setoutPtSection": "Setout Pt",
+  "@setoutPtSection": {
+    "description": "Label for the setout point input field."
+  },
+  "calculatedPositionSection": "计算位置",
+  "@calculatedPositionSection": {
+    "description": "Section header for the calculated position results in setout view"
+  },
+  "resultsSection": "结果",
+  "@resultsSection": {
+    "description": "Section header for the results section in setout view"
+  },
+  "valuesMenu": "{format}值",
+  "@valuesMenu": {
+    "description": "Popup menu item for showing YXZ or ENZ values. {format} is either YXZ or ENZ.",
+    "placeholders": {
+      "format": {
+        "type": "String",
+        "example": "YXZ"
+      }
+    }
+  },
+  "optionsTooltip": "选项",
+  "@optionsTooltip": {
+    "description": "Tooltip for the three-dot menu in setout view"
+  },
+  "coordinatesSection": "坐标",
+  "@coordinatesSection": {
+    "description": "Section header for the coordinates display in setout view"
+  },
+  "computedDirection": "计算方向",
+  "@computedDirection": {
+    "description": "Label for the computed direction in fixes view"
+  },
+  "enteredDirection": "输入方向",
+  "@enteredDirection": {
+    "description": "Label for the entered direction in fixes view"
+  },
+  "difference": "差值",
+  "@difference": {
+    "description": "Label for the difference between computed and entered direction"
+  },
+  "fixResults": "定向结果",
+  "@fixResults": {
+    "description": "Title for the fix results section"
+  },
+  "instrumentHeight": "仪器高",
+  "@instrumentHeight": {
+    "description": "Label for instrument height field"
+  },
+  "instrumentHeightHint": "仪器高度",
+  "@instrumentHeightHint": {
+    "description": "Hint text for instrument height field"
+  },
+  "instrumentHeightWithUnitMeters": "仪器高 (m)",
+  "@instrumentHeightWithUnitMeters": {
+    "description": "Label for instrument height field with meters unit"
+  },
+  "instrumentHeightWithUnitFeet": "仪器高 (Ft)",
+  "@instrumentHeightWithUnitFeet": {
+    "description": "Label for instrument height field with feet unit"
+  },
+  "instHtWithUnit": "仪器高 (m)",
+  "@instHtWithUnit": {
+    "description": "Label for instrument height with unit"
+  },
+  "instHtHint": "仪器高度",
+  "@instHtHint": {
+    "description": "Hint text for instrument height field"
+  }
+} 

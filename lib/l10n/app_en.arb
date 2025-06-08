@@ -1,0 +1,947 @@
+{
+  "@@locale": "en",
+  "appTitle": "Logger",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "softwareName": "Logger Software",
+  "@softwareName": {
+    "description": "Name of the software"
+  },
+  "developmentDate": "Development Date",
+  "@developmentDate": {
+    "description": "Label for development date"
+  },
+  "version": "Version",
+  "@version": {
+    "description": "Label for version"
+  },
+  "contact": "Contact",
+  "@contact": {
+    "description": "Label for contact section"
+  },
+  "phone": "Phone",
+  "@phone": {
+    "description": "Label for phone"
+  },
+  "whatsapp": "WhatsApp",
+  "@whatsapp": {
+    "description": "Label for WhatsApp"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Label for email"
+  },
+  "location": "Location",
+  "@location": {
+    "description": "Label for location"
+  },
+  "slopeDistance": "Slope Distance",
+  "@slopeDistance": {
+    "description": "Label for slope distance input"
+  },
+  "verticalAngle": "Vertical Angle",
+  "@verticalAngle": {
+    "description": "Label for vertical angle input"
+  },
+  "invalidSlopeDistance": "Invalid slope distance",
+  "@invalidSlopeDistance": {
+    "description": "Error message for invalid slope distance"
+  },
+  "invalidVerticalAngle": "Invalid vertical angle",
+  "@invalidVerticalAngle": {
+    "description": "Error message for invalid vertical angle"
+  },
+  "calculationError": "Error in calculation",
+  "@calculationError": {
+    "description": "Error message for calculation failure"
+  },
+  "swapPoints": "Swap Points",
+  "@swapPoints": {
+    "description": "Label for swap points button"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Label for settings"
+  },
+  "setout": "Set Out",
+  "@setout": {
+    "description": "Label for setout"
+  },
+  "moveForward": "Move Forward",
+  "@moveForward": {
+    "description": "Direction instruction"
+  },
+  "moveBack": "Move Back",
+  "@moveBack": {
+    "description": "Direction instruction"
+  },
+  "moveLeft": "Move Left",
+  "@moveLeft": {
+    "description": "Direction instruction"
+  },
+  "moveRight": "Move Right",
+  "@moveRight": {
+    "description": "Direction instruction"
+  },
+  "moveUp": "Move Up",
+  "@moveUp": {
+    "description": "Direction instruction"
+  },
+  "moveDown": "Move Down",
+  "@moveDown": {
+    "description": "Direction instruction"
+  },
+  "onLine": "On Line",
+  "@onLine": {
+    "description": "Position indicator"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Label for language selection"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Title for language selection dialog"
+  },
+  "homePage": "Home Page",
+  "@homePage": {
+    "description": "Label for home page"
+  },
+  "jobs": "Jobs",
+  "@jobs": {
+    "description": "Label for jobs section"
+  },
+  "jobsHint": "Select, Create, or Manage",
+  "@jobsHint": {
+    "description": "Hint text for jobs section in navigator drawer"
+  },
+  "coordinates": "Coordinates",
+  "@coordinates": {
+    "description": "Label for coordinates section"
+  },
+  "coordinatesHint": "View, Add, Edit, Delete",
+  "@coordinatesHint": {
+    "description": "Hint text for coordinates section in navigator drawer"
+  },
+  "calculations": "Calculations",
+  "@calculations": {
+    "description": "Label for calculations section"
+  },
+  "calculationsHint": "Join, Polar",
+  "@calculationsHint": {
+    "description": "Hint text for calculations section in navigator drawer"
+  },
+  "fixes": "Fixes",
+  "@fixes": {
+    "description": "Label for fixes section"
+  },
+  "roads": "Roads",
+  "@roads": {
+    "description": "Label for roads section"
+  },
+  "quit": "Quit",
+  "@quit": {
+    "description": "Label for quit option"
+  },
+  "restart": "Restart",
+  "@restart": {
+    "description": "Label for restart option"
+  },
+  "noCurrentJob": "No Current Job",
+  "@noCurrentJob": {
+    "description": "Text shown when no job is selected"
+  },
+  "currentJob": "Current Job: {jobName}",
+  "@currentJob": {
+    "description": "Text shown with current job name",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Job1"
+      }
+    }
+  },
+  "comingSoon": "Coming Soon",
+  "@comingSoon": {
+    "description": "Text shown for features in development"
+  },
+  "importPoints": "Import Points",
+  "@importPoints": {
+    "description": "Label for import points action"
+  },
+  "exportPoints": "Export Points",
+  "@exportPoints": {
+    "description": "Label for export points action"
+  },
+  "readyToImport": "Ready to import",
+  "@readyToImport": {
+    "description": "Status message for import"
+  },
+  "importStatus": "Import Status:",
+  "@importStatus": {
+    "description": "Label for import status"
+  },
+  "slopeDistanceWithUnit": "Slope Distance (m)",
+  "@slopeDistanceWithUnit": {
+    "description": "Label for slope distance input with unit"
+  },
+  "targetHeight": "Target Height (m)",
+  "@targetHeight": {
+    "description": "Label for target height input with unit"
+  },
+  "horizontalAngle": "Horizontal Angle",
+  "@horizontalAngle": {
+    "description": "Label for horizontal angle input"
+  },
+  "setupAt": "Setup At",
+  "@setupAt": {
+    "description": "Label for setup point location"
+  },
+  "pointName": "Point Name",
+  "@pointName": {
+    "description": "Label for point name input"
+  },
+  "search": "Search",
+  "@search": {
+    "description": "Label for search action"
+  },
+  "add": "Add",
+  "@add": {
+    "description": "Label for add button"
+  },
+  "calculatedPosition": "Calculated Position",
+  "@calculatedPosition": {
+    "description": "Label for calculated position result"
+  },
+  "distance": "Distance",
+  "@distance": {
+    "description": "Label for distance measurement"
+  },
+  "direction": "Direction",
+  "@direction": {
+    "description": "Label for direction in the joins dialog and similar contexts."
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Label for cancel action"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Label for save button"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Label for delete action"
+  },
+  "update": "Update",
+  "@update": {
+    "description": "Label for update action"
+  },
+  "error": "Error: {message}",
+  "@error": {
+    "description": "Error message with details",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Failed to update point"
+      }
+    }
+  },
+  "success": "Success",
+  "@success": {
+    "description": "Label for success message"
+  },
+  "quickDistance": "Quick Distance",
+  "@quickDistance": {
+    "description": "Title for quick distance measurement dialog"
+  },
+  "fromPoint": "From Point",
+  "@fromPoint": {
+    "description": "Label for the starting point in distance measurement"
+  },
+  "toPoint": "To Point",
+  "@toPoint": {
+    "description": "Label for the ending point in distance measurement"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Label for close button"
+  },
+  "singleJoin": "Single Join",
+  "@singleJoin": {
+    "description": "Label for single join calculation"
+  },
+  "polar": "Polar",
+  "@polar": {
+    "description": "Label for polar calculation"
+  },
+  "firstPoint": "1st Point",
+  "@firstPoint": {
+    "description": "Label for first point input"
+  },
+  "secondPoint": "Next Point",
+  "@secondPoint": {
+    "description": "Label for second point input"
+  },
+  "heightDiff": "Height Diff",
+  "@heightDiff": {
+    "description": "Label for height difference"
+  },
+  "slopeDistanceLabel": "Slope Distance",
+  "@slopeDistanceLabel": {
+    "description": "Label for slope distance"
+  },
+  "gradeSlope": "Grade/Slope 1:",
+  "@gradeSlope": {
+    "description": "Label for grade/slope ratio"
+  },
+  "gradeSlopePercent": "Grade/Slope %",
+  "@gradeSlopePercent": {
+    "description": "Label for grade/slope percentage"
+  },
+  "slopeAngle": "Slope Angle",
+  "@slopeAngle": {
+    "description": "Label for slope angle"
+  },
+  "area": "Area",
+  "@area": {
+    "description": "Label for area calculation view"
+  },
+  "joins": "Joins",
+  "@joins": {
+    "description": "Title for joins view"
+  },
+  "searchPoint": "Search Point",
+  "@searchPoint": {
+    "description": "Label for search point action"
+  },
+  "addPoint": "Add Point",
+  "@addPoint": {
+    "description": "Label for add point action"
+  },
+  "targetHeightWithUnit": "Target Height (m)",
+  "@targetHeightWithUnit": {
+    "description": "Label for target height with unit"
+  },
+  "useCurvatureAndRefraction": "Use Curvature and Refraction",
+  "@useCurvatureAndRefraction": {
+    "description": "Label for curvature and refraction checkbox"
+  },
+  "firstPointHint": "First Point",
+  "@firstPointHint": {
+    "description": "Hint text for first point input"
+  },
+  "nextPointHint": "Next Point",
+  "@nextPointHint": {
+    "description": "Hint text for next point input"
+  },
+  "addPointTitle": "Add Point",
+  "@addPointTitle": {
+    "description": "Title for add point dialog"
+  },
+  "invalidComment": "Invalid Comment",
+  "@invalidComment": {
+    "description": "Error message for invalid comment"
+  },
+  "descriptor": "Descriptor",
+  "@descriptor": {
+    "description": "Label for descriptor field"
+  },
+  "coords": "Coordinates",
+  "@coords": {
+    "description": "Label for coordinates section"
+  },
+  "sortBy": "Sort By",
+  "@sortBy": {
+    "description": "Label for sort options"
+  },
+  "sortByComment": "Comment ({order})",
+  "@sortByComment": {"description": "Sort by comment with order placeholder","placeholders":{"order":{"type":"String","example":"A-Z"}}},
+  "sortByCoordinate": "Sort by Coordinate",
+  "@sortByCoordinate": {
+    "description": "Sort option for coordinate"
+  },
+  "viewOnGoogleMaps": "View on Google Maps",
+  "@viewOnGoogleMaps": {
+    "description": "Option to view point on Google Maps"
+  },
+
+  "characterCount": "{current}/{max}",
+  "@characterCount": {
+    "description": "Character count display",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "0"
+      },
+      "max": {
+        "type": "int",
+        "example": "20"
+      }
+    }
+  },
+  "searchPoints": "Search Points",
+  "@searchPoints": {
+    "description": "Label for search points action"
+  },
+  "editPoint": "Edit Point",
+  "@editPoint": {
+    "description": "Title for edit point dialog"
+  },
+  "validComment": "Valid Comment",
+  "@validComment": {
+    "description": "Validation message for valid comment"
+  },
+  "pleaseEnterComment": "Please enter a comment",
+  "@pleaseEnterComment": {
+    "description": "Error message when comment is empty"
+  },
+  "commentExists": "Comment already exists",
+  "@commentExists": {
+    "description": "Error message when comment already exists"
+  },
+  "backup": "Backup",
+  "@backup": {
+    "description": "Label for backup button"
+  },
+  "searchJob": "Search For Job",
+  "@searchJob": {
+    "description": "Label for search job button"
+  },
+  "sortJobsBy": "Sort Jobs By",
+  "@sortJobsBy": {
+    "description": "Title for job sort dialog"
+  },
+  "nameAtoZ": "Name (A to Z)",
+  "@nameAtoZ": {
+    "description": "Sort option for alphabetical order A to Z"
+  },
+  "nameZtoA": "Name (Z to A)",
+  "@nameZtoA": {
+    "description": "Sort option for alphabetical order Z to A"
+  },
+  "dateModifiedNewest": "Date Modified (Newest)",
+  "@dateModifiedNewest": {
+    "description": "Sort option for date modified newest first"
+  },
+  "dateModifiedOldest": "Date Modified (Oldest)",
+  "@dateModifiedOldest": {
+    "description": "Sort option for date modified oldest first"
+  },
+  "createNewJob": "Create New Job",
+  "@createNewJob": {
+    "description": "Label for create new job button"
+  },
+  "info": "Info",
+  "@info": {
+    "description": "Label for info button"
+  },
+  "jobSettings": "Job Settings",
+  "@jobSettings": {
+    "description": "Title for job settings view"
+  },
+  "jobName": "Job Name",
+  "@jobName": {
+    "description": "Label for job name field"
+  },
+  "jobInformation": "Job Information",
+  "@jobInformation": {
+    "description": "Label for job information section"
+  },
+  "jobDescription": "Job Description",
+  "@jobDescription": {
+    "description": "Label for job description in job info dialog"
+  },
+  "coordinateFormat": "Coordinate Format",
+  "@coordinateFormat": {
+    "description": "Label for coordinate format field"
+  },
+  "instrument": "Instrument",
+  "@instrument": {
+    "description": "Label for instrument field"
+  },
+  "dualCapture": "Dual Capture",
+  "@dualCapture": {
+    "description": "Label for dual capture field"
+  },
+  "measurementUnits": "Measurement Units",
+  "@measurementUnits": {
+    "description": "Label for measurement units field"
+  },
+  "angularMeasurement": "Angular Measurement",
+  "@angularMeasurement": {
+    "description": "Label for angular measurement field"
+  },
+  "commsBaudRate": "Comms Baud Rate",
+  "@commsBaudRate": {
+    "description": "Label for communications baud rate field"
+  },
+  "calculationSettings": "Calculation Settings",
+  "@calculationSettings": {
+    "description": "Title for calculation settings section"
+  },
+  "scaleFactor": "Scale Factor",
+  "@scaleFactor": {
+    "description": "Label for scale factor field"
+  },
+  "heightAboveMSL": "Height Above MSL",
+  "@heightAboveMSL": {
+    "description": "Label for height above mean sea level field"
+  },
+  "meanYValue": "Mean Y Value",
+  "@meanYValue": {
+    "description": "Label for mean Y value field"
+  },
+  "verticalAngleIndexError": "Vertical Angle Index Error",
+  "@verticalAngleIndexError": {
+    "description": "Label for vertical angle index error field"
+  },
+  "toleranceSettings": "Tolerance Settings",
+  "@toleranceSettings": {
+    "description": "Title for tolerance settings section"
+  },
+  "spotShotTolerance": "Spot Shot Tolerance",
+  "@spotShotTolerance": {
+    "description": "Label for spot shot tolerance field"
+  },
+  "horizontalAlignmentOffsetTolerance": "Horizontal Alignment Offset Tolerance",
+  "@horizontalAlignmentOffsetTolerance": {
+    "description": "Label for horizontal alignment offset tolerance field"
+  },
+  "maximumSearchDistanceFromCL": "Maximum Search Distance From CL",
+  "@maximumSearchDistanceFromCL": {
+    "description": "Label for maximum search distance from center line field"
+  },
+  "timingSettings": "Timing Settings",
+  "@timingSettings": {
+    "description": "Title for timing settings section"
+  },
+  "numberOfRetries": "Number of Retries",
+  "@numberOfRetries": {
+    "description": "Label for number of retries field"
+  },
+  "timeout": "Timeout",
+  "@timeout": {
+    "description": "Label for timeout field"
+  },
+  "instrumentSettings": "Instrument Settings",
+  "@instrumentSettings": {
+    "description": "Label for instrument settings section"
+  },
+  "manualInstrument": "MANUAL",
+  "@manualInstrument": {
+    "description": "Label for manual instrument option"
+  },
+  "importExport": "Import/Export",
+  "@importExport": {
+    "description": "Label for import/export section or button."
+  },
+  "exportCoordinatesHint": "Export coordinate data to file",
+  "@exportCoordinatesHint": {
+    "description": "Hint or tooltip for exporting coordinate data to a file."
+  },
+  "import": "Import",
+  "@import": {
+    "description": "Label for import action"
+  },
+  "export": "Export",
+  "@export": {
+    "description": "Label for export action"
+  },
+  "horzAlignment": "Horz Alignment",
+  "@horzAlignment": {
+    "description": "Label for horizontal alignment section"
+  },
+  "dtmTot": "DTM (TOT)",
+  "@dtmTot": {
+    "description": "Label for DTM TOT section"
+  },
+  "roadDesign": "Road Design",
+  "@roadDesign": {
+    "description": "Label for road design section"
+  },
+  "strings": "Strings",
+  "@strings": {
+    "description": "Label for strings section"
+  },
+  "tacheRaw": "Tache (Raw)",
+  "@tacheRaw": {
+    "description": "Label for raw tacheometry data"
+  },
+  "tacheReduced": "Tache (Reduced)",
+  "@tacheReduced": {
+    "description": "Label for reduced tacheometry data"
+  },
+  "fieldbook": "Fieldbook",
+  "@fieldbook": {
+    "description": "Label for fieldbook section"
+  },
+  "importCoordinatesHint": "Import coordinate data from file. Format comma,space,tab delimited. Format CYXZ or CENZ. Restricted to 20 Charaters",
+  "@importCoordinatesHint": {
+    "description": "Hint text for importing coordinate data"
+  },
+  "importHorzAlignmentHint": "Import horizontal alignment data from Model and Road Maker PID files",
+  "@importHorzAlignmentHint": {
+    "description": "Hint text for importing horizontal alignment data"
+  },
+  "importDtmTotHint": "Read Model Maker TOT file. TIN model",
+  "@importDtmTotHint": {
+    "description": "Hint text for importing DTM TOT data"
+  },
+  "importRoadDesignHint": "Import road design data and specifications from Road Maker. PR3 file",
+  "@importRoadDesignHint": {
+    "description": "Hint text for importing road design data"
+  },
+  "importStringsHint": "Import strings from Model Maker.",
+  "@importStringsHint": {
+    "description": "Hint text for importing strings"
+  },
+  "exportTacheRawHint": "Export raw tacheometry data",
+  "@exportTacheRawHint": {
+    "description": "Hint text for exporting raw tacheometry data"
+  },
+  "exportTacheReducedHint": "Export processed tacheometry data Comment YXZ/ENZ",
+  "@exportTacheReducedHint": {
+    "description": "Hint text for exporting reduced tacheometry data"
+  },
+  "exportFieldbookHint": "Export fieldbook data",
+  "@exportFieldbookHint": {
+    "description": "Hint text for exporting fieldbook data"
+  },
+  "exportRoadDesignHint": "Export road design data",
+  "@exportRoadDesignHint": {
+    "description": "Hint text for exporting road design data"
+  },
+  "deletingYourJob": "Deleting Your Job",
+  "@deletingYourJob": {
+    "description": "Title for job deletion dialog"
+  },
+  "deleteJobConfirmation": "Are you sure you want to delete \"{jobName}\" and all its contents?",
+  "@deleteJobConfirmation": {
+    "description": "Confirmation message for job deletion",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Project 1"
+      }
+    }
+  },
+  "searchJobsHint": "Search jobs...",
+  "@searchJobsHint": {
+    "description": "Hint text for job search field"
+  },
+  "exit": "Exit",
+  "@exit": {
+    "description": "Label for exit action"
+  },
+  "lastModified": "Last Modified",
+  "@lastModified": {
+    "description": "Label for last modified date in job info dialog"
+  },
+  "created": "Created",
+  "@created": {
+    "description": "Label for creation date in job info dialog"
+  },
+  "size": "Size",
+  "@size": {
+    "description": "Label for file size in job info dialog"
+  },
+  "jobInfoDialogTitle": "Job Information - {jobName}",
+  "@jobInfoDialogTitle": {
+    "description": "Title for job info dialog with job name",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "Stormwater"
+      }
+    }
+  },
+  "usageTimer": "Usage Timer",
+  "@usageTimer": {
+    "description": "Title of the usage timer dialog"
+  },
+  "currentSession": "Current session: {duration}",
+  "@currentSession": {
+    "description": "Current session duration text",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "01:23:45"
+      }
+    }
+  },
+  "totalJobTime": "Total time for {jobName}: {duration}",
+  "@totalJobTime": {
+    "description": "Total time for a job",
+    "placeholders": {
+      "jobName": {
+        "type": "String",
+        "example": "My Job"
+      },
+      "duration": {
+        "type": "String",
+        "example": "01:23:45"
+      }
+    }
+  },
+  "locationNotAvailable": "Location not available",
+  "@locationNotAvailable": {
+    "description": "Message shown when location is not available"
+  },
+  "latitude": "Latitude: {latitude}",
+  "@latitude": {
+    "description": "Latitude coordinate",
+    "placeholders": {
+      "latitude": {
+        "type": "String",
+        "example": "-33.9249"
+      }
+    }
+  },
+  "longitude": "Longitude: {longitude}",
+  "@longitude": {
+    "description": "Longitude coordinate",
+    "placeholders": {
+      "longitude": {
+        "type": "String",
+        "example": "18.4241"
+      }
+    }
+  },
+  "plotCoordinatesTitle": "Plot Coordinates - {count}",
+  "@plotCoordinatesTitle": {
+    "description": "Title for plot coordinates view with point count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "10"
+      }
+    }
+  },
+  "showComments": "Show Comments",
+  "@showComments": {
+    "description": "Option to toggle visibility of comments in plot coordinates"
+  },
+  "showDescriptors": "Show Descriptors",
+  "@showDescriptors": {
+    "description": "Option to toggle visibility of descriptors in plot coordinates"
+  },
+  "showZValues": "Show Z Values",
+  "@showZValues": {
+    "description": "Option to toggle visibility of Z values in plot coordinates"
+  },
+  "zDecimals": "Z Decimals: {count}",
+  "@zDecimals": {
+    "description": "Label for Z decimal places setting",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "setGridInterval": "Set Grid Interval",
+  "@setGridInterval": {
+    "description": "Label for setting grid interval option"
+  },
+  "gridSpacing": "Grid Spacing (meters)",
+  "@gridSpacing": {
+    "description": "Label for grid spacing input"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "Label for OK button"
+  },
+  "pointUpdatedSuccess": "Point updated successfully",
+  "@pointUpdatedSuccess": {
+    "description": "Success message when point is updated"
+  },
+  "pointMovedOutOfView": "Point moved out of view",
+  "@pointMovedOutOfView": {
+    "description": "Message when point is moved outside visible area"
+  },
+  "plotCoordinates": "Plot Coordinates",
+  "@plotCoordinates": {
+    "description": "Option to plot coordinates from the popup menu"
+  },
+  "deletePoint": "Delete Point",
+  "@deletePoint": {"description": "Dialog title for deleting a point"},
+  "deletePointWithComment": "Delete Point: {comment}",
+  "@deletePointWithComment": {"description": "Dialog title for deleting a point with comment","placeholders":{"comment":{"type":"String","example":"A1"}}},
+  "deletePointConfirmation": "Are you sure you want to delete this point?",
+  "@deletePointConfirmation": {"description": "Confirmation message for deleting a point"},
+  "pointDeletedSuccess": "Point deleted successfully",
+  "@pointDeletedSuccess": {"description": "Success message when a point is deleted"},
+  "sortById": "ID ({order})",
+  "@sortById": {"description": "Sort by ID with order placeholder","placeholders":{"order":{"type":"String","example":"Ascending"}}},
+  "sortByY": "Y Coordinate ({order})",
+  "@sortByY": {"description": "Sort by Y coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Ascending"}}},
+  "sortByX": "X Coordinate ({order})",
+  "@sortByX": {"description": "Sort by X coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Ascending"}}},
+  "sortByZ": "Z Coordinate ({order})",
+  "@sortByZ": {"description": "Sort by Z coordinate with order placeholder","placeholders":{"order":{"type":"String","example":"Ascending"}}},
+  "ascending": "Ascending",
+  "@ascending": {"description": "Ascending order label"},
+  "descending": "Descending",
+  "@descending": {"description": "Descending order label"},
+  "coordinatesWithJob": "Coordinates - {jobName}",
+  "@coordinatesWithJob": {"description": "Long title for coordinates view with job name","placeholders":{"jobName":{"type":"String","example":"Job1"}}},
+  "coordsWithJob": "Coords - {jobName}",
+  "@coordsWithJob": {"description": "Short title for coordinates view with job name","placeholders":{"jobName":{"type":"String","example":"Job1"}}},
+  "aToZ": "A-Z",
+  "@aToZ": {"description": "Label for ascending alphabetical order"},
+  "zToA": "Z-A",
+  "@zToA": {"description": "Label for descending alphabetical order"},
+  "sortByDescriptor": "Descriptor ({order})",
+  "@sortByDescriptor": {"description": "Sort by descriptor with order placeholder","placeholders":{"order":{"type":"String","example":"A-Z"}}},
+  "selectFromPlot": "Select from Plot",
+  "@selectFromPlot": {
+    "description": "Label for selecting a point from the plot view"
+  },
+  "selectPointFromPlot": "Select Point from Plot",
+  "@selectPointFromPlot": {
+    "description": "Title for the plot view when in selection mode"
+  },
+  "joinModeSelectFirst": "Join Mode - Select first point",
+  "@joinModeSelectFirst": {
+    "description": "Message shown when join mode is activated"
+  },
+  "firstPointSelected": "First point selected: {pointName}",
+  "@firstPointSelected": {
+    "description": "Message shown when first point is selected in join mode",
+    "placeholders": {
+      "pointName": {
+        "type": "String",
+        "example": "Point A1"
+      }
+    }
+  },
+  "selectFirstPoint": "Select first point",
+  "@selectFirstPoint": {
+    "description": "Message shown when first point needs to be selected for measurement"
+  },
+  "selectSecondPoint": "Select second point",
+  "@selectSecondPoint": {
+    "description": "Message shown when second point needs to be selected for measurement"
+  },
+
+  "setupAtSection": "Setup At",
+  "@setupAtSection": {
+    "description": "Section header for the setup point input row in setout view"
+  },
+  "setoutPtSection": "Setout Pt",
+  "@setoutPtSection": {
+    "description": "Label for the setout point input field."
+  },
+  "calculatedPositionSection": "Calculated Position",
+  "@calculatedPositionSection": {
+    "description": "Section header for the calculated position results in setout view"
+  },
+  "resultsSection": "Results",
+  "@resultsSection": {
+    "description": "Section header for the results section in setout view"
+  },
+  "valuesMenu": "{format} Values",
+  "@valuesMenu": {
+    "description": "Popup menu item for showing YXZ or ENZ values. {format} is either YXZ or ENZ.",
+    "placeholders": {
+      "format": {
+        "type": "String",
+        "example": "YXZ"
+      }
+    }
+  },
+  "optionsTooltip": "Options",
+  "@optionsTooltip": {
+    "description": "Tooltip for the three-dot menu in setout view"
+  },
+  "coordinatesSection": "Coordinates",
+  "@coordinatesSection": {
+    "description": "Section header for the coordinates display in setout view"
+  },
+  "computedDirection": "Computed Direction",
+  "@computedDirection": {
+    "description": "Label for the computed direction in fixes view"
+  },
+  "enteredDirection": "Entered Direction",
+  "@enteredDirection": {
+    "description": "Label for the entered direction in fixes view"
+  },
+  "difference": "Difference",
+  "@difference": {
+    "description": "Label for the difference between computed and entered direction"
+  },
+  "fixResults": "Fix Results",
+  "@fixResults": {
+    "description": "Title for the fix results section"
+  },
+  "setupOptions": "Setup Options",
+  "@setupOptions": {
+    "description": "Title for the setup options dialog"
+  },
+  "selectSetupMethod": "Choose which option you would like proceed with",
+  "@selectSetupMethod": {
+    "description": "Prompt to select a setup method"
+  },
+  "acceptFixedPoint": "Accept the point as a Fixed Point",
+  "@acceptFixedPoint": {
+    "description": "Option to accept the point as a fixed point"
+  },
+  "acceptProvisionalFix": "Accept the point as a provisional Fix",
+  "@acceptProvisionalFix": {
+    "description": "Option to accept the point as a provisional fix"
+  },
+  "redefineSetupPoint": "Redefine the Setup Point",
+  "@redefineSetupPoint": {
+    "description": "Option to redefine the setup point"
+  },
+  "instrumentHeight": "Instrument Height",
+  "@instrumentHeight": {
+    "description": "Label for instrument height field"
+  },
+  "instrumentHeightHint": "Inst Ht",
+  "@instrumentHeightHint": {
+    "description": "Hint text for instrument height field"
+  },
+  "instrumentHeightWithUnitMeters": "Inst Ht (m)",
+  "@instrumentHeightWithUnitMeters": {
+    "description": "Label for instrument height field with meters unit"
+  },
+  "instrumentHeightWithUnitFeet": "Inst Ht (Ft)",
+  "@instrumentHeightWithUnitFeet": {
+    "description": "Label for instrument height field with feet unit"
+  },
+  "addPointDialog": "Add Point",
+  "@addPointDialog": {
+    "description": "Title for the dialog to add a new point"
+  },
+  "comment": "Comment",
+  "@comment": {
+    "description": "Label for comment field"
+  },
+  "searchFirstPoint": "Search First Point",
+  "@searchFirstPoint": {
+    "description": "Label for searching the first point"
+  },
+  "searchByIdOrComment": "Search by ID or Comment",
+  "@searchByIdOrComment": {
+    "description": "Hint text for searching points by ID or comment"
+  },
+  "distanceColon": "Distance:",
+  "@distanceColon": {
+    "description": "Label for distance with colon"
+  },
+  "heightDiffColon": "Height Diff:",
+  "@heightDiffColon": {
+    "description": "Label for height difference with colon"
+  },
+  "instHtWithUnit": "Inst Ht (m)",
+  "@instHtWithUnit": {
+    "description": "Label for instrument height with unit"
+  },
+  "instHtHint": "Instrument Height",
+  "@instHtHint": {
+    "description": "Hint text for instrument height field"
+  }
+} 

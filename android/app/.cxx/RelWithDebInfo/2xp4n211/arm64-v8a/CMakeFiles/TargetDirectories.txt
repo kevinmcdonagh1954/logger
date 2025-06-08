@@ -1,0 +1,2 @@
+D:/Flutter Projects/Logger 18th March 2025/logger/android/app/.cxx/RelWithDebInfo/2xp4n211/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/Flutter Projects/Logger 18th March 2025/logger/android/app/.cxx/RelWithDebInfo/2xp4n211/arm64-v8a/CMakeFiles/rebuild_cache.dir
